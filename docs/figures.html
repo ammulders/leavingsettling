@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Figures</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="dataprep.html">Data preparation</a>
+</li>
+<li>
+  <a href="descriptives.html">Descriptive statistics</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="analyses.html">Main analyses - Log monthly pay</a>
+    </li>
+    <li>
+      <a href="analyses_loghours.html">Supplementary - Log hourly wage</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="figures.html">Figures</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Figures</h1>
+<h4 class="date">2025-18-09</h4>
+
+</div>
+
+
+<div id="reading-in-packages" class="section level1">
+<h1>Reading in packages</h1>
+<pre class="r"><code>rm(list=ls())</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(ggplot2)
+library(ggpubr)</code></pre>
+</div>
+<div id="reading-in-data" class="section level1">
+<h1>Reading in data</h1>
+<pre class="r"><code>load(file=&quot;H:/processed_data/df_mmfc.rda&quot;)
+
+df_mmfc$t2 &lt;- df_mmfc$t^2
+df_mmfc$t3 &lt;- df_mmfc$t^3
+df_mmfc$t4 &lt;- df_mmfc$t^4
+df_mmfc$t5 &lt;- df_mmfc$t^5
+df_mmfc$t6 &lt;- df_mmfc$t^6
+
+levels(as.factor(df_mmfc$phd_disci))
+summary(as.factor(df_mmfc$phd_disci))
+
+df_mmfc$phd_disci &lt;- factor(df_mmfc$phd_disci, levels=c(&quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;, &quot;Agriculture and animal sciences&quot;))
+
+df_mmfc &lt;- df_mmfc %&gt;% 
+  mutate(gender = ifelse(gender==1, &quot;men&quot;, &quot;women&quot;))
+
+df_mmfc$gender &lt;- factor(df_mmfc$gender, levels=c(&quot;men&quot;, &quot;women&quot;))
+
+
+# Overall
+load(file=&quot;F:/GPE_salaris/results/overall/log_hrs/M0.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/overall/log_hrs/M1.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/overall/log_hrs/M2.rda&quot;)
+
+# By gender
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/M0m.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/M1m.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/M2m.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/M0w.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/M1w.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/M2w.rda&quot;)</code></pre>
+</div>
+<div id="colors" class="section level1">
+<h1>colors</h1>
+<pre class="r"><code>mnc &lt;- &quot;#e49159&quot; 
+mtc &lt;- &quot;#bd5600&quot; 
+wnc &lt;- &quot;#519adb&quot; 
+wtc &lt;- &quot;#00427a&quot; 
+
+mc &lt;- &quot;#D1742D&quot;
+wc &lt;- &quot;#296EAB&quot;
+
+mo &lt;- &quot;#EDA150&quot;
+wo &lt;- &quot;#609DD4&quot;
+mn &lt;- &quot;#964822&quot;
+wn &lt;- &quot;#194469&quot;</code></pre>
+</div>
+<div id="salaries" class="section level1">
+<h1>Salaries</h1>
+</div>
+<div id="plot-for-m1" class="section level1">
+<h1>Plot for M1</h1>
+<p>Salary differences over time per gender</p>
+<pre class="r"><code>df_mmfc %&gt;%
+  group_by(gender, t) %&gt;%
+  summarize(meanpay = mean(realpay_corr2),
+            n = n()) %&gt;%
+  ungroup() -&gt; fig1
+
+
+write.csv(fig1, file=&quot;F:/GPE_salaris/R&amp;R_v2/datafig1.csv&quot;)</code></pre>
+<pre class="r"><code>ggplot() +
+  geom_boxplot(data=df_mmfc, aes(x=as.factor(t), y=realpay_corr2), alpha=0.2, size=0.4, width=0.4, outlier.shape=NA, fill=&quot;grey95&quot;) +
+  geom_line(data=fig1, aes(x=as.factor(t), y=meanpay, color=gender, group=gender), size=1.5) +
+  labs(y=&quot;Mean inflation-corrected pay&quot;, x=&quot;Time in years since PhD&quot;) +
+  scale_color_manual(values=c(mc, wc), name=&quot;Gender&quot;) +
+  scale_x_discrete(breaks=c(0,5,10,15)) +
+  ylim(0, 20000) +
+  theme_minimal() +
+  theme(legend.position = &quot;right&quot;,
+        axis.text=element_text(size=11),
+        axis.title = element_text(size=11, face=&quot;bold&quot;),
+        legend.title = element_text(size=11, face=&quot;bold&quot;),
+        legend.text = element_text(size=11),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank())</code></pre>
+</div>
+<div id="plot-for-m2" class="section level1">
+<h1>Plot for M2</h1>
+<p>Salary split out by gender and transition status</p>
+<pre class="r"><code>df_mmfc %&gt;%
+  mutate(evertrans = ifelse(trans_lt_b&gt;0, 1, 0)) %&gt;%
+  group_by(gender, t, evertrans) %&gt;%
+  summarize(meanpay = mean(realpay_corr2),
+            n = n()) %&gt;%
+  ungroup() -&gt; fig2
+
+fig2$grouping &lt;- as.factor(paste0(str_to_title(fig2$gender), &quot; - &quot;, ifelse(fig2$evertrans==1, &quot;Will transition&quot;, &quot;Will not transition&quot;)))
+fig2$grouping &lt;- factor(fig2$grouping, levels=c(&quot;Men - Will not transition&quot;, &quot;Men - Will transition&quot;, &quot;Women - Will not transition&quot;, &quot;Women - Will transition&quot;))
+
+write.csv(fig2, file=&quot;F:/GPE_salaris/R&amp;R_v2/datafig2.csv&quot;)</code></pre>
+<pre class="r"><code>ggplot() +
+  geom_boxplot(data=df_mmfc, aes(x=as.factor(t), y=realpay_corr2), alpha=0.2, size=0.4, width=0.4, outlier.shape=NA, fill=&quot;grey95&quot;) +
+  geom_line(data=fig2, aes(x=as.factor(t), y=meanpay, color=grouping, group=grouping), size=1, alpha=0.95) +
+  labs(y=&quot;Mean inflation-corrected pay&quot;, x=&quot;Time in years since PhD&quot;) +
+  scale_color_manual(values=c(mnc, mtc, wnc, wtc), name=&quot;&quot;) +
+  scale_x_discrete(breaks=c(0,5,10,15)) +
+  ylim(0, 20000) +
+  theme_minimal() +
+  theme(legend.position = &quot;inside&quot;,
+        legend.position.inside = c(0.2, 0.9),
+        legend.box.background = element_rect(fill=&quot;white&quot;, colour = &quot;white&quot;),
+        legend.direction = &quot;vertical&quot;,
+        axis.text=element_text(size=11),
+        axis.title = element_text(size=11, face=&quot;bold&quot;),
+        legend.title = element_text(size=11, face=&quot;bold&quot;),
+        legend.text = element_text(size=11),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank())</code></pre>
+</div>
+<div id="rr-transitiont2-transitiont3" class="section level1">
+<h1>R&amp;R: transition<em>t^2 / transition</em>t^3</h1>
+<div id="graphical-comparison-original-versus-transitiont2t3-model"
+class="section level2">
+<h2>Graphical comparison original versus transition*t2/t3 model</h2>
+<pre class="r"><code>load(file=&quot;H:/processed_data/df_mmfc.rda&quot;)
+
+df_mmfc$t2 &lt;- df_mmfc$t^2
+df_mmfc$t3 &lt;- df_mmfc$t^3
+df_mmfc$t4 &lt;- df_mmfc$t^4
+df_mmfc$t5 &lt;- df_mmfc$t^5
+df_mmfc$t6 &lt;- df_mmfc$t^6
+
+levels(as.factor(df_mmfc$phd_disci))
+summary(as.factor(df_mmfc$phd_disci))
+
+df_mmfc$phd_disci &lt;- factor(df_mmfc$phd_disci, levels=c(&quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;, &quot;Agriculture and animal sciences&quot;))
+
+df_mmfc &lt;- df_mmfc %&gt;% 
+  mutate(gender = ifelse(gender==1, &quot;men&quot;, &quot;women&quot;))
+
+df_mmfc$gender &lt;- factor(df_mmfc$gender, levels=c(&quot;men&quot;, &quot;women&quot;))
+
+df_mmfc$temporary_emp &lt;- haven::zap_labels(df_mmfc$temporary_emp)
+
+df_men &lt;- df_mmfc %&gt;% filter(gender==&quot;men&quot;)
+df_wom &lt;- df_mmfc %&gt;% filter(gender==&quot;women&quot;)
+
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/M2m.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/M2w.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/R7_M2m.rda&quot;)
+load(file=&quot;F:/GPE_salaris/results/bygender/log_hrs/R7_M2w.rda&quot;)
+
+
+# Check in which years people transition
+df_mmfc %&gt;% filter(trans_st==1) -&gt; will_trans
+
+summary(as.factor(will_trans$t))
+# median transition year = 3
+
+
+# Select: transition in year 3,4,5
+df_men %&gt;% 
+  filter(trans_st==1 &amp; t&gt;2 &amp; t&lt;6) -&gt; men_sel
+
+df_wom %&gt;% 
+  filter(trans_st==1 &amp; t&gt;2 &amp; t&lt;6) -&gt; wom_sel</code></pre>
+<pre class="r"><code>f3_ori_w &lt;- as.data.frame(predict(M2w, newdata=df_wom, se.fit=TRUE))
+f3_ori_m &lt;- as.data.frame(predict(M2m, newdata=df_men, se.fit=TRUE))
+f3_new_w &lt;- as.data.frame(predict(R7_M2w, newdata=df_wom, se.fit=TRUE))
+f3_new_m &lt;- as.data.frame(predict(R7_M2m, newdata=df_men, se.fit=TRUE))
+
+f3_ori_w$RINPERSOON &lt;- df_wom$RINPERSOON
+f3_ori_m$RINPERSOON &lt;- df_men$RINPERSOON
+f3_new_w$RINPERSOON &lt;- df_wom$RINPERSOON
+f3_new_m$RINPERSOON &lt;- df_men$RINPERSOON
+
+f3_ori_w$t &lt;- df_wom$t
+f3_ori_w$t2 &lt;- df_wom$t2
+f3_ori_w$t3 &lt;- df_wom$t3
+f3_ori_w$trans_lt &lt;- df_wom$trans_lt
+f3_ori_w$trans_st &lt;- df_wom$trans_st
+f3_ori_w$lower &lt;- exp(f3_ori_w$fit - 1.96*f3_ori_w$se.fit)
+f3_ori_w$upper &lt;- exp(f3_ori_w$fit + 1.96*f3_ori_w$se.fit)
+f3_ori_w$salary &lt;- exp(f3_ori_w$fit)
+
+
+
+f3_ori_m$t &lt;- df_men$t
+f3_ori_m$t2 &lt;- df_men$t2
+f3_ori_m$t3 &lt;- df_men$t3
+f3_ori_m$trans_lt &lt;- df_men$trans_lt
+f3_ori_m$trans_st &lt;- df_men$trans_st
+f3_ori_m$lower &lt;- exp(f3_ori_m$fit - 1.96*f3_ori_m$se.fit)
+f3_ori_m$upper &lt;- exp(f3_ori_m$fit + 1.96*f3_ori_m$se.fit)
+f3_ori_m$salary &lt;- exp(f3_ori_m$fit)
+
+
+f3_new_w$t &lt;- df_wom$t
+f3_new_w$t2 &lt;- df_wom$t2
+f3_new_w$t3 &lt;- df_wom$t3
+f3_new_w$trans_lt &lt;- df_wom$trans_lt
+f3_new_w$trans_st &lt;- df_wom$trans_st
+f3_new_w$lower &lt;- exp(f3_new_w$fit - 1.96*f3_new_w$se.fit)
+f3_new_w$upper &lt;- exp(f3_new_w$fit + 1.96*f3_new_w$se.fit)
+f3_new_w$salary &lt;- exp(f3_new_w$fit)
+
+
+f3_new_m$t &lt;- df_men$t
+f3_new_m$t2 &lt;- df_men$t2
+f3_new_m$t3 &lt;- df_men$t3
+f3_new_m$trans_lt &lt;- df_men$trans_lt
+f3_new_m$trans_st &lt;- df_men$trans_st
+f3_new_m$lower &lt;- exp(f3_new_m$fit - 1.96*f3_new_m$se.fit)
+f3_new_m$upper &lt;- exp(f3_new_m$fit + 1.96*f3_new_m$se.fit)
+f3_new_m$salary &lt;- exp(f3_new_m$fit)
+
+f3_ori_w &lt;- f3_ori_w[f3_ori_w$RINPERSOON%in%wom_sel$RINPERSOON,]
+f3_ori_m &lt;- f3_ori_m[f3_ori_m$RINPERSOON%in%men_sel$RINPERSOON,]
+f3_new_w &lt;- f3_new_w[f3_new_w$RINPERSOON%in%wom_sel$RINPERSOON,]
+f3_new_m &lt;- f3_new_m[f3_new_m$RINPERSOON%in%men_sel$RINPERSOON,]
+
+# adding variable with t at transition (transition time variable), gender
+# select only up to time 15, to maintain big enough sample
+f3_ori_w %&gt;%
+  filter(trans_st&gt;0) %&gt;%
+  mutate(trans_y = t) %&gt;%
+  select(RINPERSOON, trans_y) %&gt;%
+  right_join(f3_ori_w, by=&quot;RINPERSOON&quot;) %&gt;%
+  mutate(gender=&quot;women&quot;,
+         model = &quot;original&quot;) -&gt; fig3_wo
+
+f3_ori_m %&gt;%
+  filter(trans_st&gt;0) %&gt;%
+  mutate(trans_y = t) %&gt;%
+  select(RINPERSOON, trans_y) %&gt;%
+  right_join(f3_ori_m, by=&quot;RINPERSOON&quot;) %&gt;%
+  mutate(gender=&quot;men&quot;,
+         model = &quot;original&quot;) -&gt; fig3_mo
+
+f3_new_w %&gt;%
+  filter(trans_st&gt;0) %&gt;%
+  mutate(trans_y = t) %&gt;%
+  select(RINPERSOON, trans_y) %&gt;%
+  right_join(f3_new_w, by=&quot;RINPERSOON&quot;) %&gt;%
+  mutate(gender=&quot;women&quot;,
+         model = &quot;extended&quot;) -&gt; fig3_wn
+
+f3_new_m %&gt;%
+  filter(trans_st&gt;0) %&gt;%
+  mutate(trans_y = t) %&gt;%
+  select(RINPERSOON, trans_y) %&gt;%
+  right_join(f3_new_m, by=&quot;RINPERSOON&quot;) %&gt;%
+  mutate(gender=&quot;men&quot;,
+         model = &quot;extended&quot;) -&gt; fig3_mn
+
+
+
+rbind.data.frame(fig3_wo, fig3_mo) -&gt; fig3_1
+rbind.data.frame(fig3_wn, fig3_mn) -&gt; fig3_2
+rbind.data.frame(fig3_1, fig3_2) -&gt; fig3
+
+rm(fig3_wo, fig3_mo, fig3_wn, fig3_mn, fig3_1, fig3_2)
+
+
+fig3 %&gt;%
+  filter(t&lt;16) %&gt;%
+  group_by(gender, model, t) %&gt;%
+  summarise(salary = mean(salary),
+            lower = mean(lower),
+            upper = mean(upper),
+            n = n(),
+            .groups = &quot;drop&quot;) -&gt; fig3_summ
+
+write.csv(fig3_summ, file=&quot;F:/GPE_salaris/R&amp;R_v2/datafig3.csv&quot;)
+
+fig3_summ &lt;- read.csv(file=&quot;C:/Users/U590221/OneDrive - Radboud Universiteit/PhD-4/Salary and career development post-PhD (P3)/export/20250919/datafig3.csv&quot;)
+
+fig3_summ %&gt;% select(gender, model, t, salary, lower, upper, n) -&gt; fig3_summ
+
+fig3_summ %&gt;% filter(gender==&quot;men&quot;) -&gt; fig3_summ_m
+fig3_summ %&gt;% filter(gender==&quot;women&quot;) -&gt; fig3_summ_w
+
+fig3_summ %&gt;% filter(gender==&quot;men&quot; &amp; model==&quot;original&quot;) -&gt; fig3_summ_mo
+fig3_summ %&gt;% filter(gender==&quot;women&quot; &amp; model==&quot;original&quot;) -&gt; fig3_summ_wo
+fig3_summ %&gt;% filter(gender==&quot;men&quot; &amp; model==&quot;extended&quot;) -&gt; fig3_summ_mn
+fig3_summ %&gt;% filter(gender==&quot;women&quot; &amp; model==&quot;extended&quot;) -&gt; fig3_summ_wn</code></pre>
+<p>Men</p>
+<pre class="r"><code>fig3a &lt;- ggplot(fig3_summ_m, aes(x=t, y=salary, color=model, fill=model, linetype=model)) +
+  geom_line(size=1) +
+  geom_errorbar(aes(ymin=lower, ymax=upper), lwd=.4, alpha=.35, width=0) +
+  labs(x = &quot;Time in years since PhD&quot;, y = &quot;Predicted mean salary&quot;, color=&quot;Model&quot;, linetype=&quot;Model&quot;) +
+  scale_color_manual(values=c(&quot;original&quot;=mo, &quot;extended&quot;=mn)) +
+  scale_linetype_manual(values=c(&quot;extended&quot;=&quot;solid&quot;, &quot;original&quot;=&quot;dashed&quot;)) +
+  scale_x_continuous(breaks=c(0,5,10,15)) +
+  ylim(0, 13000) +
+  theme_minimal() +
+   theme(axis.text=element_text(size=11),
+        axis.title = element_text(size=11, face=&quot;bold&quot;),
+        legend.title = element_text(size=11, face=&quot;bold&quot;),
+        legend.text = element_text(size=11),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank())</code></pre>
+<p>Women</p>
+<pre class="r"><code>fig3b &lt;- ggplot(fig3_summ_w, aes(x=t, y=salary, color=model, fill=model, linetype=model)) +
+  geom_line(size=1) +
+  geom_errorbar(aes(ymin=lower, ymax=upper), lwd=.4, alpha=.35, width=0) +
+  labs(x = &quot;Time in years since PhD&quot;, y = &quot;Predicted mean salary&quot;, color=&quot;Model&quot;, linetype=&quot;Model&quot;)+
+  scale_color_manual(values=c(&quot;extended&quot;=wn, &quot;original&quot;=wo)) +
+  scale_linetype_manual(values=c(&quot;extended&quot;=&quot;solid&quot;, &quot;original&quot;=&quot;dashed&quot;)) +
+  scale_x_continuous(breaks=c(0,5,10,15)) +
+  ylim(0, 13000) +
+  theme_minimal() +
+  theme(axis.text=element_text(size=11),
+        axis.title = element_text(size=11, face=&quot;bold&quot;),
+        legend.title = element_text(size=11, face=&quot;bold&quot;),
+        legend.text = element_text(size=11),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank())</code></pre>
+<pre class="r"><code>fig3a
+
+ggsave(file=&quot;C:/Users/U590221/OneDrive - Radboud Universiteit/PhD-4/Salary and career development post-PhD (P3)/export/20250919/fig3a.jpeg&quot;, dpi=1200)
+
+fig3b
+
+ggsave(file=&quot;C:/Users/U590221/OneDrive - Radboud Universiteit/PhD-4/Salary and career development post-PhD (P3)/export/20250919/fig3b.jpeg&quot;, dpi=1200)</code></pre>
+</div>
+<div id="all-four-together" class="section level2">
+<h2>all four together</h2>
+<pre class="r"><code>ggplot(fig3_summ_wo, aes(x=t, y=salary)) +
+  geom_line(size=1, color=wo) +
+  geom_errorbar(aes(ymin=lower, ymax=upper), lwd=.4, alpha=.35, width=0) +
+  labs(x = &quot;Time in years since PhD&quot;, y = &quot;Predicted mean salary&quot;)+
+  scale_x_continuous(breaks=c(0,5,10,15)) +
+  ylim(0, 13000) +
+  theme_minimal() +
+  theme(axis.text=element_text(size=10),
+        axis.title = element_text(size=10),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank()) -&gt; wom_ori
+  
+
+ggplot(fig3_summ_mo, aes(x=t, y=salary)) +
+  geom_line(size=1, color=mo) +
+  geom_errorbar(aes(ymin=lower, ymax=upper), lwd=.4, alpha=.35, width=0) +
+  labs(x = &quot;Time in years since PhD&quot;, y = &quot;Predicted mean salary&quot;)+
+  scale_x_continuous(breaks=c(0,5,10,15)) +
+  ylim(0, 13000) +
+  theme_minimal() +
+  theme(axis.text=element_text(size=10),
+        axis.title = element_text(size=10),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank()) -&gt; men_ori
+  
+ggplot(fig3_summ_wn, aes(x=t, y=salary)) +
+  geom_line(size=1, color=wn) +
+  geom_errorbar(aes(ymin=lower, ymax=upper), lwd=.4, alpha=.35, width=0) +
+  labs(x = &quot;Time in years since PhD&quot;, y = &quot;Predicted mean salary&quot;)+
+  scale_x_continuous(breaks=c(0,5,10,15)) +
+  ylim(0, 13000) +
+  theme_minimal() +
+  theme(axis.text=element_text(size=10),
+        axis.title = element_text(size=10),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank()) -&gt; wom_new
+  
+ggplot(fig3_summ_mn, aes(x=t, y=salary)) +
+  geom_line(size=1, color=mn) +
+  geom_errorbar(aes(ymin=lower, ymax=upper), lwd=.4, alpha=.35, width=0) +
+  labs(x = &quot;Time in years since PhD&quot;, y = &quot;Predicted mean salary&quot;)+
+  scale_x_continuous(breaks=c(0,5,10,15)) +
+  ylim(0, 13000) +
+  theme_minimal() +
+  theme(axis.text=element_text(size=10),
+        axis.title = element_text(size=10),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank()) -&gt; men_new
+  
+
+ggarrange(
+  wom_ori,
+  wom_new,
+  men_ori,
+  men_new,
+  ncol=2, nrow=2,
+  labels=c(&quot;Women - Original&quot;, &quot;Women - Extended&quot;, &quot;Men - Original&quot;, &quot;Men - Extended&quot;),
+  font.label = list(size=12, face=&quot;bold&quot;),
+  label.x = 0.6, 
+  label.y = 1.01,
+  hjust = 0.5
+)</code></pre>
+</div>
+</div>
+
+<style>
+  .center {
+    text-align: center;
+    color: red;
+  }
+</style>
+  
+  <hr>
+  <br>
+  <p class="center">Copyright &copy; 2025 </p>
+    
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

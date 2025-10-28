@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Descriptives</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="dataprep.html">Data preparation</a>
+</li>
+<li>
+  <a href="descriptives.html">Descriptive statistics</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="analyses.html">Main analyses - Log monthly pay</a>
+    </li>
+    <li>
+      <a href="analyses_loghours.html">Supplementary - Log hourly wage</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="figures.html">Figures</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Descriptives</h1>
+<h4 class="date">2025-18-09</h4>
+
+</div>
+
+
+<div id="reading-in-packages" class="section level1">
+<h1>Reading in packages</h1>
+<pre class="r"><code>rm(list=ls())</code></pre>
+<pre class="r"><code>library(tidyverse)
+library(ggplot2)</code></pre>
+</div>
+<div id="reading-in-data" class="section level1">
+<h1>Reading in data</h1>
+<pre class="r"><code>load(file=&quot;H:/processed_data/df_mmfc.rda&quot;)
+
+load(file=&quot;H:/processed_data/df_other.rda&quot;)
+load(file=&quot;H:/processed_data/df_noother.rda&quot;)</code></pre>
+</div>
+<div id="some-ad-hoc-releveling" class="section level1">
+<h1>Some ad-hoc releveling</h1>
+<pre class="r"><code>levels(as.factor(df_mmfc$phd_disci))
+
+df_mmfc$phd_disci &lt;- factor(df_mmfc$phd_disci, levels=c(&quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;, &quot;Agriculture and animal sciences&quot;))
+
+df_mmfc &lt;- df_mmfc %&gt;% 
+  mutate(gender = ifelse(gender==1, &quot;men&quot;, &quot;women&quot;))
+
+df_mmfc$gender &lt;- factor(df_mmfc$gender, levels=c(&quot;men&quot;, &quot;women&quot;))</code></pre>
+</div>
+<div id="descriptives" class="section level1">
+<h1>Descriptives</h1>
+<div id="number-of-transitions" class="section level2">
+<h2>Number of transitions</h2>
+<pre class="r"><code>df_mmfc %&gt;%
+  group_by(gender) %&gt;%
+  count(trans_st) %&gt;%
+  filter(trans_st==1) %&gt;%
+  mutate(N_transitions=n) %&gt;% 
+  select(gender, N_transitions) -&gt; N_transitions
+
+write.csv(N_transitions, file=&quot;F:/GPE_salaris/N_transitions.csv&quot;)</code></pre>
+</div>
+</div>
+<div id="descriptives-1" class="section level1">
+<h1>Descriptives</h1>
+<div id="descriptive-table-by-gender" class="section level2">
+<h2>Descriptive table by gender</h2>
+<pre class="r"><code># flattening time-varying variables (basepay)
+
+columns &lt;- c(&quot;F: 1%&quot;, &quot;F: 99%&quot;, &quot;F: Mean&quot;, &quot;F: SD&quot;, &quot;M: 1%&quot;, &quot;M: 99%&quot;, &quot;M: Mean&quot;, &quot;M: SD&quot;)
+rows &lt;- c(&quot;Real monthly pay&quot;, &quot;Log real monthly pay&quot;, &quot;Transition year&quot;, &quot;Transition experienced&quot;,&quot;Time&quot; , &quot;PhD Discipline&quot;, &quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;, &quot;Child under 5&quot;, &quot;Log monthly contract hours&quot;, &quot;Temporary contract&quot;, &quot;PhD cohort&quot;, &quot;PhD satisfaction&quot;, &quot;Sector&quot;, &quot;For-profit&quot;, &quot;Government&quot;, &quot;Non-profit&quot;, &quot;Other job&quot;, &quot;Break in Dutch employment&quot;, &quot;Period abroad&quot;, &quot;Partnered&quot;, &quot;Time at transition&quot;, &quot;N individuals&quot;, &quot;N observations&quot;)
+  
+t1 &lt;- data.frame(matrix(nrow=length(rows), ncol=length(columns)))
+
+colnames(t1) &lt;- columns
+rownames(t1) &lt;- rows
+
+df_mmfc %&gt;%
+  group_by(gender) %&gt;%
+  summarize(across(c(realpay_corr2, log_realpay, t, log_hrs, phd_coh, phd_sat, break_job, abroad_time),
+            list(p1 = ~quantile(.x, 0.01), p99 = ~quantile(.x, 0.99), mean = mean, sd=sd),
+            .names = &quot;{.col}-{.fn}&quot;)) %&gt;%
+  pivot_longer(
+    cols = -gender,
+    names_to = c(&quot;variable&quot;, &quot;statistic&quot;), 
+    names_sep = &quot;-&quot;
+  ) %&gt;%
+  pivot_wider(
+    names_from = statistic,
+    values_from = value
+  ) -&gt; t1_contin
+
+
+df_mmfc %&gt;% filter(gender==&quot;women&quot;) -&gt; df_wom
+df_mmfc %&gt;% filter(gender==&quot;men&quot;) -&gt; df_men
+
+# check if 1% and 99% of dummies is indeed 0/1
+# c(quantile(df_men$trans_lt, 0.01), quantile(df_men$trans_lt, 0.99))
+# c(quantile(df_men$trans_st, 0.01), quantile(df_men$trans_st, 0.99))
+# c(quantile(df_men$child_u5, 0.01), quantile(df_men$child_u5, 0.99))
+# c(quantile(df_men$temporary_emp, 0.01), quantile(df_men$temporary_emp, 0.99))
+# c(quantile(df_men$sector_forpr, 0.01), quantile(df_men$sector_forpr, 0.99))
+# c(quantile(df_men$sector_gov, 0.01), quantile(df_men$sector_gov, 0.99))
+# c(quantile(df_men$sector_nonpr, 0.01), quantile(df_men$sector_nonpr, 0.99))
+# c(quantile(df_men$otherjob, 0.01), quantile(df_men$otherjob, 0.99))
+# c(quantile(df_men$partnered, 0.01), quantile(df_men$partnered, 0.99))
+# c(quantile(df_wom$trans_lt, 0.01), quantile(df_wom$trans_lt, 0.99))
+# c(quantile(df_wom$trans_st, 0.01), quantile(df_wom$trans_st, 0.99))
+# c(quantile(df_wom$child_u5, 0.01), quantile(df_wom$child_u5, 0.99))
+# c(quantile(df_wom$temporary_emp, 0.01), quantile(df_wom$temporary_emp, 0.99))
+# c(quantile(df_wom$sector_forpr, 0.01), quantile(df_wom$sector_forpr, 0.99))
+# c(quantile(df_wom$sector_gov, 0.01), quantile(df_wom$sector_gov, 0.99))
+# c(quantile(df_wom$sector_nonpr, 0.01), quantile(df_wom$sector_nonpr, 0.99))
+# c(quantile(df_wom$otherjob, 0.01), quantile(df_wom$otherjob, 0.99))
+# c(quantile(df_wom$partnered, 0.01), quantile(df_wom$partnered, 0.99))
+# it is!
+
+
+t1[c(3,4,7:12,14,18:21,24),1] &lt;- rep(0.0001, times=length(t1[c(3,4,7:12,14,18:21,24),1]))
+t1[c(3,4,7:12,14,18:21,24),2] &lt;- rep(1.0001, times=length(t1[c(3,4,7:12,14,18:21,24),2]))
+t1[c(3,4,7:12,14,18:21,24),5] &lt;- rep(0.0001, times=length(t1[c(3,4,7:12,14,18:21,24),5]))
+t1[c(3,4,7:12,14,18:21,24),6] &lt;- rep(1.0001, times=length(t1[c(3,4,7:12,14,18:21,24),6]))
+
+# time at transition
+df_wom %&gt;% filter(trans_st==1) -&gt; womtrans
+df_men %&gt;% filter(trans_st==1) -&gt; mentrans
+
+# women 
+t1[c(1:2),c(1:4)] &lt;- t1_contin[c(9:10),c(3:6)] # pay
+t1[3,3] &lt;- mean(df_wom$trans_st)
+t1[4,3] &lt;- mean(df_wom$trans_lt)
+t1[5,c(1:4)] &lt;- t1_contin[11, c(3:6)] # time
+t1[c(7:11),3]&lt;- round(prop.table(table(df_wom$phd_disci)), digits=2)[c(1:5)] # disci
+t1[12,3] &lt;- mean(df_wom$child_u5)
+t1[13,c(1:4)] &lt;- t1_contin[12, c(3:6)] # contract hours
+t1[14,3] &lt;- mean(df_wom$temporary_emp)
+t1[c(15:16),c(1:4)] &lt;- t1_contin[c(13:14),c(3:6)] # phd cohort, satis
+t1[18, 3] &lt;- mean(df_wom$sector_forpr)
+t1[19, 3] &lt;- mean(df_wom$sector_gov)
+t1[20, 3] &lt;- mean(df_wom$sector_nonpr)
+t1[21, 3] &lt;- mean(df_wom$otherjob)
+t1[c(22:23),c(1:4)] &lt;- t1_contin[c(15:16), c(3:6)] # break job, abroad
+t1[24, 3] &lt;- mean(df_wom$partnered)
+t1[25, 1] &lt;- quantile(womtrans$t, 0.01)
+t1[25, 2] &lt;- quantile(womtrans$t, 0.99)
+t1[25, 3] &lt;- mean(womtrans$t)
+t1[25, 4] &lt;- sd(womtrans$t)
+t1[26, 3] &lt;- nrow(df_wom[!duplicated(df_wom$RINPERSOON),])
+t1[27, 3] &lt;- nrow(df_wom)
+
+# men 
+t1[c(1:2),c(5:8)] &lt;- t1_contin[c(1:2),c(3:6)] # pay
+t1[3,7] &lt;- mean(df_men$trans_st)
+t1[4,7] &lt;- mean(df_men$trans_lt)
+t1[5,c(5:8)] &lt;- t1_contin[3, c(3:6)] # time
+t1[c(7:11),7]&lt;- round(prop.table(table(df_men$phd_disci)), digits=2)[c(1:5)] # disci
+t1[12,7] &lt;- mean(df_men$child_u5)
+t1[13,c(5:8)] &lt;- t1_contin[4, c(3:6)] # contract hours
+t1[14,7] &lt;- mean(df_men$temporary_emp)
+t1[c(15:16),c(5:8)] &lt;- t1_contin[c(5:6),c(3:6)] # phd cohort, satis
+t1[18, 7] &lt;- mean(df_men$sector_forpr)
+t1[19, 7] &lt;- mean(df_men$sector_gov)
+t1[20, 7] &lt;- mean(df_men$sector_nonpr)
+t1[21, 7] &lt;- mean(df_men$otherjob)
+t1[c(22:23),c(5:8)] &lt;- t1_contin[c(7:8), c(3:6)] # break job, abroad
+t1[24, 7] &lt;- mean(df_men$partnered)
+t1[25, 5] &lt;- quantile(mentrans$t, 0.01)
+t1[25, 6] &lt;- quantile(mentrans$t, 0.99)
+t1[25, 7] &lt;- mean(mentrans$t)
+t1[25, 8] &lt;- sd(mentrans$t)
+t1[26, 7] &lt;- nrow(df_men[!duplicated(df_men$RINPERSOON),])
+t1[27, 7] &lt;- nrow(df_men)
+
+t1[c(1:25),] &lt;- round(t1[c(1:25),], digits=2)
+t1[c(26:27),] &lt;- abs(t1[c(26:27),])
+
+t1[26,] &lt;- round(abs(t1[26,]), digits=0)
+t1[27,] &lt;- round(abs(t1[27,]), digits=0)
+
+t1[is.na(t1)] &lt;- &quot;&quot;
+
+Descriptives_Table &lt;- t1
+
+write.csv(t1, file=&quot;F:/GPE_salaris/R&amp;R/descriptive_tab.csv&quot;)</code></pre>
+</div>
+</div>
+<div id="rr-people-who-go-abroad-after-their-phd"
+class="section level1">
+<h1>R&amp;R: people who go abroad after their PhD</h1>
+<pre class="r"><code>load(file=&quot;H:/processed_data/abroadafterphd_long.rda&quot;)
+
+levels(as.factor(abroadafterphd_long$phd_disci))
+
+abroadafterphd_long$phd_disci &lt;- factor(abroadafterphd_long$phd_disci, levels=c(&quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;))
+
+abroadafterphd_long &lt;- abroadafterphd_long %&gt;% 
+  mutate(gender = ifelse(gender==1, &quot;men&quot;, &quot;women&quot;))
+
+abroadafterphd_long$gender &lt;- factor(abroadafterphd_long$gender, levels=c(&quot;men&quot;, &quot;women&quot;))
+
+# removing missings
+nrow(abroadafterphd_long[!duplicated(abroadafterphd_long$RINPERSOON),]) # 353
+
+abroadafterphd_long %&gt;%
+  filter(!is.na(phd_sat)) %&gt;%
+  filter(!is.na(temporary_emp)) %&gt;%
+  filter(!is.na(sect_adj)) -&gt; abroadafterphd_long
+
+nrow(abroadafterphd_long[!duplicated(abroadafterphd_long$RINPERSOON),]) # 352
+
+# flattening time-varying variables (basepay)
+
+columns &lt;- c(&quot;F: 1%&quot;, &quot;F: 99%&quot;, &quot;F: Mean&quot;, &quot;F: SD&quot;, &quot;M: 1%&quot;, &quot;M: 99%&quot;, &quot;M: Mean&quot;, &quot;M: SD&quot;)
+rows &lt;- c(&quot;Real monthly pay&quot;, &quot;Log real monthly pay&quot;, &quot;Transition year&quot;, &quot;Transition experienced&quot;,&quot;Time&quot; , &quot;PhD Discipline&quot;, &quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;, &quot;Child under 5&quot;, &quot;Log monthly contract hours&quot;, &quot;Temporary contract&quot;, &quot;PhD cohort&quot;, &quot;PhD satisfaction&quot;, &quot;Sector&quot;, &quot;For-profit&quot;, &quot;Government&quot;, &quot;Non-profit&quot;, &quot;Other job&quot;, &quot;Break in Dutch employment&quot;, &quot;Period abroad&quot;, &quot;Partnered&quot;, &quot;Time at transition&quot;, &quot;N individuals&quot;, &quot;N observations&quot;)
+  
+t1_abroad &lt;- data.frame(matrix(nrow=length(rows), ncol=length(columns)))
+
+colnames(t1_abroad) &lt;- columns
+rownames(t1_abroad) &lt;- rows
+
+abroadafterphd_long %&gt;%
+  group_by(gender) %&gt;%
+  summarize(across(c(realpay_corr2, log_realpay, t, basehours_month, phd_coh, phd_sat, break_job, abroad_time),
+            list(p1 = ~quantile(.x, 0.01), p99 = ~quantile(.x, 0.99), mean = mean, sd=sd),
+            .names = &quot;{.col}-{.fn}&quot;)) %&gt;%
+  pivot_longer(
+    cols = -gender,
+    names_to = c(&quot;variable&quot;, &quot;statistic&quot;), 
+    names_sep = &quot;-&quot;
+  ) %&gt;%
+  pivot_wider(
+    names_from = statistic,
+    values_from = value
+  ) -&gt; t1_abroad_contin
+
+
+abroadafterphd_long %&gt;% filter(gender==&quot;women&quot;) -&gt; df_wom
+abroadafterphd_long %&gt;% filter(gender==&quot;men&quot;) -&gt; df_men
+
+# check if 1% and 99% of dummies is indeed 0/1
+# c(quantile(df_men$trans_lt, 0.01), quantile(df_men$trans_lt, 0.99))
+# c(quantile(df_men$trans_st, 0.01), quantile(df_men$trans_st, 0.99))
+# c(quantile(df_men$child_u5, 0.01), quantile(df_men$child_u5, 0.99))
+# c(quantile(df_men$temporary_emp, 0.01), quantile(df_men$temporary_emp, 0.99))
+# c(quantile(df_men$sector_forpr, 0.01), quantile(df_men$sector_forpr, 0.99))
+# c(quantile(df_men$sector_gov, 0.01), quantile(df_men$sector_gov, 0.99))
+# c(quantile(df_men$sector_nonpr, 0.01), quantile(df_men$sector_nonpr, 0.99))
+# c(quantile(df_men$otherjob, 0.01), quantile(df_men$otherjob, 0.99))
+# c(quantile(df_men$partnered, 0.01), quantile(df_men$partnered, 0.99))
+# c(quantile(df_wom$trans_lt, 0.01), quantile(df_wom$trans_lt, 0.99))
+# c(quantile(df_wom$trans_st, 0.01), quantile(df_wom$trans_st, 0.99))
+# c(quantile(df_wom$child_u5, 0.01), quantile(df_wom$child_u5, 0.99))
+# c(quantile(df_wom$temporary_emp, 0.01), quantile(df_wom$temporary_emp, 0.99))
+# c(quantile(df_wom$sector_forpr, 0.01), quantile(df_wom$sector_forpr, 0.99))
+# c(quantile(df_wom$sector_gov, 0.01), quantile(df_wom$sector_gov, 0.99))
+# c(quantile(df_wom$sector_nonpr, 0.01), quantile(df_wom$sector_nonpr, 0.99))
+# c(quantile(df_wom$otherjob, 0.01), quantile(df_wom$otherjob, 0.99))
+# c(quantile(df_wom$partnered, 0.01), quantile(df_wom$partnered, 0.99))
+# it is!
+
+
+t1_abroad[c(3,4,7:12,14,18:21,24),1] &lt;- rep(0.0001, times=length(t1_abroad[c(3,4,7:12,14,18:21,24),1]))
+t1_abroad[c(3,4,7:12,14,18:21,24),2] &lt;- rep(1.0001, times=length(t1_abroad[c(3,4,7:12,14,18:21,24),2]))
+t1_abroad[c(3,4,7:12,14,18:21,24),5] &lt;- rep(0.0001, times=length(t1_abroad[c(3,4,7:12,14,18:21,24),5]))
+t1_abroad[c(3,4,7:12,14,18:21,24),6] &lt;- rep(1.0001, times=length(t1_abroad[c(3,4,7:12,14,18:21,24),6]))
+
+# time at transition
+df_wom %&gt;% filter(trans_st==1) -&gt; womtrans
+df_men %&gt;% filter(trans_st==1) -&gt; mentrans
+
+# women 
+t1_abroad[c(1:2),c(1:4)] &lt;- t1_abroad_contin[c(9:10),c(3:6)] # pay
+t1_abroad[3,3] &lt;- mean(df_wom$trans_st)
+t1_abroad[4,3] &lt;- mean(df_wom$trans_lt)
+t1_abroad[5,c(1:4)] &lt;- t1_abroad_contin[11, c(3:6)] # time
+t1_abroad[c(7:11),3]&lt;- round(prop.table(table(df_wom$phd_disci)), digits=2)[c(1:5)] # disci
+t1_abroad[12,3] &lt;- mean(df_wom$child_u5)
+t1_abroad[13,c(1:4)] &lt;- t1_abroad_contin[12, c(3:6)] # contract hours
+t1_abroad[14,3] &lt;- mean(df_wom$temporary_emp)
+t1_abroad[c(15:16),c(1:4)] &lt;- t1_abroad_contin[c(13:14),c(3:6)] # phd cohort, satis
+t1_abroad[18, 3] &lt;- mean(df_wom$sector_forpr)
+t1_abroad[19, 3] &lt;- mean(df_wom$sector_gov)
+t1_abroad[20, 3] &lt;- mean(df_wom$sector_nonpr)
+t1_abroad[21, 3] &lt;- mean(df_wom$otherjob)
+t1_abroad[c(22:23),c(1:4)] &lt;- t1_abroad_contin[c(15:16), c(3:6)] # break job, abroad
+t1_abroad[24, 3] &lt;- mean(df_wom$partnered)
+t1_abroad[25, 1] &lt;- quantile(womtrans$t, 0.01)
+t1_abroad[25, 2] &lt;- quantile(womtrans$t, 0.99)
+t1_abroad[25, 3] &lt;- mean(womtrans$t)
+t1_abroad[25, 4] &lt;- sd(womtrans$t)
+t1_abroad[26, 3] &lt;- nrow(df_wom[!duplicated(df_wom$RINPERSOON),])
+t1_abroad[27, 3] &lt;- nrow(df_wom)
+
+# men 
+t1_abroad[c(1:2),c(5:8)] &lt;- t1_abroad_contin[c(1:2),c(3:6)] # pay
+t1_abroad[3,7] &lt;- mean(df_men$trans_st)
+t1_abroad[4,7] &lt;- mean(df_men$trans_lt)
+t1_abroad[5,c(5:8)] &lt;- t1_abroad_contin[3, c(3:6)] # time
+t1_abroad[c(7:11),7]&lt;- round(prop.table(table(df_men$phd_disci)), digits=2)[c(1:5)] # disci
+t1_abroad[12,7] &lt;- mean(df_men$child_u5)
+t1_abroad[13,c(5:8)] &lt;- t1_abroad_contin[4, c(3:6)] # contract hours
+t1_abroad[14,7] &lt;- mean(df_men$temporary_emp)
+t1_abroad[c(15:16),c(5:8)] &lt;- t1_abroad_contin[c(5:6),c(3:6)] # phd cohort, satis
+t1_abroad[18, 7] &lt;- mean(df_men$sector_forpr)
+t1_abroad[19, 7] &lt;- mean(df_men$sector_gov)
+t1_abroad[20, 7] &lt;- mean(df_men$sector_nonpr)
+t1_abroad[21, 7] &lt;- mean(df_men$otherjob)
+t1_abroad[c(22:23),c(5:8)] &lt;- t1_abroad_contin[c(7:8), c(3:6)] # break job, abroad
+t1_abroad[24, 7] &lt;- mean(df_men$partnered)
+t1_abroad[25, 5] &lt;- quantile(mentrans$t, 0.01)
+t1_abroad[25, 6] &lt;- quantile(mentrans$t, 0.99)
+t1_abroad[25, 7] &lt;- mean(mentrans$t)
+t1_abroad[25, 8] &lt;- sd(mentrans$t)
+t1_abroad[26, 7] &lt;- nrow(df_men[!duplicated(df_men$RINPERSOON),])
+t1_abroad[27, 7] &lt;- nrow(df_men)
+
+t1_abroad[c(1:25),] &lt;- round(t1_abroad[c(1:25),], digits=2)
+t1_abroad[c(26:27),] &lt;- abs(t1_abroad[c(26:27),])
+
+t1_abroad[26,] &lt;- round(abs(t1_abroad[26,]), digits=0)
+t1_abroad[27,] &lt;- round(abs(t1_abroad[27,]), digits=0)
+
+t1_abroad[is.na(t1_abroad)] &lt;- &quot;&quot;
+
+t1_abroad &lt;- t1_abroad[c(1:2,4:23,26:27),] # removing transition columns as these don&#39;t make sense
+
+t1_abroad &lt;- t1_abroad[,c(3,4,7,8)] # no min/max due to sample size restrictions
+
+
+Descriptives_Table &lt;- t1_abroad
+
+write.csv(t1_abroad, file=&quot;F:/GPE_salaris/R&amp;R/descriptive_tab_abroadphd.csv&quot;)</code></pre>
+<p>T-test table</p>
+<pre class="r"><code># chi-square gender distri:
+gender_reg &lt;- table(df_mmfc$gender[!duplicated(df_mmfc$RINPERSOON)])
+gender_abr &lt;- table(abroadafterphd_long$gender[!duplicated(abroadafterphd_long$RINPERSOON)])
+gender_distri &lt;- rbind.data.frame(gender_reg, gender_abr)
+
+rownames(gender_distri) &lt;- c(&quot;Main data&quot;, &quot;Abroad after PhD&quot;)
+colnames(gender_distri) &lt;- c(&quot;Men&quot;, &quot;Women&quot;)
+
+chisq_gender &lt;- chisq.test(gender_distri)
+
+gender_distri$chisq &lt;- chisq_gender$statistic
+gender_distri$chisq_df &lt;- chisq_gender$parameter
+gender_distri$chisq_p &lt;- chisq_gender$p.value
+
+write.csv(gender_distri, file=&quot;F:/GPE_salaris/R&amp;R/gender_distri_abroad.csv&quot;)
+
+df_mmfc %&gt;%
+  mutate(disci_health = ifelse(phd_disci==&quot;Health sciences&quot;, 1, 0),
+         disci_social = ifelse(phd_disci==&quot;Social sciences&quot;, 1, 0),
+         disci_natural = ifelse(phd_disci==&quot;Natural sciences and mathematics&quot;, 1, 0),
+         disci_engineering = ifelse(phd_disci==&quot;Engineering&quot;, 1, 0),
+         disci_humanities = ifelse(phd_disci==&quot;Humanities&quot;, 1, 0)) -&gt; df_mmfc
+
+
+abroadafterphd_long %&gt;%
+  mutate(disci_health = ifelse(phd_disci==&quot;Health sciences&quot;, 1, 0),
+         disci_social = ifelse(phd_disci==&quot;Social sciences&quot;, 1, 0),
+         disci_natural = ifelse(phd_disci==&quot;Natural sciences and mathematics&quot;, 1, 0),
+         disci_engineering = ifelse(phd_disci==&quot;Engineering&quot;, 1, 0),
+         disci_humanities = ifelse(phd_disci==&quot;Humanities&quot;, 1, 0)) -&gt; abroadafterphd_long
+
+
+
+df_mmfc %&gt;% filter(gender==&quot;women&quot;) -&gt; df_wom
+df_mmfc %&gt;% filter(gender==&quot;men&quot;) -&gt; df_men
+abroadafterphd_long %&gt;% filter(gender==&quot;women&quot;) -&gt; df_wom_a
+abroadafterphd_long %&gt;% filter(gender==&quot;men&quot;) -&gt; df_men_a
+
+t1_v &lt;- t.test(df_wom$realpay_corr2, df_wom_a$realpay_corr2)
+t2_v &lt;- t.test(df_wom$log_realpay, df_wom_a$log_realpay)
+t3_v &lt;- t.test(df_wom$t, df_wom_a$t)
+t4_v &lt;- t.test(df_wom$disci_health, df_wom_a$disci_health)
+t5_v &lt;- t.test(df_wom$disci_social, df_wom_a$disci_social)
+t6_v &lt;- t.test(df_wom$disci_natural, df_wom_a$disci_natural)
+t7_v &lt;- t.test(df_wom$disci_engineering, df_wom_a$disci_engineering)
+t8_v &lt;- t.test(df_wom$disci_humanities, df_wom_a$disci_humanities)
+t9_v &lt;- t.test(df_wom$child_u5, df_wom_a$child_u5)
+t10_v &lt;- t.test(df_wom$log_hrs, df_wom_a$log_hrs)
+t11_v &lt;- t.test(df_wom$temporary_emp, df_wom_a$temporary_emp)
+t12_v &lt;- t.test(df_wom$phd_coh, df_wom_a$phd_coh)
+t13_v &lt;- t.test(df_wom$phd_sat, df_wom_a$phd_sat)
+t14_v &lt;- t.test(df_wom$sector_forpr, df_wom_a$sector_forpr)
+t15_v &lt;- t.test(df_wom$sector_gov, df_wom_a$sector_gov)
+t16_v &lt;- t.test(df_wom$sector_nonpr, df_wom_a$sector_nonpr)
+t17_v &lt;- t.test(df_wom$otherjob, df_wom_a$otherjob)
+t18_v &lt;- t.test(df_wom$break_job, df_wom_a$break_job)
+t19_v &lt;- t.test(df_wom$abroad_time, df_wom_a$abroad_time)
+t20_v &lt;- t.test(df_wom$partnered, df_wom_a$partnered)
+
+
+t1_m &lt;- t.test(df_men$realpay_corr2, df_men_a$realpay_corr2)
+t2_m &lt;- t.test(df_men$log_realpay, df_men_a$log_realpay)
+t3_m &lt;- t.test(df_men$t, df_men_a$t)
+t4_m &lt;- t.test(df_men$disci_health, df_men_a$disci_health)
+t5_m &lt;- t.test(df_men$disci_social, df_men_a$disci_social)
+t6_m &lt;- t.test(df_men$disci_natural, df_men_a$disci_natural)
+t7_m &lt;- t.test(df_men$disci_engineering, df_men_a$disci_engineering)
+t8_m &lt;- t.test(df_men$disci_humanities, df_men_a$disci_humanities)
+t9_m &lt;- t.test(df_men$child_u5, df_men_a$child_u5)
+t10_m &lt;- t.test(df_men$log_hrs, df_men_a$log_hrs)
+t11_m &lt;- t.test(df_men$temporary_emp, df_men_a$temporary_emp)
+t12_m &lt;- t.test(df_men$phd_coh, df_men_a$phd_coh)
+t13_m &lt;- t.test(df_men$phd_sat, df_men_a$phd_sat)
+t14_m &lt;- t.test(df_men$sector_forpr, df_men_a$sector_forpr)
+t15_m &lt;- t.test(df_men$sector_gov, df_men_a$sector_gov)
+t16_m &lt;- t.test(df_men$sector_nonpr, df_men_a$sector_nonpr)
+t17_m &lt;- t.test(df_men$otherjob, df_men_a$otherjob)
+t18_m &lt;- t.test(df_men$break_job, df_men_a$break_job)
+t19_m &lt;- t.test(df_men$abroad_time, df_men_a$abroad_time)
+t20_m &lt;- t.test(df_men$partnered, df_men_a$partnered)
+
+extract_t &lt;- function(ttest) {
+  tibble(
+    t_value = unname(ttest$statistic),
+    df = unname(ttest$parameter),
+    p_value = unname(ttest$p.value)
+  )
+}
+
+test_wom &lt;- mget(paste0(&quot;t&quot;, 1:20, &quot;_v&quot;))
+test_men &lt;- mget(paste0(&quot;t&quot;, 1:20, &quot;_m&quot;))
+
+
+varnames &lt;- c(&quot;Real monthly pay&quot;, &quot;Log real monthly pay&quot;, &quot;Time&quot;, &quot;PhD discipline: Health sciences&quot;, &quot;PhD discipline: Social sciences&quot;, &quot;PhD discipline: Natural sciences &amp; mathematics&quot;, &quot;PhD discipline: Engineering&quot;, &quot;PhD discipline: Humanities&quot;, &quot;Child under 5&quot;, &quot;Log Monthly contract hours&quot;, &quot;Temporary contract&quot;, &quot;PhD cohort&quot;, &quot;PhD satisfaction&quot;, &quot;Sector: For-profit&quot;, &quot;Sector: Government&quot;, &quot;Sector:Non-profit&quot;, &quot;Other job&quot;, &quot;Break in Dutch employment&quot;, &quot;Period abroad&quot;, &quot;Partnered&quot;)
+
+
+test_df_wom &lt;- bind_rows(lapply(test_wom, extract_t), .id=&quot;test_id&quot;) %&gt;%
+  mutate(variable=varnames,
+         N_obs = (nrow(df_wom) + nrow(df_wom_a)),
+         group=&quot;women&quot;)
+
+test_df_men &lt;- bind_rows(lapply(test_men, extract_t), .id=&quot;test_id&quot;) %&gt;%
+  mutate(variable=varnames, 
+         N_obs = (nrow(df_men) + nrow(df_men_a)),
+         group=&quot;men&quot;)
+
+
+test_df_all &lt;- bind_rows(test_df_men, test_df_wom)
+
+test_df_all$psmall &lt;- ifelse(test_df_all$p_value&lt;.001, 1, 0)
+
+
+test_df_all$ttest &lt;- paste0(&quot;t(&quot;, round(test_df_all$df, 2), &quot;) = &quot;, round(test_df_all$t_value, 2), &quot;, p &quot;, ifelse(test_df_all$psmall==1, &quot;&lt; .001&quot;, paste0(&quot;= &quot;, round(test_df_all$p_value, 2))))
+
+
+write.csv(test_df_all, file=&quot;F:/GPE_salaris/R&amp;R/ttests_main_abroad.csv&quot;)</code></pre>
+</div>
+<div id="other-job" class="section level1">
+<h1>Other job</h1>
+<pre class="r"><code># are people with/out an other job more likely to make a transition?
+df_mmfc %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  summarize(evertrans = max(trans_lt)) -&gt; evertrans
+
+df_mmfc %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  filter(uni==1) %&gt;%
+  summarize(otherjob_m = max(otherjob),
+            time_uni = max(t)) -&gt; checks
+
+evertrans %&gt;%
+  left_join(checks, by=c(&quot;RINPERSOON&quot;)) -&gt; evertrans_otherjob
+
+trans_by_oj &lt;- as.data.frame(table(&quot;Will Transition&quot; = evertrans_otherjob$evertrans, &quot;Other job&quot; = evertrans_otherjob$otherjob_m))
+
+write.csv(trans_by_oj, file=&quot;F:/GPE_salaris/R&amp;R/transitions_otherjob.csv&quot;)
+
+
+
+df_other %&gt;%
+  group_by(uni, gender) %&gt;%
+  summarise(mean_perc_pay_job1 = mean(perc_pay_job1),
+            sd_perc_pay_job1 = sd(perc_pay_job1),
+            mean_perc_hrs_job1 = mean(perc_hrs_job1),
+            sd_perc_hrs_job1 = sd(perc_hrs_job1),
+            n = n(),
+            n_obs = n_distinct(RINPERSOON)) -&gt; otherjob_summ_gender
+
+df_other %&gt;%
+  group_by(uni) %&gt;%
+  summarise(mean_perc_pay_job1 = mean(perc_pay_job1),
+            sd_perc_pay_job1 = sd(perc_pay_job1),
+            mean_perc_hrs_job1 = mean(perc_hrs_job1),
+            sd_perc_hrs_job1 = sd(perc_hrs_job1),
+            n = n(),
+            n_obs = n_distinct(RINPERSOON)) %&gt;%
+  mutate(gender = &quot;all&quot;) -&gt; otherjob_summ
+
+otherjob_summ &lt;- rbind.data.frame(otherjob_summ_gender, otherjob_summ)
+
+
+write.csv(otherjob_summ, file=&quot;F:/GPE_salaris/R&amp;R/descriptive_tab_otherjob.csv&quot;)</code></pre>
+</div>
+
+<style>
+  .center {
+    text-align: center;
+    color: red;
+  }
+</style>
+  
+  <hr>
+  <br>
+  <p class="center">Copyright &copy; 2025 </p>
+    
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

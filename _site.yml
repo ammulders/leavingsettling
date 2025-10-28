@@ -1,0 +1,34 @@
+name: "Leaving-Settling"
+
+exclude: 
+  - "rawdata"
+ 
+navbar:
+  left:
+  - icon: fa-home
+    href: index.html
+  - text: "Data preparation"
+    href: dataprep.html
+  - text: "Descriptive statistics"
+    href: descriptives.html
+  - text: "Analyses"
+    menu:
+    - text: "Main analyses - Log monthly pay"
+      href: analyses.html
+    - text: "Supplementary - Log hourly wage"
+      href: analyses_loghours.html
+  - text: "Figures"
+    href: figures.html
+
+
+  right:
+    - icon: fab fa-github
+      href: https://github.com/
+      
+output:
+  html_document:
+    theme: flatly
+    highlight: default
+    include:
+      after_body: footer.html
+output_dir: "docs"

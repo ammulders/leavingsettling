@@ -1,0 +1,51 @@
+---
+  output: 
+  html_document:
+    css: tweaks.css
+    toc: false
+    toc_float: true
+    number_sections: false
+    
+---
+
+```{r setup, include=FALSE, results="hide"}
+
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(tidy.opts=list(width.cutoff=100),tidy=TRUE, warning = FALSE, message = FALSE,comment = "#>", cache=TRUE, class.source=c("test"), class.output=c("test2"))
+options(width = 100)
+rgl::setupKnitr()
+
+colorize <- function(x, color) {sprintf("span style= 'color: %s; '>%s</span>", color, x) }
+
+```
+
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(position = c('top', 'right'))
+#klippy::klippy(color = 'darkred')
+#klippy::klippy(tooltip_message = 'Click to copy', tooltip_success = 'Done')
+```
+
+
+# **Replication package for "Leaving for more or settling for less: gendered salary trajectories after leaving academia"**
+
+
+----
+
+
+This website contains supplementary information for the article "Leaving for more or settling for less: gendered salary trajectories after leaving academia". 
+
+Although we are unable to share the used data publicly, as we used sensitive register data from Statistics Netherlands, this web site provides all the code used to create our variables, conduct our analyses and create the published tables and figures.
+
+
+Navigate through the menu at the top of this page to find information on variable creation and set-up of our analyses. All code is written in R.
+
+
+----
+
+## Contact  
+
+Questions can be addressed to the corresponding author of the article: [blinded]().
+
+

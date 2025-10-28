@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+<meta name="date" content="2024-11-26" />
+
+<title>Analyses - Multilevel Model For Change</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="dataprep.html">Data preparation</a>
+</li>
+<li>
+  <a href="descriptives.html">Descriptive statistics</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="analyses.html">Main analyses - Log monthly pay</a>
+    </li>
+    <li>
+      <a href="analyses_loghours.html">Supplementary - Log hourly wage</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="figures.html">Figures</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Analyses - Multilevel Model For Change</h1>
+<h4 class="date">2024-11-26</h4>
+
+</div>
+
+
+<pre class="r"><code>rm(list=ls())</code></pre>
+<div id="packages" class="section level1">
+<h1>Packages</h1>
+<pre class="r"><code>library(tidyverse)
+library(lme4)</code></pre>
+</div>
+<div id="input" class="section level1">
+<h1>Input</h1>
+<pre class="r"><code>load(file=&quot;H:/processed_data/df_mmfc.rda&quot;)
+
+load(file=&quot;H:/processed_data/df_mmfc_r2.rda&quot;)
+
+load(file=&quot;H:/processed_data/df_noother.rda&quot;)</code></pre>
+</div>
+<div id="non-linear-effects-of-t" class="section level1">
+<h1>Non-linear effects of t</h1>
+<pre class="r"><code>df_mmfc$t2 &lt;- df_mmfc$t^2
+df_mmfc$t3 &lt;- df_mmfc$t^3
+df_mmfc$t4 &lt;- df_mmfc$t^4
+df_mmfc$t5 &lt;- df_mmfc$t^5
+df_mmfc$t6 &lt;- df_mmfc$t^6</code></pre>
+</div>
+<div id="check-linearity-t-and-log-real-pay" class="section level1">
+<h1>Check linearity t and log real pay</h1>
+<pre class="r"><code>linearmod &lt;- lm(log_realpay ~ t, data=df_mmfc)
+
+summary(linearmod)
+
+ggplot(broom::augment(linearmod), aes(t, log_realpay)) +
+ geom_point() +
+ stat_smooth(method=&quot;lm&quot;, se=FALSE) +
+ geom_segment(aes(xend = t, yend = .fitted), color=&quot;red&quot;, size=0.3)</code></pre>
+<pre class="r"><code>par(mfrow = c(2,2))
+plot(linearmod)</code></pre>
+<pre class="r"><code>lm1 &lt;- lm(log_realpay ~ t, data=df_mmfc)
+lm2 &lt;- lm(log_realpay ~ t + t2, data=df_mmfc)
+lm3 &lt;- lm(log_realpay ~ t + t2 + t3, data=df_mmfc)
+lm4 &lt;- lm(log_realpay ~ t + t2 + t3 + t4, data=df_mmfc)
+lm5 &lt;- lm(log_realpay ~ t + t2 + t3 + t4 + t5, data=df_mmfc)
+lm6 &lt;- lm(log_realpay ~ t + t2 + t3 + t4 + t5 + t6, data=df_mmfc)
+
+AIC(lm1)
+AIC(lm2)
+AIC(lm3)
+AIC(lm4)
+AIC(lm5)
+AIC(lm6)</code></pre>
+</div>
+<div id="some-releveling" class="section level1">
+<h1>Some releveling</h1>
+<pre class="r"><code>levels(as.factor(df_mmfc$phd_disci))
+summary(as.factor(df_mmfc$phd_disci))
+
+df_mmfc$phd_disci &lt;- factor(df_mmfc$phd_disci, levels=c(&quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;))
+
+df_mmfc &lt;- df_mmfc %&gt;% 
+  mutate(gender = ifelse(gender==1, &quot;men&quot;, &quot;women&quot;))
+
+df_mmfc$gender &lt;- factor(df_mmfc$gender, levels=c(&quot;men&quot;, &quot;women&quot;))
+
+
+df_mmfc$temporary_emp &lt;- haven::zap_labels(df_mmfc$temporary_emp)</code></pre>
+</div>
+<div id="overall---pay" class="section level1">
+<h1>Overall - pay</h1>
+<p>t Time since PhD t_after Time since transition transition_outaca
+Transition 0/1 (only 1 in the year of transition)</p>
+<pre class="r"><code># Null model: random intercept
+M0 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+# Compute ICC
+icc_ip &lt;- as.data.frame(VarCorr(M0))[4]
+icc &lt;- icc_ip[1,1] / sum(icc_ip)
+
+# M1: Transition effect and controls
+M1 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+M2 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + as.factor(phd_disci)*as.factor(gender) + as.factor(child_u5)*as.factor(gender) + child_u5_b*as.factor(gender) + basehours_month*as.factor(gender) + basehours_month_b*as.factor(gender) + as.factor(temporary_emp)*as.factor(gender) + temporary_emp_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + phd_disci*t*as.factor(gender) + child_u5_b*t*as.factor(gender) + basehours_month_b*t*as.factor(gender) + temporary_emp_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)</code></pre>
+<p>Creating the datasets</p>
+<pre class="r"><code>df_men &lt;- df_mmfc %&gt;% filter(gender==&quot;men&quot;)
+df_wom &lt;- df_mmfc %&gt;% filter(gender==&quot;women&quot;)</code></pre>
+</div>
+<div id="by-gender-pay" class="section level1">
+<h1>By gender: pay</h1>
+<div id="men" class="section level2">
+<h2>MEN</h2>
+<pre class="r"><code># Null model: random intercept
+M0m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# Compute ICC
+icc_ip &lt;- as.data.frame(VarCorr(M0m))[4]
+icc_m &lt;- icc_ip[1,1] / sum(icc_ip)
+
+# M1: Transition effect and controls
+M1m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+M2m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + basehours_month_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)</code></pre>
+</div>
+<div id="women" class="section level2">
+<h2>WOMEN</h2>
+<pre class="r"><code># Null model: random intercept
+M0w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)
+
+# Compute ICC
+icc_ip &lt;- as.data.frame(VarCorr(M0w))[4]
+icc_w &lt;- icc_ip[1,1] / sum(icc_ip)
+
+# M1: Transition effect and controls
+M1w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+M2w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + basehours_month_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)</code></pre>
+</div>
+</div>
+<div id="adding-mechanisms-step-by-step" class="section level1">
+<h1>Adding mechanisms step-by-step</h1>
+<div id="discipline" class="section level2">
+<h2>Discipline</h2>
+<pre class="r"><code>M2_disci &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + as.factor(phd_disci)*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + phd_disci*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+# men
+M2m_disci &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# women
+M2w_disci &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)</code></pre>
+</div>
+<div id="child-5" class="section level2">
+<h2>Child &lt; 5</h2>
+<pre class="r"><code>M2_child &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + as.factor(phd_disci)*as.factor(gender) + as.factor(child_u5)*as.factor(gender) + child_u5_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + phd_disci*t*as.factor(gender) + child_u5_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+# men
+M2m_child &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# women
+M2w_child &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)</code></pre>
+</div>
+<div id="hours" class="section level2">
+<h2>Hours</h2>
+<pre class="r"><code>M2_hrs &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + as.factor(phd_disci)*as.factor(gender) + as.factor(child_u5)*as.factor(gender) + child_u5_b*as.factor(gender) + basehours_month*as.factor(gender) + basehours_month_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + phd_disci*t*as.factor(gender) + child_u5_b*t*as.factor(gender) + basehours_month_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+# men
+M2m_hrs &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + basehours_month_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# women
+M2w_hrs &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + basehours_month_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)</code></pre>
+</div>
+<div id="temporary-employment" class="section level2">
+<h2>Temporary employment</h2>
+<p>(These are the original models)</p>
+</div>
+</div>
+<div id="robustness-checks" class="section level1">
+<h1>Robustness checks</h1>
+<div id="r5-shorter-career-span-included-as-supplementary-analysis"
+class="section level2">
+<h2>R5: Shorter career span (included as supplementary analysis)</h2>
+<pre class="r"><code>df_mmfc %&gt;%
+  filter(t&lt;6) -&gt; df_mmfc_r5
+
+
+df_men_r5 &lt;- df_mmfc_r5 %&gt;% filter(gender==&quot;men&quot;)
+df_wom_r5 &lt;- df_mmfc_r5 %&gt;% filter(gender==&quot;women&quot;)</code></pre>
+<p>Men</p>
+<pre class="r"><code># MAX 5 YEARS POST-PHD
+# M0
+R5_M0m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men_r5)
+
+# M1
+R5_M1m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men_r5)
+
+# M2
+R5_M2m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + basehours_month_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men_r5)</code></pre>
+<p>Women</p>
+<pre class="r"><code># MAX 5 YEARS POST-PHD
+# M0
+R5_M0w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom_r5)
+
+# M1
+R5_M1w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom_r5)
+
+# M2
+R5_M2w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + basehours_month_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom_r5)</code></pre>
+<p>Overall results</p>
+<pre class="r"><code># MAX 5 YEARS POST-PHD
+# M0
+R5_M0 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc_r5)
+
+# M1
+R5_M1 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc_r5)
+
+# M2
+R5_M2 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + as.factor(phd_disci)*as.factor(gender) + as.factor(child_u5)*as.factor(gender) + child_u5_b*as.factor(gender) + basehours_month*as.factor(gender) + basehours_month_b*as.factor(gender) + as.factor(temporary_emp)*as.factor(gender) + temporary_emp_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + phd_disci*t*as.factor(gender) + child_u5_b*t*as.factor(gender) + basehours_month_b*t*as.factor(gender) + temporary_emp_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc_r5)</code></pre>
+</div>
+</div>
+<div id="transition-t2-t3" class="section level1">
+<h1>Transition * t^2 / t^3</h1>
+<pre class="r"><code># OVERALL 
+# Null model: random intercept
+R7_M0 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+
+# M1: Transition effect and controls
+R7_M1 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + as.factor(trans_lt)*t2*as.factor(gender) + trans_lt_b*t2*as.factor(gender) + as.factor(trans_lt)*t3*as.factor(gender) + trans_lt_b*t3*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+R7_M2 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + as.factor(phd_disci)*as.factor(gender) + as.factor(child_u5)*as.factor(gender) + child_u5_b*as.factor(gender) + basehours_month*as.factor(gender) + basehours_month_b*as.factor(gender) + as.factor(temporary_emp)*as.factor(gender) + temporary_emp_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + as.factor(trans_lt)*t2*as.factor(gender) + trans_lt_b*t2*as.factor(gender) + as.factor(trans_lt)*t3*as.factor(gender) + trans_lt_b*t3*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + phd_disci*t*as.factor(gender) + child_u5_b*t*as.factor(gender) + basehours_month_b*t*as.factor(gender) + temporary_emp_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+
+# BY GENDER
+
+# MEN
+
+# Null model: random intercept
+R7_M0m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# M1: Transition effect and controls
+R7_M1m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + as.factor(trans_lt)*t2 + trans_lt_b*t2 + as.factor(trans_lt)*t3 + trans_lt_b*t3 + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+R7_M2m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t  + as.factor(trans_lt)*t2 + trans_lt_b*t2 + as.factor(trans_lt)*t3 + trans_lt_b*t3 + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + basehours_month_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# WOMEN
+
+# Null model: random intercept
+R7_M0w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)
+
+# M1: Transition effect and controls
+R7_M1w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + as.factor(trans_lt)*t2 + trans_lt_b*t2 + as.factor(trans_lt)*t3 + trans_lt_b*t3 + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+R7_M2w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + as.factor(trans_lt)*t2 + trans_lt_b*t2 + as.factor(trans_lt)*t3 + trans_lt_b*t3 + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + basehours_month_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)</code></pre>
+</div>
+<div id="loghourly-wage" class="section level1">
+<h1>Log(hourly wage)</h1>
+<pre class="r"><code># BY GENDER: MEN
+# Null model: random intercept
+R10_M0m &lt;- lmer(log_realwage ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# M1: Transition effect and controls
+R10_M1m &lt;- lmer(log_realwage ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+R10_M2m &lt;- lmer(log_realwage ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men)
+
+# BY GENDER: WOMEN
+# Null model: random intercept
+R10_M0w &lt;- lmer(log_realwage ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)
+
+# M1: Transition effect and controls
+R10_M1w &lt;- lmer(log_realwage ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+R10_M2w &lt;- lmer(log_realwage ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b +  as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(otherjob) + otherjob_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + otherjob_b*t + phd_disci*t + child_u5_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom)
+
+
+# OVERALL
+# Null model: random intercept
+R10_M0 &lt;- lmer(log_realwage ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+# M1: Transition effect and controls
+R10_M1 &lt;- lmer(log_realwage ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+R10_M2 &lt;- lmer(log_realwage ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + as.factor(phd_disci)*as.factor(gender) + as.factor(child_u5)*as.factor(gender) + child_u5_b*as.factor(gender) + as.factor(temporary_emp)*as.factor(gender) + temporary_emp_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(otherjob)*as.factor(gender) + otherjob_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + otherjob_b*t*as.factor(gender) + phd_disci*t*as.factor(gender) + child_u5_b*t*as.factor(gender) + temporary_emp_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_mmfc)</code></pre>
+</div>
+<div id="no-other-job" class="section level1">
+<h1>No other job</h1>
+<pre class="r"><code>df_noother$t2 &lt;- df_noother$t^2
+df_noother$t3 &lt;- df_noother$t^3
+df_noother$t4 &lt;- df_noother$t^4
+df_noother$t5 &lt;- df_noother$t^5
+df_noother$t6 &lt;- df_noother$t^6
+
+df_noother$phd_disci &lt;- factor(df_noother$phd_disci, levels=c(&quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;))
+
+df_noother$temporary_emp &lt;- haven::zap_labels(df_noother$temporary_emp)
+
+df_noother %&gt;% filter(gender==&quot;men&quot;) -&gt; df_men_noo
+df_noother %&gt;% filter(gender==&quot;women&quot;) -&gt; df_wom_noo
+
+
+# OVERALL 
+# Null model: random intercept
+R9_M0 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_noother)
+
+# M1: Transition effect and controls
+R9_M1 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) + as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_noother)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+R9_M2 &lt;- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.factor(gender) + as.factor(trans_st)*as.factor(gender) + as.factor(trans_lt)*as.factor(gender) + trans_lt_b*as.factor(gender) + as.factor(phd_disci)*as.factor(gender) + as.factor(child_u5)*as.factor(gender) + child_u5_b*as.factor(gender) + basehours_month*as.factor(gender) + basehours_month_b*as.factor(gender) + as.factor(temporary_emp)*as.factor(gender) + temporary_emp_b*as.factor(gender) + phd_coh*as.factor(gender) + phd_sat*as.factor(gender) + as.factor(partnered)*as.factor(gender) + partnered_b*as.factor(gender) + as.factor(sector_gov)*as.factor(gender) + as.factor(sector_nonpr)*as.factor(gender) + sector_gov_b*as.factor(gender) + sector_nonpr_b*as.factor(gender) + break_job*as.factor(gender) + break_job_b*as.factor(gender) + abroad_time*as.factor(gender) + abroad_time_b*as.factor(gender) +  as.factor(trans_lt)*t*as.factor(gender) + trans_lt_b*t*as.factor(gender) + phd_coh*t*as.factor(gender) + phd_sat*t*as.factor(gender) + partnered_b*t*as.factor(gender) + sector_gov_b*t*as.factor(gender) + sector_nonpr_b*t*as.factor(gender) + break_job_b*t*as.factor(gender) + abroad_time_b*t*as.factor(gender) + phd_disci*t*as.factor(gender) + child_u5_b*t*as.factor(gender) + basehours_month_b*t*as.factor(gender) + temporary_emp_b*t*as.factor(gender) + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_noother)
+
+# BY GENDER
+
+# MEN
+
+# Null model: random intercept
+R9_M0m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men_noo)
+
+# M1: Transition effect and controls
+R9_M1m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men_noo)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+R9_M2m &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(trans_lt)*t + trans_lt_b*t  + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + phd_disci*t + child_u5_b*t + basehours_month_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_men_noo)
+
+# WOMEN
+
+# Null model: random intercept
+R9_M0w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom_noo)
+
+# M1: Transition effect and controls
+R9_M1w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom_noo)
+
+# M2: Adding explanatory variables (hours worked, discipline, parental status, temporary contract)
+R9_M2w &lt;- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(trans_lt) + trans_lt_b + as.factor(phd_disci) + as.factor(child_u5) + child_u5_b + basehours_month + basehours_month_b + as.factor(temporary_emp) + temporary_emp_b + phd_coh + phd_sat + as.factor(partnered) + partnered_b + as.factor(sector_gov) + as.factor(sector_nonpr) + sector_gov_b + sector_nonpr_b + break_job + break_job_b + abroad_time + abroad_time_b + as.factor(trans_lt)*t + trans_lt_b*t + phd_coh*t + phd_sat*t + partnered_b*t + sector_gov_b*t + sector_nonpr_b*t + break_job_b*t + abroad_time_b*t +  phd_disci*t + child_u5_b*t + basehours_month_b*t + temporary_emp_b*t + (1 + t + t2 | RINPERSOON) + (-1 + t3 | RINPERSOON), data=df_wom_noo)</code></pre>
+</div>
+
+<style>
+  .center {
+    text-align: center;
+    color: red;
+  }
+</style>
+  
+  <hr>
+  <br>
+  <p class="center">Copyright &copy; 2025 </p>
+    
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

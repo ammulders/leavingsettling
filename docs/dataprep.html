@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data preparation</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="dataprep.html">Data preparation</a>
+</li>
+<li>
+  <a href="descriptives.html">Descriptive statistics</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Analyses
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="analyses.html">Main analyses - Log monthly pay</a>
+    </li>
+    <li>
+      <a href="analyses_loghours.html">Supplementary - Log hourly wage</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="figures.html">Figures</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Data preparation</h1>
+<h4 class="date">2025-18-09</h4>
+
+</div>
+
+
+<div id="reading-in-packages" class="section level1">
+<h1>Reading in packages</h1>
+<pre class="r"><code>rm(list=ls())</code></pre>
+<pre class="r"><code>library(foreign)
+library(tidyverse)</code></pre>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 4.4.2</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.4     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.2     
+## ── Conflicts ────────────────────── tidyverse_conflicts() ──
+## ✖ purrr::%||%()   masks base::%||%()
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(stringr)
+library(arrow)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;arrow&#39;
+## 
+## The following object is masked from &#39;package:lubridate&#39;:
+## 
+##     duration
+## 
+## The following object is masked from &#39;package:utils&#39;:
+## 
+##     timestamp</code></pre>
+</div>
+<div id="reading-in-gpe-data" class="section level1">
+<h1>Reading in GPE data</h1>
+<pre class="r"><code># loading in 2014 survey
+# GPE2014 &lt;- foreign::read.spss(file=&quot;G:/Arbeid/GPE/GPE2005-2014.sav&quot;, to.data.frame = TRUE)
+# loading in 2019 survey
+# GPE2019 &lt;- foreign::read.spss(file=&quot;G:/Arbeid/GPE/GPE2019v1.sav&quot;, to.data.frame = TRUE)</code></pre>
+</div>
+<div id="cleaning-up-gpe-dataframes" class="section level1">
+<h1>Cleaning up GPE dataframes</h1>
+<p>! CORRECT PHD YEAR variables: GPERegPromotieJaar (2014) &amp;
+GPEAflPromJr (2019)</p>
+<pre class="r"><code># removing empty rows &amp; missing in 2014
+GPE2014 &lt;- GPE2014 %&gt;% filter(!is.na(GPEHHbGeslacht) &amp; GPERegPromotieJaar!=&quot;Onbekend of weet niet&quot;)
+
+
+GPE2019 &lt;- GPE2019 %&gt;% filter(!is.na(GPEAflPromJr) &amp; GPEAflRichtingcat!=&quot;onbekend&quot; &amp; GPEAflRichtingcat!=&quot;algemeen&quot; &amp; !is.na(GPEAflRichtingcat)) </code></pre>
+</div>
+<div id="satisfaction-with-phd" class="section level1">
+<h1>Satisfaction with PhD</h1>
+<pre class="r"><code>GPE2014satis &lt;- GPE2014 %&gt;% select(starts_with(&quot;GPEVrgGroupSatProm&quot;), RINPERSOON)
+
+library(questionr)
+
+GPE2014satis %&gt;%
+  mutate(satA = recode.na(GPEVrgGroupSatPromA, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satB = recode.na(GPEVrgGroupSatPromB, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satC = recode.na(GPEVrgGroupSatPromC, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satD = recode.na(GPEVrgGroupSatPromD, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satE = recode.na(GPEVrgGroupSatPromE, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satF = recode.na(GPEVrgGroupSatPromF, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satG = recode.na(GPEVrgGroupSatPromG, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satH = recode.na(GPEVrgGroupSatPromH, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satI = recode.na(GPEVrgGroupSatPromI, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satJ = recode.na(GPEVrgGroupSatPromJ, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satK = recode.na(GPEVrgGroupSatPromK, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;),
+         satL = recode.na(GPEVrgGroupSatPromL, &quot;Niet van toepassing&quot;, &quot;Weigert&quot;, &quot;Onbekend of weet niet&quot;)) %&gt;%
+  select(starts_with(&quot;sat&quot;), RINPERSOON)-&gt; GPE2014satis_2
+
+colSums(is.na(GPE2014satis_2))
+
+
+GPE2019satis &lt;- GPE2019 %&gt;% select(starts_with(&quot;GroupSatProm&quot;), RINPERSOON)
+  
+GPE2019satis %&gt;%
+    mutate(satA = recode.na(GroupSatProm_a, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satB = recode.na(GroupSatProm_b, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satC = recode.na(GroupSatProm_c, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satD = recode.na(GroupSatProm_d, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satE = recode.na(GroupSatProm_e, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satF = recode.na(GroupSatProm_f, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satG = recode.na(GroupSatProm_g, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satH = recode.na(GroupSatProm_h, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satI = recode.na(GroupSatProm_i, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satJ = recode.na(GroupSatProm_j, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satK = recode.na(GroupSatProm_k, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;),
+           satL = recode.na(GroupSatProm_l, &quot;Niet van toepassing&quot;, &quot;Refusal&quot;)) %&gt;%
+    select(starts_with(&quot;sat&quot;), RINPERSOON) -&gt; GPE2019satis_2
+
+
+colSums(is.na(GPE2019satis_2))
+
+
+
+
+# we select: a/b/c/d/i/j/k/l
+GPE2019satis_2 &lt;- GPE2019satis_2 %&gt;% select(RINPERSOON, satA, satB, satC, satD, satI, satJ, satK, satL)
+GPE2014satis_2 &lt;- GPE2014satis_2 %&gt;% select(RINPERSOON, satA, satB, satC, satD, satI, satJ, satK, satL)
+
+GPE_satis &lt;- GPE2014satis_2 %&gt;%
+  full_join(GPE2019satis_2, by=&quot;RINPERSOON&quot;) %&gt;%
+  mutate(satA = ifelse(!is.na(satA.x), satA.x, satA.y),
+         satB = ifelse(!is.na(satB.x), satB.x, satB.y),
+         satC = ifelse(!is.na(satC.x), satC.x, satC.y),
+         satD = ifelse(!is.na(satD.x), satD.x, satD.y),
+         satI = ifelse(!is.na(satI.x), satI.x, satI.y),
+         satJ = ifelse(!is.na(satJ.x), satJ.x, satJ.y),
+         satK = ifelse(!is.na(satK.x), satK.x, satK.y),
+         satL = ifelse(!is.na(satL.x), satL.x, satL.y)) %&gt;%
+  select(RINPERSOON, satA, satB, satC, satD, satI, satJ, satK, satL) %&gt;%
+  mutate(satA = 5 - satA,
+         satB = 5 - satB,
+         satC = 5 - satC,
+         satD = 5 - satD,
+         satI = 5 - satI,
+         satJ = 5 - satJ,
+         satK = 5 - satK,
+         satL = 5 - satL) 
+
+# count number of NA values
+GPE_satis$na_vals &lt;- apply(GPE_satis, MARGIN=1, function(x) sum(is.na(x)))
+
+# calculate mean of satisfaction if more than 50% of questions are answered
+GPE_satis &lt;- GPE_satis %&gt;%
+  rowwise() %&gt;%
+  mutate(phd_sat = ifelse(na_vals&lt;5, mean(c_across(starts_with(&quot;sat&quot;)), na.rm=TRUE), NA))</code></pre>
+</div>
+<div id="selecting-relevant-variables-and-merging"
+class="section level1">
+<h1>Selecting relevant variables and merging</h1>
+<p>GPE2014: simple matter of selecting columns</p>
+<pre class="r"><code>GPE2014_sel &lt;- GPE2014 %&gt;%
+  mutate(gender = GPEHHbGeslacht,
+         birthyear = GPEHHbGBAGeboorteJaar,
+         birthmonth = GPEHHbGBAGeboorteMaand,
+         year = jaar,
+         phd_uni = GPERegUniversiteit, 
+         phd_disci = GPEAflKenniscat,
+         phd_year = as.numeric(as.character(GPERegPromotieJaar)),
+         phd_month = as.character(GPERegPromotieMaand),
+         phd_empl_uni = GPEVrgDnstUni,
+         phd_ageprom = GPEAflLftProm,
+         phd_ft = GPEAflFulPartP,
+         phd_timeto = GPEAflBrutoTijd,
+         researchcareer_past = GPEAflEerdOndz,
+         researchcareer_d = GPEAflDuurWO,
+         researchcareer_dm = NA,
+         researchcareer_dy = NA,
+         currentwork_rs = GPEAflOnderzke,
+         currentwork_rst = GPEAflPercOndz,
+         currentwork_teach = GPEAflWrkOndW1,
+         pub_art = GPEAflAantArt,
+         pub_b = GPEAflAantBoek,
+         pat_a = GPEAflAantPatAanvr,
+         pat_t = GPEAflAantPatTg) %&gt;%
+  select(RINPERSOON, gender, birthyear, birthmonth, year, phd_uni, phd_disci, phd_year, phd_month, phd_empl_uni,  phd_ageprom, phd_ft, phd_timeto, currentwork_rs, currentwork_rst, currentwork_teach, researchcareer_past, researchcareer_d, researchcareer_dm, researchcareer_dy, pub_art, pub_b, pat_a, pat_t)</code></pre>
+<p>GPE 2019: birth year and birth month are missing and thus need to be
+calculated using different variables</p>
+<div
+id="estimatingcalculating-birth-month-and-year-for-2019-respondents"
+class="section level2">
+<h2>Estimating/calculating birth month and year for 2019
+respondents</h2>
+<p>To estimate birth month, we use the age at 1 December 2018
+(Afl_Lft_Op), age when obtaining the PhD (GPEAflLftProm) &amp; phd year
+and month. We first calculate the age at 1 December of the year in which
+people received their PhD, and if this differs from the age at
+promotion, we know the birth month lies between the PhD graduation month
+and December. If the age is the same at the two points in time, we know
+that this person’s birth month is before the PhD graduation month. We
+take the middle month in the range in both cases.</p>
+<p>If people did not answer the PhD month question, we set it to June,
+as this is the most common PhD graduation month in the rest of the
+data.</p>
+<pre class="r"><code>GPE2019 &lt;- GPE2019 %&gt;%
+  mutate(age_phdyear = Afl_Lft_OP - (2018 - EindJr)) %&gt;%
+  mutate(phd_mo2 = case_match(EindMnd,
+             &quot;Januari&quot; ~ &quot;01&quot;,
+             &quot;Februari&quot; ~ &quot;02&quot;,
+             &quot;Maart&quot; ~ &quot;03&quot;,
+             &quot;April&quot; ~ &quot;04&quot;,
+             &quot;Mei&quot; ~ &quot;05&quot;,
+             &quot;Juni&quot; ~ &quot;06&quot;,
+             &quot;Juli&quot; ~ &quot;07&quot;,
+             &quot;Augustus&quot; ~ &quot;08&quot;,
+             &quot;September&quot; ~ &quot;09&quot;,
+             &quot;Oktober&quot; ~ &quot;10&quot;,
+             &quot;November&quot; ~ &quot;11&quot;,
+             &quot;December&quot; ~ &quot;12&quot;,
+             &quot;Refusal&quot; ~ &quot;6&quot;)) %&gt;%
+  mutate(birthmonth = ifelse(as.numeric(age_phdyear) &gt;  as.numeric(GPEAflLftProm), as.numeric(phd_mo2) + ((12-as.numeric(phd_mo2)) / 2), NA),
+         birthmonth = ifelse(age_phdyear==GPEAflLftProm, 0 + (as.numeric(phd_mo2) / 2),birthmonth)) %&gt;%
+  mutate(birthmonth = round(birthmonth, digits=0)) %&gt;%
+  mutate(birthyear = 2018 - GPEAFLLft1dec2018) 
+
+
+GPE2019_sel &lt;- GPE2019 %&gt;%
+  mutate(gender = Afl_geslacht_OP,
+         year = 2019,
+         phd_uni = NA, 
+         phd_disci = GPEAflRichtingcat,
+         phd_year = as.numeric(as.character(GPEAflPromJr)),
+         phd_month = as.character(EindMnd),
+         phd_empl_uni = DnstUni,
+         phd_ageprom = GPEAflLftProm,
+         phd_ft = GPEAflFulPartP,
+         phd_timeto = GPEAflBrutoTijd,
+         researchcareer_past = GPEAflEerdOndz,
+         researchcareer_d = GPEAflDuurWO,
+         researchcareer_dm = WOMnd,
+         researchcareer_dy = WOJr,
+         currentwork_rs = GPEAflOnderzke,
+         currentwork_rst = Proc_Ondz,
+         currentwork_teach = Proc_Onderwijs,
+         pub_art = GPEAflAantArt,
+         pub_b = GPEAflAantBoek,
+         pat_a = GPEAflAantPatAanvr,
+         pat_t = GPEAflAantPatTg) %&gt;%
+  select(RINPERSOON, gender, birthyear, birthmonth, year, phd_uni, phd_disci, phd_year, phd_month, phd_mo2, phd_empl_uni,  phd_ageprom, phd_ft, phd_timeto, currentwork_rs, currentwork_rst, currentwork_teach, researchcareer_past, researchcareer_d, researchcareer_dm, researchcareer_dy, pub_art, pub_b, pat_a, pat_t)</code></pre>
+</div>
+</div>
+<div id="coding-the-discipline-variable" class="section level1">
+<h1>Coding the discipline variable</h1>
+<pre class="r"><code>#2014
+levels(GPE2014_sel$phd_disci)
+summary(as.factor(GPE2014_sel$phd_disci))
+
+# 2019
+levels(GPE2019_sel$phd_disci)
+summary(as.factor(GPE2019_sel$phd_disci))</code></pre>
+<pre class="r"><code>GPE2014_sel &lt;- GPE2014_sel %&gt;%
+  mutate(phd_disci = as.character(phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;Landbouw&quot;, &quot;Agriculture and animal sciences&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;Techniek&quot;, &quot;Engineering&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;Gezondheid&quot;, &quot;Health sciences&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;Taal en cultuur&quot;, &quot;Humanities&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;Natuur&quot;, &quot;Natural sciences and mathematics&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;Gedrag en maatschappij&quot;, &quot;Social sciences&quot;, phd_disci))
+
+
+GPE2019_sel &lt;- GPE2019_sel %&gt;%
+  mutate(phd_disci = as.character(phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;wiskunde, natuurwetenschappen&quot; | phd_disci==&quot;informatica&quot;, &quot;Natural sciences and mathematics&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;techniek, industrie en bouwkunde&quot;, &quot;Engineering&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;gezondheidszorg en welzijn&quot;, &quot;Health sciences&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;landbouw, diergeneeskunde en -verzorging&quot;, &quot;Agriculture and animal sciences&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;onderwijs&quot; | phd_disci==&quot;journalistiek, gedrag en maatschappij&quot; | phd_disci==&quot;recht, administratie, handel en zakelijke dienstverlening&quot;  | phd_disci==&quot;dienstverlening&quot;, &quot;Social sciences&quot;, phd_disci),
+         phd_disci = ifelse(phd_disci==&quot;vormgeving, kunst, talen en geschiedenis&quot;, &quot;Humanities&quot;, phd_disci))</code></pre>
+</div>
+<div id="recoding-phd-month-and-creating-a-date-variable"
+class="section level1">
+<h1>Recoding PhD month and creating a date variable</h1>
+<pre class="r"><code>GPE2014_sel &lt;- GPE2014_sel %&gt;%
+  mutate(birthyear = as.character(birthyear),
+         birthyear = ifelse(birthyear==&quot;Weigert&quot; | birthyear==&quot;Onbekend of weet niet&quot;, phd_year - phd_ageprom, birthyear),
+         birthmonth = ifelse(birthmonth==&quot;Weigert&quot; | birthmonth==&quot;Onbekend of weet niet&quot;, &quot;06&quot;, birthmonth),
+         birthmonth = str_remove_all(birthmonth, &quot;\\s&quot;),
+         birthmonth = ifelse(nchar(birthmonth)&lt;2, paste0(&quot;0&quot;, birthmonth), birthmonth),
+         birthdate = as.Date(paste0(as.character(birthyear), &quot;-&quot;, birthmonth, &quot;-01&quot;), format=&quot;%Y-%m-%d&quot;)) %&gt;%
+  mutate(phd_mo2 = case_match(phd_month,
+             &quot;Januari&quot; ~ &quot;01&quot;,
+             &quot;Februari&quot; ~ &quot;02&quot;,
+             &quot;Maart&quot; ~ &quot;03&quot;,
+             &quot;April&quot; ~ &quot;04&quot;,
+             &quot;Mei&quot; ~ &quot;05&quot;,
+             &quot;Juni&quot; ~ &quot;06&quot;,
+             &quot;Juli&quot; ~ &quot;07&quot;,
+             &quot;Augustus&quot; ~ &quot;08&quot;,
+             &quot;September&quot; ~ &quot;09&quot;,
+             &quot;Oktober&quot; ~ &quot;10&quot;,
+             &quot;November&quot; ~ &quot;11&quot;,
+             &quot;December&quot; ~ &quot;12&quot;),
+         phd_date = as.Date(paste0(phd_year, &quot;-&quot;, phd_mo2, &quot;-01&quot;), format = &quot;%Y-%m-%d&quot;)) %&gt;%
+  select(RINPERSOON, gender, birthdate, birthyear, birthmonth, year, phd_uni, phd_disci, phd_year, phd_month, phd_date, phd_empl_uni,  phd_ageprom, phd_ft, phd_timeto, currentwork_rs, currentwork_rst, currentwork_teach, researchcareer_past, researchcareer_d, researchcareer_dm, researchcareer_dy, pub_art, pub_b, pat_a, pat_t)
+
+
+# in 2019, some have not filled in the phd month. We replace this by the most common value (June). 
+GPE2019_sel &lt;- GPE2019_sel %&gt;%
+  mutate(birthmonth = as.character(ifelse(birthmonth&lt;10, paste0(&quot;0&quot;, birthmonth), birthmonth)),
+         birthdate = as.Date(paste0(birthyear, &quot;-&quot;, birthmonth, &quot;-01&quot;), format=&quot;%Y-%m-%d&quot;),       
+         phd_date = as.Date(paste0(phd_year, &quot;-&quot;, phd_mo2, &quot;-01&quot;), format = &quot;%Y-%m-%d&quot;)) %&gt;%
+  select(RINPERSOON, gender, birthdate, birthyear, birthmonth, year, phd_uni, phd_disci, phd_year, phd_month, phd_date, phd_empl_uni,  phd_ageprom, phd_ft, phd_timeto, currentwork_rs, currentwork_rst, currentwork_teach, researchcareer_past, researchcareer_d, researchcareer_dm, researchcareer_dy, pub_art, pub_b, pat_a, pat_t)</code></pre>
+</div>
+<div id="joining-the-gpe2014-gpe2019" class="section level1">
+<h1>Joining the GPE2014 &amp; GPE2019</h1>
+<pre class="r"><code>GPE2014_sel %&gt;%
+  full_join(GPE2019_sel, by=&quot;RINPERSOON&quot;) -&gt; GPE
+
+GPE &lt;- GPE %&gt;%
+  mutate(gender.x = ifelse(is.na(gender.x), gender.y, gender.x),
+         gender.y = ifelse(is.na(gender.y), gender.x, gender.y)) %&gt;%
+  filter(as.character(gender.x)==as.character(gender.y)) %&gt;%
+  mutate(gender = ifelse(!is.na(gender.y), gender.y, gender.x),
+         birthmonth = ifelse(!is.na(birthmonth.x), birthmonth.x, birthmonth.y),
+         birthyear = ifelse(!is.na(birthyear.x), birthyear.x, birthyear.y),
+         birthdate = as.Date(ifelse(!is.na(birthdate.x), birthdate.x, birthdate.y)),
+         year = ifelse(!is.na(year.y), year.y, year.x),
+         phd_uni = ifelse(!is.na(phd_uni.y), phd_uni.y, phd_uni.x),
+         phd_disci = ifelse(!is.na(phd_disci.y), phd_disci.y, phd_disci.x),
+         phd_year = ifelse(!is.na(phd_year.y), phd_year.y, phd_year.x),
+         phd_month = ifelse(!is.na(phd_month.y), phd_month.y, phd_month.x),
+         phd_date = as.Date(ifelse(!is.na(phd_date.y), phd_date.y, phd_date.x)),
+         phd_empl_uni = ifelse(!is.na(phd_empl_uni.y), phd_empl_uni.y, phd_empl_uni.x),
+         phd_ageprom = ifelse(!is.na(phd_ageprom.y), phd_ageprom.y, phd_ageprom.x),
+         phd_ft = ifelse(!is.na(phd_ft.y), phd_ft.y, phd_ft.x),
+         phd_timeto = ifelse(!is.na(phd_timeto.y), phd_timeto.y, phd_timeto.x),
+         currentwork_rs = ifelse(!is.na(currentwork_rs.y), currentwork_rs.y, currentwork_rs.x),
+         currentwork_rst = ifelse(!is.na(currentwork_rst.y), currentwork_rst.y, currentwork_rst.x),
+         currentwork_teach = ifelse(!is.na(currentwork_teach.y), currentwork_teach.y, currentwork_teach.x),
+         researchcareer_past = ifelse(!is.na(researchcareer_past.y), researchcareer_past.y, researchcareer_past.x),
+         researchcareer_d = ifelse(!is.na(researchcareer_d.y), researchcareer_d.y, researchcareer_d.x),
+         researchcareer_dm = ifelse(!is.na(researchcareer_dm.y), researchcareer_dm.y, researchcareer_dm.x),
+         researchcareer_dy = ifelse(!is.na(researchcareer_dy.y), researchcareer_dy.y, researchcareer_dy.x),
+         pub_art = ifelse(!is.na(pub_art.y), pub_art.y, pub_art.x),
+         pub_b = ifelse(!is.na(pub_b.y), pub_b.y, pub_b.x),
+         pat_a = ifelse(!is.na(pat_a.y), pat_a.y, pat_a.x),
+         pat_t = ifelse(!is.na(pat_t.y), pat_t.y, pat_t.x)) %&gt;%
+  select(names(GPE2019_sel))
+
+GPE_satis %&gt;%
+  select(RINPERSOON, phd_sat) %&gt;%
+  right_join(GPE) -&gt; GPE
+
+# save(GPE, file=&quot;H:/GPE/processed/gpe_11_1.rda&quot;)</code></pre>
+</div>
+<div id="children" class="section level1">
+<h1>Children</h1>
+<p>Selecting relevant rows</p>
+<pre class="r"><code>children &lt;- read.csv(file=&quot;H:/gbakindbus/GBAKIND2022BUSV1.csv&quot;, sep=&quot;;&quot;)
+
+children &lt;- children %&gt;%
+  mutate(RINPERSOON_2 = as.character(RINPERSOON),
+         ncharrin = nchar(RINPERSOON_2)) %&gt;%
+  mutate(RINPERSOON_2 = ifelse(ncharrin==8, paste0(&quot;0&quot;, RINPERSOON_2), RINPERSOON_2)) %&gt;%
+  mutate(RINPERSOON_2 = ifelse(ncharrin==7, paste0(&quot;00&quot;, RINPERSOON_2), RINPERSOON_2)) %&gt;%
+  mutate(RINPERSOON_2 = ifelse(ncharrin==6, paste0(&quot;000&quot;, RINPERSOON_2), RINPERSOON_2)) %&gt;%
+  mutate(RINPERSOON_2 = ifelse(ncharrin==5, paste0(&quot;0000&quot;, RINPERSOON_2), RINPERSOON_2)) %&gt;%
+  mutate(RINPERSOON_2 = ifelse(ncharrin==4, paste0(&quot;00000&quot;, RINPERSOON_2), RINPERSOON_2)) %&gt;%
+  mutate(RINPERSOON_2 = ifelse(ncharrin==3, paste0(&quot;000000&quot;, RINPERSOON_2), RINPERSOON_2)) %&gt;%
+  mutate(RINPERSOON_2 = ifelse(ncharrin==2, paste0(&quot;0000000&quot;, RINPERSOON_2), RINPERSOON_2)) %&gt;%
+  mutate(RINPERSOON_2 = ifelse(ncharrin==1, paste0(&quot;00000000&quot;, RINPERSOON_2), RINPERSOON_2)) %&gt;%
+  select(RINPERSOON, GBADatumAanvangOuderschapssituatie, GBADatumEindeOuderschapssituatie, GEBOORTEDATUMOUDSTEKIND, GEBOORTEDATUMJONGSTEKIND, AANTALKINDEREN, AANTALMINDERJARIGEKINDEREN, RINPERSOON_2)
+
+
+GPE %&gt;%
+  select(RINPERSOON, birthyear) %&gt;%
+  left_join(children, by=c(&quot;RINPERSOON&quot;=&quot;RINPERSOON_2&quot;)) -&gt; children
+
+# save(children, file=&quot;H:/gbakindbus/gbakindbus_reduced.rda&quot;)</code></pre>
+</div>
+<div id="preparing-the-dataset-used-for-analyses"
+class="section level1">
+<h1>Preparing the dataset used for analyses</h1>
+<div id="gpe-selections" class="section level2">
+<h2>GPE Selections</h2>
+<pre class="r"><code>load(file=&quot;H:/GPE/processed/gpe_11_1.rda&quot;)
+
+# Sel 1: removing phd_year &lt;2006: from 21,350 to 11,201
+GPE %&gt;%
+  filter(phd_year&gt;2005) %&gt;%
+  select(RINPERSOON, gender, phd_date, phd_year, birthdate, phd_disci, phd_sat) -&gt; GPE_sel
+
+
+# adding agriculture and animal sciences under natural sciences and mathematics
+GPE_sel &lt;- GPE_sel %&gt;% mutate(phd_disci = ifelse(phd_disci==&quot;Agriculture and animal sciences&quot;, &quot;Natural sciences and mathematics&quot;, phd_disci))
+
+GPE_sel$phd_disci &lt;- factor(GPE_sel$phd_disci, levels=c(&quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;))
+
+
+GPE_sel %&gt;%
+  mutate(agephd = as.numeric(difftime(phd_date, birthdate, unit=&quot;weeks&quot;)/52.25),
+         phd_coh = phd_year - 2006) -&gt; GPE_sel</code></pre>
+<p>Variable selections from other datasets</p>
+<pre class="r"><code>load(file=&quot;H:/SPOLIS/spolisbus_reduced.rda&quot;)
+CPI &lt;- haven::read_dta(file=&quot;H:/NIDIO/Code/_AUXILIARY/CPI/CPI_month.dta&quot;)
+ABR &lt;- haven::read_dta(file=&quot;H:/NIDIO/Data/ABR/abr_ogbe_register_2006_2023.dta&quot;)
+load(file=&quot;H:/gbakindbus/gbakindbus_reduced.rda&quot;)
+load(file=&quot;H:/gbaverbintenispartnerbus/gbaverbintenis_reduced.dta&quot;)
+load(file=&quot;H:/gbaadresbuitenland/gbaadress_reduced.dta&quot;)
+
+# Selecting relevant variables from SPOLIS
+spolismonth %&gt;%
+  mutate(RINPERSOON=rinpersoon,
+         startdate_y = job_start_caly,
+         enddate_y = job_end_caly,
+         startdate_overall = job_tenure,
+         basepay_month = sbasisloon_month,
+         basehours_month = sbasisuren_month,
+         workdays_month = sbaandagen_month,
+         temporary_emp = scontractsoort) %&gt;%
+  select(year, RINPERSOON, beid, startdate_y, enddate_y, startdate_overall, basepay_month, basehours_month, workdays_month, temporary_emp, mainjob) -&gt; spolis
+
+# Selecting relevant variables from ABR
+ABR %&gt;%
+  mutate(uni = ifelse((be_SBI08==&quot;8542&quot;|be_SBI08==&quot;86101&quot;) &amp; be_employees&gt;1000 &amp; be_municipality_code!=&quot;0193&quot;, 1, 0)) %&gt;%
+  select(beid, year, uni) %&gt;%
+  group_by(beid) %&gt;%
+  summarise(uni = max(uni)) -&gt; ABR_sel
+
+ABR %&gt;%
+  mutate(sector = case_match(og_sector,
+                             11 ~ &quot;For-profit (non-financial)&quot;,
+                             12 ~ &quot;For-profit (financial)&quot;,
+                             13 ~ &quot;Government&quot;,
+                             15 ~ &quot;Non-profit&quot;
+                             )) %&gt;%
+  select(beid, year, sector) %&gt;%
+  right_join(ABR_sel, by=&quot;beid&quot;) -&gt; ABR_sel</code></pre>
+<p>Creating an empty PPF to append data to Year 2006 - 2023</p>
+<pre class="r"><code>year &lt;- c(2006:2023)
+RINPERSOON &lt;- unique(GPE_sel$RINPERSOON)
+nid &lt;- length(RINPERSOON)
+
+year &lt;- rep(year, nid)
+RINPERSOON &lt;- rep(RINPERSOON, each=length(c(2006:2023)))
+
+empty_ppf &lt;- data.frame(RINPERSOON, year)</code></pre>
+<p>Adding PhD year and removing years before PhD year if people got a
+PhD after 2006</p>
+<pre class="r"><code>empty_ppf %&gt;%
+  left_join(GPE_sel, by=&quot;RINPERSOON&quot;) -&gt; df_ppf
+
+
+df_ppf %&gt;%
+  filter(year&gt;=phd_year) -&gt; df_ppf</code></pre>
+</div>
+</div>
+<div id="adding-salary-for-main-jobs" class="section level1">
+<h1>Adding salary for main jobs</h1>
+<pre class="r"><code># We only add the main job to the person-period file (e.g. the job that pays more than any other job in a given year)
+# We do add a variable indicating whether a person has more than 1 job in a year (&quot;otherjob&quot;, 0/1) and what proportion of the year a person was employed at this other job (&quot;timeotherjob_y&quot;, 0-1)
+spolis %&gt;%
+  filter(mainjob==0) %&gt;%
+  mutate(otherjob = 1,
+         timeotherjob_y = as.numeric(difftime(as.Date(enddate_y), as.Date(startdate_y), unit=&quot;weeks&quot;)/52.25)) %&gt;%
+  mutate(timeotherjob_y = ifelse(timeotherjob_y&gt;0.95, 1, timeotherjob_y)) %&gt;%
+  group_by(RINPERSOON, year) %&gt;%
+  arrange(desc(timeotherjob_y)) %&gt;%
+  slice_head(n=1) %&gt;%
+  ungroup() %&gt;%
+  select(RINPERSOON, year, otherjob, timeotherjob_y)-&gt; otherjob
+
+
+# For the person-period file, we only add main jobs
+spolis &lt;- spolis %&gt;% filter(mainjob==1) %&gt;% select(year, RINPERSOON, beid, startdate_y, enddate_y, startdate_overall, basepay_month, basehours_month, workdays_month, temporary_emp)
+
+df_ppf %&gt;%
+  left_join(spolis, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) -&gt; df_ppf
+
+#removing empty rows (years in which people did not have any jobs)
+df_ppf %&gt;%
+  filter(!is.na(beid) &amp; basepay_month&gt;0) %&gt;%
+  mutate(starteqend = ifelse(startdate_y==enddate_y, 1, 0)) %&gt;%
+  filter(starteqend!=1) %&gt;%
+  select(-starteqend) -&gt; df_ppf
+
+# adding the &quot;has other job variable&quot;
+df_ppf %&gt;%
+  left_join(otherjob, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) %&gt;%
+  mutate(otherjob = ifelse(is.na(otherjob), 0, otherjob),
+         timeotherjob_y = ifelse(is.na(timeotherjob_y), 0, timeotherjob_y))-&gt; df_ppf
+
+# adding the &quot;break_job&quot; variable
+df_ppf %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  arrange(year) %&gt;%
+  mutate(break_job = as.numeric(difftime(startdate_y, lag(enddate_y, n=1)), unit=&quot;weeks&quot;),
+         break_job = ifelse(break_job&lt;1, 0, break_job),
+         break_job = ifelse(is.na(break_job), 0, break_job),
+         break_job = break_job / 4.348) -&gt; df_ppf
+
+
+# standardizing using the Consumer Price Index (ref: Jan 2015)
+df_ppf &lt;- df_ppf %&gt;%
+  left_join(CPI, by=&quot;year&quot;) %&gt;%
+  mutate(realpay = basepay_month * CPI,
+         realpay_corr = realpay * 30 / workdays_month)
+
+
+# Investigating salary divergences in years where people did not work the full month of Sept
+df_ppf &lt;- df_ppf %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  arrange(year) %&gt;%
+  mutate(salarydev = realpay_corr / lag(realpay_corr, n=1)) %&gt;%
+  mutate(realpay_corr2 = realpay_corr,
+         realpay_corr2 = ifelse(workdays_month&lt;30 &amp; salarydev&gt;1.5, lag(realpay_corr, n=1), realpay_corr2),
+         realpay_corr2 = ifelse(workdays_month&lt;30 &amp; salarydev&lt;.7, lag(realpay_corr, n=1), realpay_corr2), 
+         realpay_corr2 = ifelse(is.na(realpay_corr2), realpay_corr, realpay_corr2))
+
+# creating logged salary and wage variables
+df_ppf %&gt;%
+  mutate(log_realpay = log(realpay_corr2 + 1),
+         log_realwage = log((realpay_corr2 + 1)/basehours_month),
+         realwage = (realpay_corr2 + 1)/basehours_month) -&gt; df_ppf
+
+df_ppf$log_realpay &lt;- ifelse(is.na(df_ppf$log_realpay), 0, df_ppf$log_realpay)
+df_ppf$log_realwage &lt;- ifelse(is.na(df_ppf$log_realpay), 0, df_ppf$log_realwage)
+
+# log(work hours)
+df_ppf %&gt;%
+  mutate(log_hrs = log(basehours_month)) -&gt; df_ppf
+
+# removing wages &lt; 0 (very low pay, but a relatively high number of hours worked) - must be an error
+df_ppf &lt;- df_ppf %&gt;% filter(log_realwage&gt;0)
+
+# filling &#39;temporary employment&#39; within jobs
+df_ppf %&gt;%
+  group_by(RINPERSOON, beid) %&gt;%
+  arrange(year) %&gt;%
+  fill(temporary_emp, .direction=&quot;down&quot;) -&gt; df_ppf</code></pre>
+</div>
+<div id="creating-some-variables-at-the-level-of-jobs"
+class="section level1">
+<h1>Creating some variables at the level of jobs</h1>
+<p>Start date, end date, which # job since PhD</p>
+<pre class="r"><code>df_ppf %&gt;%
+  mutate(startdate = as.Date(ifelse(!is.na(startdate_overall), startdate_overall, startdate_y))) %&gt;%
+  group_by(RINPERSOON, beid) %&gt;%
+  summarise(startjob = min(startdate),
+            endjob = max(enddate_y)) -&gt; startend
+
+
+df_ppf %&gt;%
+  arrange(RINPERSOON, year) %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  mutate(job_no = cumsum(!duplicated(beid)),
+         n_jobs_total = n_distinct(beid)) %&gt;% ungroup() %&gt;%
+  select(RINPERSOON, beid, job_no, n_jobs_total) %&gt;%
+  distinct(RINPERSOON, beid, .keep_all=TRUE) -&gt; jobn</code></pre>
+<p>Adding the job variables to the PPF</p>
+<pre class="r"><code>df_ppf %&gt;%
+  left_join(startend, by=c(&quot;RINPERSOON&quot;, &quot;beid&quot;)) -&gt; df_ppf 
+
+df_ppf %&gt;%
+  left_join(jobn, by=c(&quot;RINPERSOON&quot;, &quot;beid&quot;)) -&gt; df_ppf 
+
+# Calculating time to first job
+df_ppf %&gt;%
+  filter(job_no==1) %&gt;%
+  mutate(timetojob1 = as.numeric(difftime(startjob, phd_date, unit=&quot;weeks&quot;) / 52.25),
+         job1_8yp = ifelse(timetojob1 &lt; -7, 1, 0),
+         job1_unemploy_l = ifelse(timetojob1 &gt; 1, 1, 0),
+         timetojob1 = ifelse(as.numeric(timetojob1) &lt; 0, 0, timetojob1)) %&gt;%
+  distinct(RINPERSOON, .keep_all=TRUE) %&gt;% ungroup() %&gt;%
+  select(RINPERSOON, timetojob1, job1_8yp, job1_unemploy_l) -&gt; timetojob
+
+summary(timetojob$timetojob1)
+summary(as.factor(timetojob$job1_8yp))
+summary(as.factor(timetojob$job1_unemploy_l))
+
+df_ppf %&gt;%
+  left_join(timetojob, by=&quot;RINPERSOON&quot;) -&gt; df_ppf</code></pre>
+</div>
+<div id="adding-abr-university-01" class="section level1">
+<h1>Adding ABR (university 0/1)</h1>
+<pre class="r"><code>df_ppf %&gt;%
+  left_join(ABR_sel, by=c(&quot;beid&quot;, &quot;year&quot;)) -&gt; df_ppf
+
+
+# Adding the &#39;transition&#39; variable, indicating whether a person experiences a transition in a given year
+df_ppf %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  mutate(transition_overall = ifelse(beid==lag(beid, n=1),0, 1),
+         transition_overall = ifelse(is.na(transition_overall), 0, transition_overall),
+         transition_outaca = ifelse(uni==0 &amp; lag(uni, n=1)==1, 1, 0),
+         transition_outaca = ifelse(is.na(transition_outaca), 0, transition_outaca)) -&gt; df_ppf
+
+# filling sector within the same organization id over time
+df_ppf %&gt;%
+  group_by(beid) %&gt;%
+  fill(sector, .direction=&quot;downup&quot;) %&gt;%
+  fill(uni, .direction=&quot;downup&quot;) %&gt;% ungroup() %&gt;%
+  mutate(uni = ifelse(is.na(uni), 0, uni)) -&gt; df_ppf
+
+# apparently, some inconsistencies in sector labelling after 2016, so adjust sector codes to before 2017 values
+df_ppf %&gt;%
+  mutate(sect16 = ifelse(year==2016, sector, NA)) %&gt;%
+  group_by(beid) %&gt;%
+  fill(sect16, .direction=&quot;downup&quot;) %&gt;% ungroup() %&gt;%
+  mutate(sect_adj = ifelse(year&gt;2016, sect16, sector)) %&gt;%
+  mutate(sect_adj = ifelse(is.na(sect_adj), sector, sect_adj)) -&gt; df_ppf
+
+# releveling sector
+df_ppf %&gt;%
+  mutate(sect_adj = ifelse(sect_adj==&quot;For-profit (financial)&quot;, &quot;For-profit&quot;, sect_adj),
+         sect_adj = ifelse(sect_adj==&quot;For-profit (non-financial)&quot;, &quot;For-profit&quot;, sect_adj),
+         sect_adj = as.factor(sect_adj)) -&gt; df_ppf</code></pre>
+</div>
+<div id="adding-children-variables" class="section level1">
+<h1>Adding children variables</h1>
+<p>We construct a number of variables: - age of youngest child - for
+each year on Sept 1st, presence (0/1) of a baby (age&lt;1), a child
+under 5 and a child under 13</p>
+<pre class="r"><code># Selecting only relevant variables and renaming them
+children %&gt;%
+  mutate(startdate_c = GBADatumAanvangOuderschapssituatie, 
+         birthdate_yc = GEBOORTEDATUMJONGSTEKIND,
+         totalno_c = AANTALKINDEREN, 
+         no_mc = AANTALMINDERJARIGEKINDEREN) %&gt;%
+  select(RINPERSOON, startdate_c, birthdate_yc, totalno_c, no_mc)-&gt; children
+
+# We first extract the birthdate of the youngest child in a given year, to calculate age of youngest child at the time of a transition
+children %&gt;%
+  mutate(year = as.numeric(str_extract(as.character(birthdate_yc), &quot;[:digit:]{4}&quot;)),
+         month = str_extract(as.character(birthdate_yc), &quot;[:digit:]{6}&quot;),
+         month = str_extract(as.character(month), &quot;[:digit:]{2}$&quot;),
+         day = str_extract(as.character(birthdate_yc), &quot;[:digit:]{2}$&quot;),
+         birthdate_yc = paste0(year, &quot;-&quot;, month, &quot;-&quot;,day),
+         birthdate_yc = as.Date(birthdate_yc, format=&quot;%Y-%m-%d&quot;)) %&gt;%
+  filter(!is.na(year)) %&gt;%
+  arrange(RINPERSOON, year, desc(birthdate_yc)) %&gt;%
+  distinct(RINPERSOON, year, .keep_all = TRUE) %&gt;%
+  select(RINPERSOON, year, birthdate_yc) -&gt; birthdate_yc
+
+
+# Next, we prepare the dataframe with the number of children, number of minor children, and age of youngest child
+# As these variables have to be added for each year, we take in which the parental status changes as our year variable to match to the PPF. We then add &#39;1&#39; to this value, as to represent the state at Jan 1st of the next year.
+# We also calculate the age of the youngest child on September 1st by measuring the time between the birth date of the youngest child in year Y and 1/9/Y+1
+
+
+# Separating number of children and number of minor children, as otherwise the age of the youngest child does not compute well
+children_tot &lt;- children %&gt;%
+  arrange(RINPERSOON, startdate_c) %&gt;%
+  distinct(RINPERSOON, totalno_c, .keep_all=TRUE) %&gt;%
+  mutate(year = as.numeric(str_extract(as.character(startdate_c), &quot;[:digit:]{4}&quot;)) +1,
+         time = as.Date(paste0(year, &quot;-09-01&quot;), format=&quot;%Y-%m-%d&quot;),
+         year_yc = as.numeric(str_extract(as.character(birthdate_yc), &quot;[:digit:]{4}&quot;)),
+         month = str_extract(as.character(birthdate_yc), &quot;[:digit:]{6}&quot;),
+         month = str_extract(as.character(month), &quot;[:digit:]{2}$&quot;),
+         day = str_extract(as.character(birthdate_yc), &quot;[:digit:]{2}$&quot;),
+         birthdate_yc = paste0(year_yc, &quot;-&quot;, month, &quot;-&quot;,day),
+         birthdate_yc = as.Date(birthdate_yc, format=&quot;%Y-%m-%d&quot;),
+         age_yc = as.numeric(difftime(time, birthdate_yc, units=&quot;weeks&quot;))/ 52.25) %&gt;%
+  select(RINPERSOON, year, startdate_c, totalno_c, age_yc) %&gt;%
+  filter(!is.na(year))
+
+children_min &lt;- children %&gt;%
+  mutate(year = as.numeric(str_extract(as.character(startdate_c), &quot;[:digit:]{4}&quot;)) +1) %&gt;%
+  select(RINPERSOON, year, startdate_c, no_mc) %&gt;%
+  filter(!is.na(year)) %&gt;%
+  arrange(RINPERSOON, year, desc(startdate_c)) %&gt;%
+  distinct(RINPERSOON, year, .keep_all=TRUE) %&gt;% ungroup() %&gt;% select(RINPERSOON, year, no_mc)
+
+# If multiple transitions happen in one year, this messes up our merging process to the PPF
+# We therefore group observations by RINPERSOON and year, and take the latest &#39;transition start date&#39; within that year
+children_tot &lt;- children_tot %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  arrange(RINPERSOON, year, desc(startdate_c)) %&gt;%
+  distinct(RINPERSOON, year, .keep_all=TRUE) %&gt;% ungroup() %&gt;% select(RINPERSOON, year, totalno_c, age_yc)</code></pre>
+<p>We have to go a little bit of a complex route here, as we want to
+have information also on children born outside our window of 2006 (or
+PhD year) onwards. Therefore, we need to create a longer dataframe with
+all of our variables first, and only later remove observations outside
+of our window.</p>
+<p>Creating a larger empty PPF</p>
+<pre class="r"><code>year &lt;- c(1928:2023)
+RINPERSOON &lt;- unique(children$RINPERSOON)
+nid &lt;- length(RINPERSOON)
+
+year &lt;- rep(year, nid)
+RINPERSOON &lt;- rep(RINPERSOON, each=length(c(1928:2023)))
+
+empty_ppf &lt;- data.frame(RINPERSOON, year)</code></pre>
+<p>Adding the variables to the PPF</p>
+<pre class="r"><code># Adding total number of children in each year to the empty PPF
+empty_ppf %&gt;%
+  left_join(children_tot, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) %&gt;%
+  arrange(RINPERSOON, year)-&gt; children_ppf
+
+# Adding number of underage children in each year to the PPF
+children_ppf %&gt;%
+  left_join(children_min, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) %&gt;%
+  arrange(RINPERSOON, year)-&gt; children_ppf
+
+# Filling the number of (minor) children in the years following a change in parental situation
+children_ppf &lt;- children_ppf %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  fill(totalno_c, no_mc, .direction = &quot;down&quot;) %&gt;%
+  mutate(totalno_c = ifelse(is.na(totalno_c), 0, totalno_c),
+         no_mc = ifelse(is.na(no_mc), 0, no_mc)) %&gt;% ungroup()
+  
+# Adding the birthdate of the youngest child
+children_ppf &lt;- children_ppf %&gt;%
+  full_join(birthdate_yc, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  fill(birthdate_yc, .direction = &quot;downup&quot;) 
+
+
+# Filling the age of the youngest child (currently only filled in the year of birth)
+children_ppf &lt;- children_ppf %&gt;%
+  group_by(RINPERSOON, totalno_c) %&gt;%
+  fill(age_yc, .direction = &quot;down&quot;) %&gt;%
+  mutate(age_yc = age_yc + row_number() -1) %&gt;%
+  ungroup() %&gt;%
+  filter(year &gt; 2005)
+
+
+# Adding a variable specifying if a person got a child in the year before
+# Dummifying the &#39;number of children&#39; and &#39;number of minor children&#39; variables
+children_ppf %&gt;%
+  mutate(parent = ifelse(totalno_c&gt;0, 1, 0),
+         baby = ifelse(age_yc &lt; 1, 1, 0),
+         baby = ifelse(is.na(baby), 0, baby),
+         child_u5 = ifelse(age_yc&lt;5, 1, 0),
+         child_u5 = ifelse(is.na(child_u5), 0, child_u5),
+         child_u13 = ifelse(age_yc&lt;13, 1, 0),
+         child_u13 = ifelse(is.na(child_u13), 0, child_u13)) %&gt;%
+  select(RINPERSOON, year, parent, totalno_c, age_yc, baby, child_u5, child_u13)-&gt; children_ppf
+
+
+
+# Adding all variables in children_ppf to the overall person-period file
+df_ppf %&gt;%
+  left_join(children_ppf, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) -&gt; df_ppf</code></pre>
+</div>
+<div id="adding-marital-status-variables" class="section level1">
+<h1>Adding marital status variables</h1>
+<pre class="r"><code>marital %&gt;%
+  mutate(start_partner = AANVANGVERBINTENIS,
+         end_partner = EINDEVERBINTENIS,
+         reason_end = REDENBEEINDIGINGVERBINTENIS,
+         type_partner = TYPEVERBINTENIS) %&gt;%
+  filter(!is.na(start_partner)) %&gt;%
+  select(RINPERSOON, start_partner, end_partner, reason_end, type_partner, RINPERSOONVERBINTENISP) -&gt; marital
+
+# we first extract the marriages
+# we consider a registered partnership to be equal to a marriage, so if a couple is first registered partner
+# and then gets married, we only keep the first transition to the partnership
+marital %&gt;%
+  group_by(RINPERSOON, RINPERSOONVERBINTENISP) %&gt;%
+  arrange(start_partner) %&gt;%
+  slice_head(n=1) %&gt;% ungroup() %&gt;%
+  mutate(year = str_extract(start_partner, &quot;^[:digit:]{4}&quot;),
+         year = as.numeric(year),
+         day = str_extract(start_partner, &quot;[:digit:]{2}$&quot;),
+         month = str_remove(start_partner, &quot;^[:digit:]{4}&quot;),
+         month = str_remove(month, &quot;[:digit:]{2}$&quot;),
+         month = as.numeric(month)) %&gt;%
+  mutate(startdate = paste0(year, &quot;-&quot;, month, &quot;-&quot;, day),
+         startdate = as.Date(startdate, format=&quot;%Y-%m-%d&quot;)) %&gt;%
+  mutate(year = ifelse(month&gt;8, year+1, year)) %&gt;%
+  select(RINPERSOON, year, startdate, type_partner)-&gt; partner_start
+
+# then we extract the separations
+marital %&gt;%
+  select(RINPERSOON, end_partner, reason_end) %&gt;%
+  mutate(reason_end = trimws(reason_end, which=&quot;both&quot;)) %&gt;%
+  filter(reason_end==&quot;Ontbonden door overlijden persoon&quot; | reason_end==&quot;Ontbonden door overlijden partner&quot;| reason_end==&quot;Ontbonden door (echt)scheiding&quot;) %&gt;%
+  mutate(year = str_extract(end_partner, &quot;^[:digit:]{4}&quot;),
+         year = as.numeric(year),
+         day = str_extract(end_partner, &quot;[:digit:]{2}$&quot;),
+         month = str_remove(end_partner, &quot;^[:digit:]{4}&quot;),
+         month = str_remove(month, &quot;[:digit:]{2}$&quot;),
+         month = as.numeric(month)) %&gt;%
+   mutate(enddate = paste0(year, &quot;-&quot;, month, &quot;-&quot;, day),
+         enddate = as.Date(enddate, format=&quot;%Y-%m-%d&quot;)) %&gt;%
+  mutate(year = ifelse(month&gt;8, year+1, year)) %&gt;%
+  select(RINPERSOON, year, enddate, reason_end) -&gt; partner_end</code></pre>
+<p>Creating a larger empty PPF</p>
+<pre class="r"><code>year &lt;- c(1963:2024)
+RINPERSOON &lt;- unique(marital$RINPERSOON)
+nid &lt;- length(RINPERSOON)
+
+year &lt;- rep(year, nid)
+RINPERSOON &lt;- rep(RINPERSOON, each=length(c(1963:2024)))
+
+empty_ppf &lt;- data.frame(RINPERSOON, year)</code></pre>
+<p>Adding the variables to the PPF</p>
+<pre class="r"><code># Adding partnership starts
+empty_ppf %&gt;%
+  left_join(partner_start, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) %&gt;%
+  arrange(RINPERSOON, year)-&gt; ppf_partner
+
+ppf_partner %&gt;%
+  left_join(partner_end, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) %&gt;%
+  arrange(RINPERSOON, year)-&gt; ppf_partner
+
+ppf_partner %&gt;%
+  mutate(time = as.Date(paste0(year, &quot;-09-01&quot;), format=&quot;%Y-%m-%d&quot;),
+         partnersh_age = as.numeric(difftime(time, startdate, units=&quot;weeks&quot;)),
+         partnersh_diss = as.numeric(difftime(time, enddate, units=&quot;weeks&quot;)), 
+         start_partner = ifelse(partnersh_age&lt;53, 1, 0),
+         end_partner = ifelse(partnersh_diss&lt;53, 1, 0)) -&gt; ppf_partner
+
+
+# creating a &#39;partnered&#39; dummy in case we need it
+ppf_partner %&gt;%
+  mutate(partnered = ifelse(!is.na(enddate), 0, NA),
+         partnered = ifelse(!is.na(startdate), 1, partnered)) %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  arrange(year) %&gt;%
+  fill(partnered, .direction=&quot;down&quot;) %&gt;%
+  fill(type_partner, .direction=&quot;down&quot;) %&gt;%
+  fill(reason_end, .direction=&quot;down&quot;) %&gt;% ungroup() %&gt;%
+  mutate(partnered = ifelse(is.na(partnered), 0, partnered)) %&gt;%
+  select(RINPERSOON, year, partnered, start_partner, end_partner, type_partner, reason_end)-&gt; ppf_partner
+
+# adding variables to the data
+
+df_ppf %&gt;%
+  left_join(ppf_partner, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) %&gt;%
+  mutate(partnered = ifelse(is.na(partnered), 0, partnered),
+         start_partner = ifelse(is.na(start_partner), 0, start_partner),
+         end_partner = ifelse(is.na(end_partner), 0, end_partner),
+         type_partner = as.character(type_partner),
+         type_partner = ifelse(is.na(type_partner), &quot;unpartnered&quot;, type_partner))-&gt; df_ppf</code></pre>
+</div>
+<div id="adding-period-abroad" class="section level1">
+<h1>Adding period abroad</h1>
+<pre class="r"><code>address %&gt;%
+  mutate(start_abr = GBADATUMAANVANGADRESBUITENLAND,
+         end_abr = GBADATUMEINDEADRESBUITENLAND,
+         country = GBAADRESLAND) %&gt;%
+  filter(!is.na(start_abr)) %&gt;%
+  select(RINPERSOON, start_abr, end_abr, country) -&gt; address
+
+
+address %&gt;%
+  mutate(ys = str_extract(start_abr, &quot;^[:digit:]{4}&quot;),
+         ys = as.numeric(ys),
+         ds = str_extract(start_abr, &quot;[:digit:]{2}$&quot;),
+         ms = str_remove(start_abr, &quot;^[:digit:]{4}&quot;),
+         ms = str_remove(ms, &quot;[:digit:]{2}$&quot;),
+         ms = as.numeric(ms)) %&gt;%
+  mutate(startdate = paste0(ys, &quot;-&quot;, ms, &quot;-&quot;, ds),
+         startdate = as.Date(startdate, format=&quot;%Y-%m-%d&quot;)) %&gt;%
+  mutate(ys = ifelse(ms&gt;8, ys+1, ys)) %&gt;%
+  mutate(ye = str_extract(end_abr, &quot;^[:digit:]{4}&quot;),
+         ye = as.numeric(ye),
+         de = str_extract(end_abr, &quot;[:digit:]{2}$&quot;),
+         me = str_remove(end_abr, &quot;^[:digit:]{4}&quot;),
+         me = str_remove(me, &quot;[:digit:]{2}$&quot;),
+         me = as.numeric(me)) %&gt;%
+  mutate(enddate = paste0(ye, &quot;-&quot;, me, &quot;-&quot;, de),
+         enddate = as.Date(enddate, format=&quot;%Y-%m-%d&quot;)) %&gt;%
+  mutate(ye = ifelse(me&gt;8, ye+1, ye)) %&gt;%
+  select(RINPERSOON, startdate, ys, enddate, ye, country) -&gt; address
+
+
+# decision: calculcate number of months spent abroad. Less than 1 month = remove. 
+address %&gt;%
+  mutate(timeabr = as.numeric(difftime(enddate, startdate, unit=&quot;weeks&quot;)/4.35),
+         country = as.character(country),
+         country = ifelse(country==&quot;Onbekend/Niet van toepassing&quot;, NA, as.character(country))) %&gt;%
+  filter(timeabr &gt; 1) -&gt; address
+  
+
+# Duplicate start years:
+# If a person has multiple abroad periods with the same start year, we aggregate (take the first start date and the last end date)
+address %&gt;% 
+  group_by(RINPERSOON, ys) %&gt;%
+  arrange(startdate) %&gt;%
+  summarize(startdate = min(startdate),
+            enddate = max(enddate),
+            ye = max(ye)) -&gt; address_a
+
+# add the country of destination to the de-duplicated dataframe we create before this
+address %&gt;% 
+  group_by(RINPERSOON, ys) %&gt;%
+  arrange(startdate) %&gt;%
+  slice_head(n=1) %&gt;%
+  select(RINPERSOON, ys, country)-&gt; address_b
+
+address_a %&gt;%
+  left_join(address_b, by=c(&quot;RINPERSOON&quot;, &quot;ys&quot;)) -&gt; address
+
+
+# Duplicate end years
+# We do the same here, as there seem to be a lot of duplicates that are actually one period
+address %&gt;% 
+  group_by(RINPERSOON, ye) %&gt;%
+  arrange(startdate) %&gt;%
+  summarize(startdate = min(startdate),
+            enddate = max(enddate),
+            ys = min(ys)) -&gt; address_a
+
+
+# add the country of destination to the de-duplicated dataframe we create before this
+address %&gt;% 
+  group_by(RINPERSOON, ye) %&gt;%
+  arrange(startdate) %&gt;%
+  slice_head(n=1) %&gt;%
+  select(RINPERSOON, ye, country)-&gt; address_b
+
+address_a %&gt;%
+  left_join(address_b, by=c(&quot;RINPERSOON&quot;, &quot;ye&quot;)) -&gt; address
+
+
+# separate one year period and multiple year periods
+address1 &lt;- address %&gt;% filter(ys==ye) %&gt;% select(RINPERSOON, ys, startdate, enddate, country)
+addressm &lt;- address %&gt;% filter(ys!=ye)
+
+
+addressm %&gt;% select(RINPERSOON, ys, startdate, country) -&gt; addr_start
+addressm %&gt;% select(RINPERSOON, ye, startdate, enddate, country) -&gt; addr_end</code></pre>
+<p>Creating a larger empty PPF</p>
+<pre class="r"><code>year &lt;- c(1989:2024)
+RINPERSOON &lt;- unique(address$RINPERSOON)
+nid &lt;- length(RINPERSOON)
+
+year &lt;- rep(year, nid)
+RINPERSOON &lt;- rep(RINPERSOON, each=length(c(1989:2024)))
+
+empty_ppf &lt;- data.frame(RINPERSOON, year)</code></pre>
+<p>Adding the variables to the PPF</p>
+<pre class="r"><code># Adding abroad period (&lt;1 year)
+empty_ppf %&gt;%
+  left_join(address1, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;=&quot;ys&quot;)) %&gt;%
+  arrange(RINPERSOON, year)-&gt; ppf_address
+
+
+# Adding abroad period (1+ year) start year and country
+ppf_address %&gt;%
+  left_join(addr_start, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;=&quot;ys&quot;)) %&gt;%
+  arrange(RINPERSOON, year)-&gt; ppf_address
+
+# Adding abroad period (1+ year) end year and country
+ppf_address %&gt;%
+  left_join(addr_end, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;=&quot;ye&quot;)) %&gt;%
+  arrange(RINPERSOON, year)-&gt; ppf_address
+
+# Next, we fill the startdate and enddate for each year, but also add the enddate within the year, so that we can also measure time abroad if the stay is ongoing (i.e. people live abroad, but also are employed in NL)
+ppf_address &lt;- ppf_address %&gt;%
+  mutate(start_abr = as.Date(ifelse(is.na(startdate), startdate.x, startdate)),
+         start_abr = as.Date(ifelse(is.na(startdate), startdate.y, startdate)),
+         end_abr = as.Date(ifelse(!is.na(enddate.x), enddate.x, enddate.y)),
+         country = ifelse(is.na(country), country.x, country),
+         country = ifelse(is.na(country), country.y, country),
+         end_abr_y = end_abr) %&gt;%
+  select(RINPERSOON, year, start_abr, end_abr, end_abr_y, country) %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  fill(start_abr, .direction=&quot;down&quot;) %&gt;%
+  fill(end_abr, .direction=&quot;up&quot;) %&gt;%
+  ungroup()%&gt;%
+  mutate(time = as.Date(paste0(year, &quot;-09-01&quot;), format=&quot;%Y-%m-%d&quot;)) %&gt;%
+  mutate(start_abr = as.Date(ifelse(end_abr&lt;lag(time, n=1), NA, start_abr)),
+         end_abr = as.Date(ifelse(is.na(start_abr), NA, end_abr))) %&gt;%
+  group_by(RINPERSOON, start_abr) %&gt;%
+  fill(country, .direction=&quot;downup&quot;) %&gt;% ungroup() %&gt;%
+  filter(!is.na(start_abr)) %&gt;%
+  mutate(abroad = 1) %&gt;%
+  mutate(end_abr_y = as.Date(ifelse(is.na(end_abr_y), time, end_abr_y))) %&gt;%
+  select(RINPERSOON, year, start_abr, end_abr_y, country, abroad)</code></pre>
+<p>Adding abroad stays to the PPF with the other variables, and
+calculcating for each year a variable how many months were spent abroad
+since the last salary observation. We purposefully mirror the
+‘break_job’ variable, so we can partition the effect of an employment
+break into an employment break while living abroad (and potentially
+earning a salary abroad) and an employment break whilst living in The
+Netherlands.</p>
+<pre class="r"><code># adding the abroad info and calculating number of months abroad since the previous observation
+df_ppf &lt;- df_ppf %&gt;%
+  left_join(ppf_address, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) %&gt;%
+  mutate(abroad = ifelse(is.na(abroad), 0, abroad),
+         abroad_time = ifelse(abroad==1, as.numeric(difftime(end_abr_y, start_abr, uni=&quot;weeks&quot;))/4.348, 0))</code></pre>
+</div>
+<div id="job-transitions" class="section level1">
+<h1>Job transitions</h1>
+<div id="first-job-at-university" class="section level2">
+<h2>First job at university</h2>
+<p>We also create a variable specifying if the first job after the PhD
+started already before the PhD ended We have to think about what we want
+to do with those phds (esp if the job started 6+ years before)</p>
+<pre class="r"><code># creating a 0/1 variable indicating whether the first job is at the uni
+df_ppf %&gt;%
+  mutate(job1_uni = ifelse(job_no==1 &amp; uni==1, 1, 0)) %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  summarize(job1_uni=max(job1_uni)) %&gt;% ungroup() -&gt; job1uni
+
+# adding the variable to the PPF
+df_ppf %&gt;% left_join(job1uni, by=&quot;RINPERSOON&quot;) -&gt; df_ppf
+
+# How many people are lost because: 1) first job outside uni 2) first job not within 1 year of PhD
+df_ppf %&gt;%
+  mutate(job1_year = as.factor(ifelse(timetojob1&lt;1, &quot;1&quot;, &quot;0&quot;))) -&gt; df_ppf
+
+df_ppf %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  summarize(job1_year = first(job1_year),
+            job1_uni = first(job1_uni)) %&gt;%
+  ungroup() -&gt; summary_missingsjob1
+
+missings_job1 &lt;- as.data.frame(table(summary_missingsjob1$job1_year, summary_missingsjob1$job1_uni))
+
+colnames(missings_job1) &lt;- c(&quot;job1_within_year&quot;, &quot;job1_uni&quot;, &quot;Freq&quot;)
+
+write.csv(missings_job1, file=&quot;F:/GPE_salaris/missings_job1.csv&quot;)
+
+# Selecting those who started their career at a university; within 1 year of their PhD
+df_ppf %&gt;% 
+  filter(job1_uni==1) %&gt;%
+  filter(timetojob1&lt;1) -&gt; df_ppf_sel
+
+
+# Removing (potential) transitions back into university
+df_ppf_sel %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  mutate(transition_inaca = ifelse(uni==1 &amp; lag(uni, n=1)==0, 1, 0),
+         transition_inaca = ifelse(is.na(transition_inaca), 0, transition_inaca)) %&gt;%
+  mutate(yearmax = ifelse(transition_inaca==1, year, NA)) -&gt; df_ppf_sel
+
+df_ppf_sel %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  filter(!is.na(yearmax)) %&gt;%
+  summarize(yearmax = min(yearmax)) -&gt; yearmax 
+# if people make the transition back into academia, we want to only observe until then
+
+df_ppf_sel %&gt;%
+  select(-yearmax) %&gt;%
+  left_join(yearmax, by=&quot;RINPERSOON&quot;) %&gt;%
+  mutate(yearmax = ifelse(is.na(yearmax), 2024, yearmax)) %&gt;%
+  filter(year &lt; yearmax) -&gt; df_ppf_sel</code></pre>
+</div>
+<div id="rr-check-abroad-after-phd" class="section level2">
+<h2>R&amp;R check: abroad after PhD</h2>
+<pre class="r"><code>df_ppf %&gt;%
+  filter(timetojob1&gt;=1) %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  arrange(year) %&gt;%
+  slice_head(n=1) -&gt; timetojob1
+
+summary(timetojob1$abroad)
+
+summary(as.factor(timetojob1$abroad))
+
+
+timetojob1 %&gt;%
+  filter(abroad==1) -&gt; abroadafterphd
+
+save(abroadafterphd, file=&quot;H:/processed_data/abroadafterphd.rda&quot;)
+
+df_ppf[df_ppf$RINPERSOON%in%abroadafterphd$RINPERSOON,] -&gt; abroadafterphd_long
+
+abroadafterphd_long %&gt;%
+  mutate(sector_gov = ifelse(sect_adj==&quot;Government&quot;, 1, 0),
+         sector_nonpr = ifelse(sect_adj==&quot;Non-profit&quot;, 1, 0),
+         sector_forpr = ifelse(sect_adj==&quot;For-profit&quot;, 1, 0)) -&gt; abroadafterphd_long
+
+
+abroadafterphd_long %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  mutate(uni = ifelse(is.na(uni), 0, uni),
+         t = year - phd_year,
+         trans_lt = 1-uni,
+         trans_st = transition_outaca) %&gt;%
+  select(RINPERSOON, gender, phd_disci, phd_year, phd_coh, phd_sat, agephd, year, t, trans_st, trans_lt, log_realwage, log_realpay, realwage, realpay_corr2, basehours_month, job_no, break_job, otherjob, uni, temporary_emp, parent, totalno_c, baby, child_u5, child_u13, age_yc, partnered, start_partner, end_partner, type_partner, reason_end, sect_adj, sector_gov, sector_nonpr, sector_forpr, abroad_time, country) -&gt; abroadafterphd_long
+
+save(abroadafterphd_long, file=&quot;H:/processed_data/abroadafterphd_long.rda&quot;)</code></pre>
+</div>
+</div>
+<div id="robustness-transition-directly-after-phd"
+class="section level1">
+<h1>ROBUSTNESS: transition directly after PhD</h1>
+<pre class="r"><code>df_ppf %&gt;% 
+  filter(job1_uni==0) %&gt;%
+  filter(timetojob1&lt;1) -&gt; df_ppf_sel2
+
+
+# Removing (potential) transitions back into university
+df_ppf_sel2 %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  mutate(transition_inaca = ifelse(uni==1 &amp; lag(uni, n=1)==0, 1, 0),
+         transition_inaca = ifelse(is.na(transition_inaca), 0, transition_inaca)) %&gt;%
+  mutate(yearmax = ifelse(transition_inaca==1, year, NA)) -&gt; df_ppf_sel2
+
+df_ppf_sel2 %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  filter(!is.na(yearmax)) %&gt;%
+  summarize(yearmax = min(yearmax)) -&gt; yearmax2
+# if people make the transition back into academia, we want to only observe until then
+
+df_ppf_sel2 %&gt;%
+  select(-yearmax) %&gt;%
+  left_join(yearmax2, by=&quot;RINPERSOON&quot;) %&gt;%
+  mutate(yearmax = ifelse(is.na(yearmax), 2024, yearmax)) %&gt;%
+  filter(year &lt; yearmax) -&gt; df_ppf_sel3</code></pre>
+<p>Adding variables specifying how long a person has worked at the
+university in total, and how long outside of the university.</p>
+<pre class="r"><code># Calculating the first and last year that a person was observed in a certain state (uni/not uni)
+df_ppf_sel %&gt;%
+  group_by(RINPERSOON, uni) %&gt;%
+  summarize(firstyear = min(year),
+            lastyear = max(year)) %&gt;%
+  mutate(duration = lastyear - firstyear + 1) %&gt;%
+  arrange(RINPERSOON, desc(uni)) -&gt; duration
+
+# Calculating a variable how long a person was employed at university
+duration %&gt;%
+  filter(uni == 1) %&gt;%
+  mutate(duration_uni = duration) %&gt;%
+  select(RINPERSOON, duration_uni) -&gt; duration_uni
+
+# Calculating a variable how long a person was employed outside university
+duration %&gt;%
+  filter(uni == 0) %&gt;%
+  mutate(duration_notuni = duration) %&gt;% 
+  select(RINPERSOON, duration_notuni) -&gt; duration_notuni
+
+# Additionally, creating a variable specifying the number of years past since the transition out of academia
+df_ppf_sel %&gt;%
+  filter(uni==0) %&gt;%
+  arrange(RINPERSOON, year) %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  mutate(t_after = row_number() - 1) %&gt;%
+  select(RINPERSOON, year, t_after) -&gt; t_after
+
+
+# Calculating the total duration of the career we observe
+duration %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  summarize(duration_tot = sum(duration)) -&gt; duration
+
+
+# Adding the variables
+df_ppf_sel %&gt;%
+  left_join(duration, by=&quot;RINPERSOON&quot;) -&gt; df_ppf_sel
+
+df_ppf_sel %&gt;%
+  left_join(duration_uni, by=&quot;RINPERSOON&quot;) -&gt; df_ppf_sel
+
+df_ppf_sel %&gt;%
+  left_join(duration_notuni, by=&quot;RINPERSOON&quot;) %&gt;% 
+  mutate(duration_notuni = ifelse(is.na(duration_notuni), 0, duration_notuni))-&gt; df_ppf_sel
+
+df_ppf_sel %&gt;%
+  left_join(t_after, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) %&gt;%
+  mutate(t_after = ifelse(is.na(t_after), 0, t_after))-&gt; df_ppf_sel</code></pre>
+<p>Exploration size of the transition window: how many years do we need
+before and after the transition?</p>
+<pre class="r"><code>df_ppf_sel %&gt;% filter(duration_notuni&gt;0) -&gt; transitionsample
+
+# Total number of transitions
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON),])
+
+# Number of transitions depending on how many years we want to observe before the transition 
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;1,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;2,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;3,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;4,])
+
+# Number of transitions depending on how many years we want to observe after the transition 
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_notuni&gt;1,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_notuni&gt;2,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_notuni&gt;3,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_notuni&gt;4,])
+
+# Combinations
+
+# Uni = 2+
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;1 &amp; transitionsample$duration_notuni&gt;0,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;1 &amp; transitionsample$duration_notuni&gt;1,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;1 &amp; transitionsample$duration_notuni&gt;2,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;1 &amp; transitionsample$duration_notuni&gt;3,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;1 &amp; transitionsample$duration_notuni&gt;4,])
+
+# Uni = 3+
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;2 &amp; transitionsample$duration_notuni&gt;0,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;2 &amp; transitionsample$duration_notuni&gt;1,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;2 &amp; transitionsample$duration_notuni&gt;2,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;2 &amp; transitionsample$duration_notuni&gt;3,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;2 &amp; transitionsample$duration_notuni&gt;4,])
+
+# Uni = 4+
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;3 &amp; transitionsample$duration_notuni&gt;0,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;3 &amp; transitionsample$duration_notuni&gt;1,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;3 &amp; transitionsample$duration_notuni&gt;2,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;3 &amp; transitionsample$duration_notuni&gt;3,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;3 &amp; transitionsample$duration_notuni&gt;4,])
+
+
+# Uni = 5+
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;4 &amp; transitionsample$duration_notuni&gt;0,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;4 &amp; transitionsample$duration_notuni&gt;1,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;4 &amp; transitionsample$duration_notuni&gt;2,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;4 &amp; transitionsample$duration_notuni&gt;3,])
+nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) &amp; transitionsample$duration_uni&gt;4 &amp; transitionsample$duration_notuni&gt;4,])</code></pre>
+</div>
+<div id="removing-missings" class="section level1">
+<h1>Removing missings</h1>
+<pre class="r"><code># run summary of the dataframe before, to assess where missings are
+
+nrow(df_ppf_sel[!duplicated(df_ppf_sel$RINPERSOON),]) # 4579
+
+df_ppf_sel %&gt;%
+  filter(!is.na(phd_sat)) %&gt;%
+  filter(!is.na(temporary_emp)) %&gt;%
+  filter(!is.na(sect_adj)) -&gt; df_ppf_sel
+
+nrow(df_ppf_sel[!duplicated(df_ppf_sel$RINPERSOON),]) # 4576</code></pre>
+</div>
+<div id="sector-dummies" class="section level1">
+<h1>Sector dummies</h1>
+<pre class="r"><code>df_ppf_sel %&gt;%
+  mutate(sector_gov = ifelse(sect_adj==&quot;Government&quot;, 1, 0),
+         sector_nonpr = ifelse(sect_adj==&quot;Non-profit&quot;, 1, 0),
+         sector_forpr = ifelse(sect_adj==&quot;For-profit&quot;, 1, 0)) -&gt; df_ppf_sel
+
+df_ppf_sel2 %&gt;%
+  mutate(sector_gov = ifelse(sect_adj==&quot;Government&quot;, 1, 0),
+         sector_nonpr = ifelse(sect_adj==&quot;Non-profit&quot;, 1, 0),
+         sector_forpr = ifelse(sect_adj==&quot;For-profit&quot;, 1, 0)) -&gt; df_ppf_sel2</code></pre>
+</div>
+<div id="creating-between-level-variables" class="section level1">
+<h1>Creating between-level variables</h1>
+<pre class="r"><code>df_ppf_sel %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  summarize(child_u5_b = mean(child_u5),
+            basehours_month_b = mean(basehours_month),
+            log_hrs_b = mean(log_hrs),
+            temporary_emp_b = mean(temporary_emp),
+            sector_gov_b = mean(sector_gov),
+            sector_nonpr_b = mean(sector_nonpr),
+            sector_forpr_b = mean(sector_forpr),
+            partnered_b = mean(partnered),
+            break_job_b = mean(break_job),
+            abroad_time_b = mean(abroad_time),
+            otherjob_b = mean(otherjob)) -&gt; betweenvars
+
+df_ppf_sel %&gt;%
+  left_join(betweenvars, by=&quot;RINPERSOON&quot;) -&gt; df_ppf_sel
+
+
+# also for the &#39;early transition&#39; robustness dataset
+df_ppf_sel2 %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  summarize(child_u5_b = mean(child_u5),
+            basehours_month_b = mean(basehours_month),
+            log_hrs_b = mean(log_hrs),
+            temporary_emp_b = mean(temporary_emp),
+            sector_gov_b = mean(sector_gov),
+            sector_nonpr_b = mean(sector_nonpr),
+            sector_forpr_b = mean(sector_forpr),
+            partnered_b = mean(partnered),
+            break_job_b = mean(break_job),
+            abroad_time_b = mean(abroad_time),
+            otherjob_b = mean(otherjob)) -&gt; betweenvars2
+
+df_ppf_sel2 %&gt;%
+  left_join(betweenvars, by=&quot;RINPERSOON&quot;) -&gt; df_ppf_sel2</code></pre>
+</div>
+<div id="dataset-for-multilevel-model-for-change"
+class="section level1">
+<h1>Dataset for Multilevel Model for Change</h1>
+<pre class="r"><code># creating a time variable (total time since PhD year)
+df_ppf_sel %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  mutate(uni = ifelse(is.na(uni), 0, uni),
+         t = year - phd_year,
+         trans_lt = 1-uni,
+         trans_st = transition_outaca) %&gt;%
+  select(RINPERSOON, gender, phd_disci, phd_year, phd_coh, phd_sat, agephd, year, t, t_after, trans_st, trans_lt, log_realwage, log_realpay, realwage, realpay_corr2, basehours_month, log_hrs, job_no, break_job, otherjob, uni, temporary_emp, parent, totalno_c, baby, child_u5, child_u13, age_yc, partnered, start_partner, end_partner, type_partner, reason_end, sect_adj, sector_gov, sector_nonpr, sector_forpr, abroad_time, country, duration_tot, duration_uni, duration_notuni, child_u5_b, basehours_month_b, log_hrs_b, temporary_emp_b, sector_gov_b, sector_nonpr_b, sector_forpr_b, partnered_b, break_job_b, abroad_time_b, otherjob_b)-&gt; df_mmfc
+
+summary(df_mmfc)</code></pre>
+</div>
+<div id="dataset-for-early-transitions-robustness"
+class="section level1">
+<h1>Dataset for early transitions robustness</h1>
+<pre class="r"><code># creating a time variable (total time since PhD year)
+df_ppf_sel2 %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  mutate(uni = ifelse(is.na(uni), 0, uni),
+         t = year - phd_year,
+         trans_lt = 1-uni,
+         trans_st = transition_outaca) %&gt;%
+  select(RINPERSOON, gender, phd_disci, phd_year, phd_coh, phd_sat, agephd, year, t, trans_st, trans_lt, log_realwage, log_realpay, realwage, realpay_corr2, basehours_month, log_hrs, job_no, break_job, otherjob, uni, temporary_emp, parent, totalno_c, baby, child_u5, child_u13, age_yc, partnered, start_partner, end_partner, type_partner, reason_end, sect_adj, sector_gov, sector_nonpr, sector_forpr, abroad_time, country,  child_u5_b, basehours_month_b, log_hrs_b, temporary_emp_b, sector_gov_b, sector_nonpr_b, sector_forpr_b, partnered_b, break_job_b, abroad_time_b, otherjob_b)-&gt; df_mmfc_r2</code></pre>
+<div id="transition-variable-between-level" class="section level2">
+<h2>Transition variable between-level</h2>
+<pre class="r"><code>df_mmfc %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  summarize(trans_lt_b = mean(trans_lt)) -&gt; trans_b
+  
+df_mmfc %&gt;%
+  left_join(trans_b, by=&quot;RINPERSOON&quot;) -&gt; df_mmfc
+
+
+# also for &#39;early transitions&#39; dataset
+df_mmfc_r2 %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  summarize(trans_lt_b = mean(trans_lt)) -&gt; trans_b2
+  
+df_mmfc_r2 %&gt;%
+  left_join(trans_b2, by=&quot;RINPERSOON&quot;) -&gt; df_mmfc_r2</code></pre>
+</div>
+</div>
+<div id="rr-no-other-job" class="section level1">
+<h1>R&amp;R: no other job</h1>
+<pre class="r"><code># creating a dataframe for people WITHOUT other jobs as a robustness check
+df_mmfc %&gt;%
+  group_by(RINPERSOON) %&gt;%
+  summarise(otherjob = max(otherjob)) %&gt;%
+  filter(otherjob &lt; 1) -&gt; no_otherjob
+
+# adding all observations for people without other jobs
+df_mmfc[df_mmfc$RINPERSOON%in%no_otherjob$RINPERSOON,] -&gt; df_noother
+
+
+
+# creating a dataframe for observations with other jobs, so we can get info on the salary/hours distri
+df_mmfc %&gt;% filter(otherjob==1) -&gt; df_other
+
+df_other %&gt;%
+  select(RINPERSOON, year, uni, gender) -&gt; df_other_vars
+
+df_other %&gt;%
+  select(RINPERSOON, phd_year, year) -&gt; df_other
+
+spolismonth %&gt;%
+  mutate(RINPERSOON=rinpersoon,
+         basepay_month = sbasisloon_month,
+         basehours_month = sbasisuren_month) %&gt;%
+  select(year, RINPERSOON, beid, basepay_month, basehours_month) %&gt;%
+  right_join(df_other, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) -&gt; df_other
+
+df_other %&gt;%
+  group_by(RINPERSOON, year) %&gt;%
+  arrange(desc(basepay_month)) %&gt;%
+  mutate(job_counter = row_number()) %&gt;%
+  ungroup() %&gt;%
+  pivot_wider(id_cols =c(RINPERSOON, year),
+              names_from = job_counter,
+              values_from = c(basepay_month, basehours_month),
+              names_glue = &quot;{.value}_job{job_counter}&quot;) %&gt;%
+  mutate(basepay_month_job2 = replace_na(basepay_month_job2, 0),
+         basehours_month_job2 = replace_na(basehours_month_job2, 0),
+         basepay_month_job3 = replace_na(basepay_month_job3, 0),
+         basehours_month_job3 = replace_na(basehours_month_job3, 0),
+         basepay_month_job4 = replace_na(basepay_month_job4, 0),
+         basehours_month_job4 = replace_na(basehours_month_job4, 0),
+         basepay_month_job5 = replace_na(basepay_month_job5, 0),
+         basehours_month_job5 = replace_na(basehours_month_job5, 0)) %&gt;%
+  mutate(totalpay = basepay_month_job1 + basepay_month_job2 + basepay_month_job3 + basepay_month_job4 + basepay_month_job5,
+         totalhours = basehours_month_job1 + basehours_month_job2 + basehours_month_job3 + basehours_month_job4 + basehours_month_job5) %&gt;%
+  mutate(perc_pay_job1 = basepay_month_job1 / totalpay,
+         perc_hrs_job1 = basehours_month_job1 / totalhours) -&gt; df_other
+  
+# adding the uni (main job at uni) and gender variables
+df_other %&gt;%
+  left_join(df_other_vars, by=c(&quot;RINPERSOON&quot;, &quot;year&quot;)) -&gt; df_other</code></pre>
+</div>
+<div id="saving-the-data" class="section level1">
+<h1>Saving the data</h1>
+<pre class="r"><code>save(df_mmfc, file=&quot;H:/processed_data/df_mmfc.rda&quot;)
+
+save(df_other, file=&quot;H:/processed_data/df_other.rda&quot;)
+save(df_noother, file=&quot;H:/processed_data/df_noother.rda&quot;)
+
+save(df_mmfc_r2, file=&quot;H:/processed_data/df_mmfc_r2.rda&quot;)</code></pre>
+</div>
+
+<style>
+  .center {
+    text-align: center;
+    color: red;
+  }
+</style>
+  
+  <hr>
+  <br>
+  <p class="center">Copyright &copy; 2025 </p>
+    
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

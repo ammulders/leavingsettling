@@ -1,0 +1,528 @@
+---
+title: "Descriptives"
+output: html_document
+date: "2025-18-09"
+---
+
+# Reading in packages
+
+```{r}
+
+rm(list=ls())
+
+```
+
+
+```{r}
+
+library(tidyverse)
+library(ggplot2)
+
+```
+
+# Reading in data
+
+```{r, eval=FALSE}
+
+load(file="H:/processed_data/df_mmfc.rda")
+
+load(file="H:/processed_data/df_other.rda")
+load(file="H:/processed_data/df_noother.rda")
+
+```
+
+
+
+# Some ad-hoc releveling 
+
+```{r, eval=FALSE}
+
+levels(as.factor(df_mmfc$phd_disci))
+
+df_mmfc$phd_disci <- factor(df_mmfc$phd_disci, levels=c("Health sciences", "Social sciences", "Natural sciences and mathematics", "Engineering", "Humanities", "Agriculture and animal sciences"))
+
+df_mmfc <- df_mmfc %>% 
+  mutate(gender = ifelse(gender==1, "men", "women"))
+
+df_mmfc$gender <- factor(df_mmfc$gender, levels=c("men", "women"))
+
+```
+
+
+# Descriptives
+
+## Number of transitions
+
+```{r, eval=FALSE}
+
+df_mmfc %>%
+  group_by(gender) %>%
+  count(trans_st) %>%
+  filter(trans_st==1) %>%
+  mutate(N_transitions=n) %>% 
+  select(gender, N_transitions) -> N_transitions
+
+write.csv(N_transitions, file="F:/GPE_salaris/N_transitions.csv")
+
+```
+
+
+
+# Descriptives
+
+
+## Descriptive table by gender
+
+```{r, eval=FALSE}
+
+# flattening time-varying variables (basepay)
+
+columns <- c("F: 1%", "F: 99%", "F: Mean", "F: SD", "M: 1%", "M: 99%", "M: Mean", "M: SD")
+rows <- c("Real monthly pay", "Log real monthly pay", "Transition year", "Transition experienced","Time" , "PhD Discipline", "Health sciences", "Social sciences", "Natural sciences and mathematics", "Engineering", "Humanities", "Child under 5", "Log monthly contract hours", "Temporary contract", "PhD cohort", "PhD satisfaction", "Sector", "For-profit", "Government", "Non-profit", "Other job", "Break in Dutch employment", "Period abroad", "Partnered", "Time at transition", "N individuals", "N observations")
+  
+t1 <- data.frame(matrix(nrow=length(rows), ncol=length(columns)))
+
+colnames(t1) <- columns
+rownames(t1) <- rows
+
+df_mmfc %>%
+  group_by(gender) %>%
+  summarize(across(c(realpay_corr2, log_realpay, t, log_hrs, phd_coh, phd_sat, break_job, abroad_time),
+            list(p1 = ~quantile(.x, 0.01), p99 = ~quantile(.x, 0.99), mean = mean, sd=sd),
+            .names = "{.col}-{.fn}")) %>%
+  pivot_longer(
+    cols = -gender,
+    names_to = c("variable", "statistic"), 
+    names_sep = "-"
+  ) %>%
+  pivot_wider(
+    names_from = statistic,
+    values_from = value
+  ) -> t1_contin
+
+
+df_mmfc %>% filter(gender=="women") -> df_wom
+df_mmfc %>% filter(gender=="men") -> df_men
+
+# check if 1% and 99% of dummies is indeed 0/1
+# c(quantile(df_men$trans_lt, 0.01), quantile(df_men$trans_lt, 0.99))
+# c(quantile(df_men$trans_st, 0.01), quantile(df_men$trans_st, 0.99))
+# c(quantile(df_men$child_u5, 0.01), quantile(df_men$child_u5, 0.99))
+# c(quantile(df_men$temporary_emp, 0.01), quantile(df_men$temporary_emp, 0.99))
+# c(quantile(df_men$sector_forpr, 0.01), quantile(df_men$sector_forpr, 0.99))
+# c(quantile(df_men$sector_gov, 0.01), quantile(df_men$sector_gov, 0.99))
+# c(quantile(df_men$sector_nonpr, 0.01), quantile(df_men$sector_nonpr, 0.99))
+# c(quantile(df_men$otherjob, 0.01), quantile(df_men$otherjob, 0.99))
+# c(quantile(df_men$partnered, 0.01), quantile(df_men$partnered, 0.99))
+# c(quantile(df_wom$trans_lt, 0.01), quantile(df_wom$trans_lt, 0.99))
+# c(quantile(df_wom$trans_st, 0.01), quantile(df_wom$trans_st, 0.99))
+# c(quantile(df_wom$child_u5, 0.01), quantile(df_wom$child_u5, 0.99))
+# c(quantile(df_wom$temporary_emp, 0.01), quantile(df_wom$temporary_emp, 0.99))
+# c(quantile(df_wom$sector_forpr, 0.01), quantile(df_wom$sector_forpr, 0.99))
+# c(quantile(df_wom$sector_gov, 0.01), quantile(df_wom$sector_gov, 0.99))
+# c(quantile(df_wom$sector_nonpr, 0.01), quantile(df_wom$sector_nonpr, 0.99))
+# c(quantile(df_wom$otherjob, 0.01), quantile(df_wom$otherjob, 0.99))
+# c(quantile(df_wom$partnered, 0.01), quantile(df_wom$partnered, 0.99))
+# it is!
+
+
+t1[c(3,4,7:12,14,18:21,24),1] <- rep(0.0001, times=length(t1[c(3,4,7:12,14,18:21,24),1]))
+t1[c(3,4,7:12,14,18:21,24),2] <- rep(1.0001, times=length(t1[c(3,4,7:12,14,18:21,24),2]))
+t1[c(3,4,7:12,14,18:21,24),5] <- rep(0.0001, times=length(t1[c(3,4,7:12,14,18:21,24),5]))
+t1[c(3,4,7:12,14,18:21,24),6] <- rep(1.0001, times=length(t1[c(3,4,7:12,14,18:21,24),6]))
+
+# time at transition
+df_wom %>% filter(trans_st==1) -> womtrans
+df_men %>% filter(trans_st==1) -> mentrans
+
+# women 
+t1[c(1:2),c(1:4)] <- t1_contin[c(9:10),c(3:6)] # pay
+t1[3,3] <- mean(df_wom$trans_st)
+t1[4,3] <- mean(df_wom$trans_lt)
+t1[5,c(1:4)] <- t1_contin[11, c(3:6)] # time
+t1[c(7:11),3]<- round(prop.table(table(df_wom$phd_disci)), digits=2)[c(1:5)] # disci
+t1[12,3] <- mean(df_wom$child_u5)
+t1[13,c(1:4)] <- t1_contin[12, c(3:6)] # contract hours
+t1[14,3] <- mean(df_wom$temporary_emp)
+t1[c(15:16),c(1:4)] <- t1_contin[c(13:14),c(3:6)] # phd cohort, satis
+t1[18, 3] <- mean(df_wom$sector_forpr)
+t1[19, 3] <- mean(df_wom$sector_gov)
+t1[20, 3] <- mean(df_wom$sector_nonpr)
+t1[21, 3] <- mean(df_wom$otherjob)
+t1[c(22:23),c(1:4)] <- t1_contin[c(15:16), c(3:6)] # break job, abroad
+t1[24, 3] <- mean(df_wom$partnered)
+t1[25, 1] <- quantile(womtrans$t, 0.01)
+t1[25, 2] <- quantile(womtrans$t, 0.99)
+t1[25, 3] <- mean(womtrans$t)
+t1[25, 4] <- sd(womtrans$t)
+t1[26, 3] <- nrow(df_wom[!duplicated(df_wom$RINPERSOON),])
+t1[27, 3] <- nrow(df_wom)
+
+# men 
+t1[c(1:2),c(5:8)] <- t1_contin[c(1:2),c(3:6)] # pay
+t1[3,7] <- mean(df_men$trans_st)
+t1[4,7] <- mean(df_men$trans_lt)
+t1[5,c(5:8)] <- t1_contin[3, c(3:6)] # time
+t1[c(7:11),7]<- round(prop.table(table(df_men$phd_disci)), digits=2)[c(1:5)] # disci
+t1[12,7] <- mean(df_men$child_u5)
+t1[13,c(5:8)] <- t1_contin[4, c(3:6)] # contract hours
+t1[14,7] <- mean(df_men$temporary_emp)
+t1[c(15:16),c(5:8)] <- t1_contin[c(5:6),c(3:6)] # phd cohort, satis
+t1[18, 7] <- mean(df_men$sector_forpr)
+t1[19, 7] <- mean(df_men$sector_gov)
+t1[20, 7] <- mean(df_men$sector_nonpr)
+t1[21, 7] <- mean(df_men$otherjob)
+t1[c(22:23),c(5:8)] <- t1_contin[c(7:8), c(3:6)] # break job, abroad
+t1[24, 7] <- mean(df_men$partnered)
+t1[25, 5] <- quantile(mentrans$t, 0.01)
+t1[25, 6] <- quantile(mentrans$t, 0.99)
+t1[25, 7] <- mean(mentrans$t)
+t1[25, 8] <- sd(mentrans$t)
+t1[26, 7] <- nrow(df_men[!duplicated(df_men$RINPERSOON),])
+t1[27, 7] <- nrow(df_men)
+
+t1[c(1:25),] <- round(t1[c(1:25),], digits=2)
+t1[c(26:27),] <- abs(t1[c(26:27),])
+
+t1[26,] <- round(abs(t1[26,]), digits=0)
+t1[27,] <- round(abs(t1[27,]), digits=0)
+
+t1[is.na(t1)] <- ""
+
+Descriptives_Table <- t1
+
+write.csv(t1, file="F:/GPE_salaris/R&R/descriptive_tab.csv")
+
+```
+
+
+
+# R&R: people who go abroad after their PhD
+
+```{r, eval=FALSE}
+
+load(file="H:/processed_data/abroadafterphd_long.rda")
+
+levels(as.factor(abroadafterphd_long$phd_disci))
+
+abroadafterphd_long$phd_disci <- factor(abroadafterphd_long$phd_disci, levels=c("Health sciences", "Social sciences", "Natural sciences and mathematics", "Engineering", "Humanities"))
+
+abroadafterphd_long <- abroadafterphd_long %>% 
+  mutate(gender = ifelse(gender==1, "men", "women"))
+
+abroadafterphd_long$gender <- factor(abroadafterphd_long$gender, levels=c("men", "women"))
+
+# removing missings
+nrow(abroadafterphd_long[!duplicated(abroadafterphd_long$RINPERSOON),]) # 353
+
+abroadafterphd_long %>%
+  filter(!is.na(phd_sat)) %>%
+  filter(!is.na(temporary_emp)) %>%
+  filter(!is.na(sect_adj)) -> abroadafterphd_long
+
+nrow(abroadafterphd_long[!duplicated(abroadafterphd_long$RINPERSOON),]) # 352
+
+# flattening time-varying variables (basepay)
+
+columns <- c("F: 1%", "F: 99%", "F: Mean", "F: SD", "M: 1%", "M: 99%", "M: Mean", "M: SD")
+rows <- c("Real monthly pay", "Log real monthly pay", "Transition year", "Transition experienced","Time" , "PhD Discipline", "Health sciences", "Social sciences", "Natural sciences and mathematics", "Engineering", "Humanities", "Child under 5", "Log monthly contract hours", "Temporary contract", "PhD cohort", "PhD satisfaction", "Sector", "For-profit", "Government", "Non-profit", "Other job", "Break in Dutch employment", "Period abroad", "Partnered", "Time at transition", "N individuals", "N observations")
+  
+t1_abroad <- data.frame(matrix(nrow=length(rows), ncol=length(columns)))
+
+colnames(t1_abroad) <- columns
+rownames(t1_abroad) <- rows
+
+abroadafterphd_long %>%
+  group_by(gender) %>%
+  summarize(across(c(realpay_corr2, log_realpay, t, basehours_month, phd_coh, phd_sat, break_job, abroad_time),
+            list(p1 = ~quantile(.x, 0.01), p99 = ~quantile(.x, 0.99), mean = mean, sd=sd),
+            .names = "{.col}-{.fn}")) %>%
+  pivot_longer(
+    cols = -gender,
+    names_to = c("variable", "statistic"), 
+    names_sep = "-"
+  ) %>%
+  pivot_wider(
+    names_from = statistic,
+    values_from = value
+  ) -> t1_abroad_contin
+
+
+abroadafterphd_long %>% filter(gender=="women") -> df_wom
+abroadafterphd_long %>% filter(gender=="men") -> df_men
+
+# check if 1% and 99% of dummies is indeed 0/1
+# c(quantile(df_men$trans_lt, 0.01), quantile(df_men$trans_lt, 0.99))
+# c(quantile(df_men$trans_st, 0.01), quantile(df_men$trans_st, 0.99))
+# c(quantile(df_men$child_u5, 0.01), quantile(df_men$child_u5, 0.99))
+# c(quantile(df_men$temporary_emp, 0.01), quantile(df_men$temporary_emp, 0.99))
+# c(quantile(df_men$sector_forpr, 0.01), quantile(df_men$sector_forpr, 0.99))
+# c(quantile(df_men$sector_gov, 0.01), quantile(df_men$sector_gov, 0.99))
+# c(quantile(df_men$sector_nonpr, 0.01), quantile(df_men$sector_nonpr, 0.99))
+# c(quantile(df_men$otherjob, 0.01), quantile(df_men$otherjob, 0.99))
+# c(quantile(df_men$partnered, 0.01), quantile(df_men$partnered, 0.99))
+# c(quantile(df_wom$trans_lt, 0.01), quantile(df_wom$trans_lt, 0.99))
+# c(quantile(df_wom$trans_st, 0.01), quantile(df_wom$trans_st, 0.99))
+# c(quantile(df_wom$child_u5, 0.01), quantile(df_wom$child_u5, 0.99))
+# c(quantile(df_wom$temporary_emp, 0.01), quantile(df_wom$temporary_emp, 0.99))
+# c(quantile(df_wom$sector_forpr, 0.01), quantile(df_wom$sector_forpr, 0.99))
+# c(quantile(df_wom$sector_gov, 0.01), quantile(df_wom$sector_gov, 0.99))
+# c(quantile(df_wom$sector_nonpr, 0.01), quantile(df_wom$sector_nonpr, 0.99))
+# c(quantile(df_wom$otherjob, 0.01), quantile(df_wom$otherjob, 0.99))
+# c(quantile(df_wom$partnered, 0.01), quantile(df_wom$partnered, 0.99))
+# it is!
+
+
+t1_abroad[c(3,4,7:12,14,18:21,24),1] <- rep(0.0001, times=length(t1_abroad[c(3,4,7:12,14,18:21,24),1]))
+t1_abroad[c(3,4,7:12,14,18:21,24),2] <- rep(1.0001, times=length(t1_abroad[c(3,4,7:12,14,18:21,24),2]))
+t1_abroad[c(3,4,7:12,14,18:21,24),5] <- rep(0.0001, times=length(t1_abroad[c(3,4,7:12,14,18:21,24),5]))
+t1_abroad[c(3,4,7:12,14,18:21,24),6] <- rep(1.0001, times=length(t1_abroad[c(3,4,7:12,14,18:21,24),6]))
+
+# time at transition
+df_wom %>% filter(trans_st==1) -> womtrans
+df_men %>% filter(trans_st==1) -> mentrans
+
+# women 
+t1_abroad[c(1:2),c(1:4)] <- t1_abroad_contin[c(9:10),c(3:6)] # pay
+t1_abroad[3,3] <- mean(df_wom$trans_st)
+t1_abroad[4,3] <- mean(df_wom$trans_lt)
+t1_abroad[5,c(1:4)] <- t1_abroad_contin[11, c(3:6)] # time
+t1_abroad[c(7:11),3]<- round(prop.table(table(df_wom$phd_disci)), digits=2)[c(1:5)] # disci
+t1_abroad[12,3] <- mean(df_wom$child_u5)
+t1_abroad[13,c(1:4)] <- t1_abroad_contin[12, c(3:6)] # contract hours
+t1_abroad[14,3] <- mean(df_wom$temporary_emp)
+t1_abroad[c(15:16),c(1:4)] <- t1_abroad_contin[c(13:14),c(3:6)] # phd cohort, satis
+t1_abroad[18, 3] <- mean(df_wom$sector_forpr)
+t1_abroad[19, 3] <- mean(df_wom$sector_gov)
+t1_abroad[20, 3] <- mean(df_wom$sector_nonpr)
+t1_abroad[21, 3] <- mean(df_wom$otherjob)
+t1_abroad[c(22:23),c(1:4)] <- t1_abroad_contin[c(15:16), c(3:6)] # break job, abroad
+t1_abroad[24, 3] <- mean(df_wom$partnered)
+t1_abroad[25, 1] <- quantile(womtrans$t, 0.01)
+t1_abroad[25, 2] <- quantile(womtrans$t, 0.99)
+t1_abroad[25, 3] <- mean(womtrans$t)
+t1_abroad[25, 4] <- sd(womtrans$t)
+t1_abroad[26, 3] <- nrow(df_wom[!duplicated(df_wom$RINPERSOON),])
+t1_abroad[27, 3] <- nrow(df_wom)
+
+# men 
+t1_abroad[c(1:2),c(5:8)] <- t1_abroad_contin[c(1:2),c(3:6)] # pay
+t1_abroad[3,7] <- mean(df_men$trans_st)
+t1_abroad[4,7] <- mean(df_men$trans_lt)
+t1_abroad[5,c(5:8)] <- t1_abroad_contin[3, c(3:6)] # time
+t1_abroad[c(7:11),7]<- round(prop.table(table(df_men$phd_disci)), digits=2)[c(1:5)] # disci
+t1_abroad[12,7] <- mean(df_men$child_u5)
+t1_abroad[13,c(5:8)] <- t1_abroad_contin[4, c(3:6)] # contract hours
+t1_abroad[14,7] <- mean(df_men$temporary_emp)
+t1_abroad[c(15:16),c(5:8)] <- t1_abroad_contin[c(5:6),c(3:6)] # phd cohort, satis
+t1_abroad[18, 7] <- mean(df_men$sector_forpr)
+t1_abroad[19, 7] <- mean(df_men$sector_gov)
+t1_abroad[20, 7] <- mean(df_men$sector_nonpr)
+t1_abroad[21, 7] <- mean(df_men$otherjob)
+t1_abroad[c(22:23),c(5:8)] <- t1_abroad_contin[c(7:8), c(3:6)] # break job, abroad
+t1_abroad[24, 7] <- mean(df_men$partnered)
+t1_abroad[25, 5] <- quantile(mentrans$t, 0.01)
+t1_abroad[25, 6] <- quantile(mentrans$t, 0.99)
+t1_abroad[25, 7] <- mean(mentrans$t)
+t1_abroad[25, 8] <- sd(mentrans$t)
+t1_abroad[26, 7] <- nrow(df_men[!duplicated(df_men$RINPERSOON),])
+t1_abroad[27, 7] <- nrow(df_men)
+
+t1_abroad[c(1:25),] <- round(t1_abroad[c(1:25),], digits=2)
+t1_abroad[c(26:27),] <- abs(t1_abroad[c(26:27),])
+
+t1_abroad[26,] <- round(abs(t1_abroad[26,]), digits=0)
+t1_abroad[27,] <- round(abs(t1_abroad[27,]), digits=0)
+
+t1_abroad[is.na(t1_abroad)] <- ""
+
+t1_abroad <- t1_abroad[c(1:2,4:23,26:27),] # removing transition columns as these don't make sense
+
+t1_abroad <- t1_abroad[,c(3,4,7,8)] # no min/max due to sample size restrictions
+
+
+Descriptives_Table <- t1_abroad
+
+write.csv(t1_abroad, file="F:/GPE_salaris/R&R/descriptive_tab_abroadphd.csv")
+
+```
+
+T-test table 
+
+```{r, eval=FALSE}
+
+
+# chi-square gender distri:
+gender_reg <- table(df_mmfc$gender[!duplicated(df_mmfc$RINPERSOON)])
+gender_abr <- table(abroadafterphd_long$gender[!duplicated(abroadafterphd_long$RINPERSOON)])
+gender_distri <- rbind.data.frame(gender_reg, gender_abr)
+
+rownames(gender_distri) <- c("Main data", "Abroad after PhD")
+colnames(gender_distri) <- c("Men", "Women")
+
+chisq_gender <- chisq.test(gender_distri)
+
+gender_distri$chisq <- chisq_gender$statistic
+gender_distri$chisq_df <- chisq_gender$parameter
+gender_distri$chisq_p <- chisq_gender$p.value
+
+write.csv(gender_distri, file="F:/GPE_salaris/R&R/gender_distri_abroad.csv")
+
+df_mmfc %>%
+  mutate(disci_health = ifelse(phd_disci=="Health sciences", 1, 0),
+         disci_social = ifelse(phd_disci=="Social sciences", 1, 0),
+         disci_natural = ifelse(phd_disci=="Natural sciences and mathematics", 1, 0),
+         disci_engineering = ifelse(phd_disci=="Engineering", 1, 0),
+         disci_humanities = ifelse(phd_disci=="Humanities", 1, 0)) -> df_mmfc
+
+
+abroadafterphd_long %>%
+  mutate(disci_health = ifelse(phd_disci=="Health sciences", 1, 0),
+         disci_social = ifelse(phd_disci=="Social sciences", 1, 0),
+         disci_natural = ifelse(phd_disci=="Natural sciences and mathematics", 1, 0),
+         disci_engineering = ifelse(phd_disci=="Engineering", 1, 0),
+         disci_humanities = ifelse(phd_disci=="Humanities", 1, 0)) -> abroadafterphd_long
+
+
+
+df_mmfc %>% filter(gender=="women") -> df_wom
+df_mmfc %>% filter(gender=="men") -> df_men
+abroadafterphd_long %>% filter(gender=="women") -> df_wom_a
+abroadafterphd_long %>% filter(gender=="men") -> df_men_a
+
+t1_v <- t.test(df_wom$realpay_corr2, df_wom_a$realpay_corr2)
+t2_v <- t.test(df_wom$log_realpay, df_wom_a$log_realpay)
+t3_v <- t.test(df_wom$t, df_wom_a$t)
+t4_v <- t.test(df_wom$disci_health, df_wom_a$disci_health)
+t5_v <- t.test(df_wom$disci_social, df_wom_a$disci_social)
+t6_v <- t.test(df_wom$disci_natural, df_wom_a$disci_natural)
+t7_v <- t.test(df_wom$disci_engineering, df_wom_a$disci_engineering)
+t8_v <- t.test(df_wom$disci_humanities, df_wom_a$disci_humanities)
+t9_v <- t.test(df_wom$child_u5, df_wom_a$child_u5)
+t10_v <- t.test(df_wom$log_hrs, df_wom_a$log_hrs)
+t11_v <- t.test(df_wom$temporary_emp, df_wom_a$temporary_emp)
+t12_v <- t.test(df_wom$phd_coh, df_wom_a$phd_coh)
+t13_v <- t.test(df_wom$phd_sat, df_wom_a$phd_sat)
+t14_v <- t.test(df_wom$sector_forpr, df_wom_a$sector_forpr)
+t15_v <- t.test(df_wom$sector_gov, df_wom_a$sector_gov)
+t16_v <- t.test(df_wom$sector_nonpr, df_wom_a$sector_nonpr)
+t17_v <- t.test(df_wom$otherjob, df_wom_a$otherjob)
+t18_v <- t.test(df_wom$break_job, df_wom_a$break_job)
+t19_v <- t.test(df_wom$abroad_time, df_wom_a$abroad_time)
+t20_v <- t.test(df_wom$partnered, df_wom_a$partnered)
+
+
+t1_m <- t.test(df_men$realpay_corr2, df_men_a$realpay_corr2)
+t2_m <- t.test(df_men$log_realpay, df_men_a$log_realpay)
+t3_m <- t.test(df_men$t, df_men_a$t)
+t4_m <- t.test(df_men$disci_health, df_men_a$disci_health)
+t5_m <- t.test(df_men$disci_social, df_men_a$disci_social)
+t6_m <- t.test(df_men$disci_natural, df_men_a$disci_natural)
+t7_m <- t.test(df_men$disci_engineering, df_men_a$disci_engineering)
+t8_m <- t.test(df_men$disci_humanities, df_men_a$disci_humanities)
+t9_m <- t.test(df_men$child_u5, df_men_a$child_u5)
+t10_m <- t.test(df_men$log_hrs, df_men_a$log_hrs)
+t11_m <- t.test(df_men$temporary_emp, df_men_a$temporary_emp)
+t12_m <- t.test(df_men$phd_coh, df_men_a$phd_coh)
+t13_m <- t.test(df_men$phd_sat, df_men_a$phd_sat)
+t14_m <- t.test(df_men$sector_forpr, df_men_a$sector_forpr)
+t15_m <- t.test(df_men$sector_gov, df_men_a$sector_gov)
+t16_m <- t.test(df_men$sector_nonpr, df_men_a$sector_nonpr)
+t17_m <- t.test(df_men$otherjob, df_men_a$otherjob)
+t18_m <- t.test(df_men$break_job, df_men_a$break_job)
+t19_m <- t.test(df_men$abroad_time, df_men_a$abroad_time)
+t20_m <- t.test(df_men$partnered, df_men_a$partnered)
+
+extract_t <- function(ttest) {
+  tibble(
+    t_value = unname(ttest$statistic),
+    df = unname(ttest$parameter),
+    p_value = unname(ttest$p.value)
+  )
+}
+
+test_wom <- mget(paste0("t", 1:20, "_v"))
+test_men <- mget(paste0("t", 1:20, "_m"))
+
+
+varnames <- c("Real monthly pay", "Log real monthly pay", "Time", "PhD discipline: Health sciences", "PhD discipline: Social sciences", "PhD discipline: Natural sciences & mathematics", "PhD discipline: Engineering", "PhD discipline: Humanities", "Child under 5", "Log Monthly contract hours", "Temporary contract", "PhD cohort", "PhD satisfaction", "Sector: For-profit", "Sector: Government", "Sector:Non-profit", "Other job", "Break in Dutch employment", "Period abroad", "Partnered")
+
+
+test_df_wom <- bind_rows(lapply(test_wom, extract_t), .id="test_id") %>%
+  mutate(variable=varnames,
+         N_obs = (nrow(df_wom) + nrow(df_wom_a)),
+         group="women")
+
+test_df_men <- bind_rows(lapply(test_men, extract_t), .id="test_id") %>%
+  mutate(variable=varnames, 
+         N_obs = (nrow(df_men) + nrow(df_men_a)),
+         group="men")
+
+
+test_df_all <- bind_rows(test_df_men, test_df_wom)
+
+test_df_all$psmall <- ifelse(test_df_all$p_value<.001, 1, 0)
+
+
+test_df_all$ttest <- paste0("t(", round(test_df_all$df, 2), ") = ", round(test_df_all$t_value, 2), ", p ", ifelse(test_df_all$psmall==1, "< .001", paste0("= ", round(test_df_all$p_value, 2))))
+
+
+write.csv(test_df_all, file="F:/GPE_salaris/R&R/ttests_main_abroad.csv")
+
+
+
+
+```
+
+
+# Other job
+
+```{r, eval=FALSE}
+
+# are people with/out an other job more likely to make a transition?
+df_mmfc %>%
+  group_by(RINPERSOON) %>%
+  summarize(evertrans = max(trans_lt)) -> evertrans
+
+df_mmfc %>%
+  group_by(RINPERSOON) %>%
+  filter(uni==1) %>%
+  summarize(otherjob_m = max(otherjob),
+            time_uni = max(t)) -> checks
+
+evertrans %>%
+  left_join(checks, by=c("RINPERSOON")) -> evertrans_otherjob
+
+trans_by_oj <- as.data.frame(table("Will Transition" = evertrans_otherjob$evertrans, "Other job" = evertrans_otherjob$otherjob_m))
+
+write.csv(trans_by_oj, file="F:/GPE_salaris/R&R/transitions_otherjob.csv")
+
+
+
+df_other %>%
+  group_by(uni, gender) %>%
+  summarise(mean_perc_pay_job1 = mean(perc_pay_job1),
+            sd_perc_pay_job1 = sd(perc_pay_job1),
+            mean_perc_hrs_job1 = mean(perc_hrs_job1),
+            sd_perc_hrs_job1 = sd(perc_hrs_job1),
+            n = n(),
+            n_obs = n_distinct(RINPERSOON)) -> otherjob_summ_gender
+
+df_other %>%
+  group_by(uni) %>%
+  summarise(mean_perc_pay_job1 = mean(perc_pay_job1),
+            sd_perc_pay_job1 = sd(perc_pay_job1),
+            mean_perc_hrs_job1 = mean(perc_hrs_job1),
+            sd_perc_hrs_job1 = sd(perc_hrs_job1),
+            n = n(),
+            n_obs = n_distinct(RINPERSOON)) %>%
+  mutate(gender = "all") -> otherjob_summ
+
+otherjob_summ <- rbind.data.frame(otherjob_summ_gender, otherjob_summ)
+
+
+write.csv(otherjob_summ, file="F:/GPE_salaris/R&R/descriptive_tab_otherjob.csv")
+
+```
+
+
