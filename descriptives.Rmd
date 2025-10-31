@@ -1,8 +1,16 @@
 ---
-title: "Descriptives"
-output: html_document
-date: "2025-18-09"
+title: "Leaving for more or settling for less: Descriptives"
+date: "Last compiled on `r Sys.Date()`"
+output: 
+  html_document:
+    css: tweaks.css
+    toc:  true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    code_download: yes
 ---
+
 
 # Reading in packages
 
@@ -17,6 +25,7 @@ rm(list=ls())
 
 library(tidyverse)
 library(ggplot2)
+library(kableExtra)
 
 ```
 
@@ -25,7 +34,6 @@ library(ggplot2)
 ```{r, eval=FALSE}
 
 load(file="H:/processed_data/df_mmfc.rda")
-
 load(file="H:/processed_data/df_other.rda")
 load(file="H:/processed_data/df_noother.rda")
 
@@ -196,8 +204,24 @@ write.csv(t1, file="F:/GPE_salaris/R&R/descriptive_tab.csv")
 ```
 
 
+```{r}
 
-# R&R: people who go abroad after their PhD
+Table1 <- read.csv(file="Table1.csv", header=TRUE, check.names=FALSE)
+
+
+Table1[is.na(Table1)] <- ""
+
+
+kable(Table1, caption = "<b>Table 1: descriptive statistics for all variables used in our analyses, split out for men and women</b>") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+
+```
+
+
+
+
+# Robustness: descriptive statistics of people who go abroad after their PhD
 
 ```{r, eval=FALSE}
 
@@ -347,7 +371,24 @@ write.csv(t1_abroad, file="F:/GPE_salaris/R&R/descriptive_tab_abroadphd.csv")
 
 ```
 
-T-test table 
+
+```{r}
+
+Table1_abroadphd <- read.csv(file="Table1_abroadphd.csv", header=TRUE, check.names=FALSE)
+
+Table1_abroadphd[is.na(Table1_abroadphd)] <- ""
+
+kable(Table1_abroadphd, caption = "<b>Table: descriptive statistics for PhDs who went abroad after their PhD</b>") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+
+
+```
+
+
+
+
+T-test table: are people who go abroad after their PhD different from those who do not?
 
 ```{r, eval=FALSE}
 
@@ -469,17 +510,29 @@ test_df_all$ttest <- paste0("t(", round(test_df_all$df, 2), ") = ", round(test_d
 
 write.csv(test_df_all, file="F:/GPE_salaris/R&R/ttests_main_abroad.csv")
 
+```
 
 
+```{r}
+
+ttests_mainabroad <- read.csv(file="ttests_main_abroad.csv", header=TRUE, check.names = FALSE)
+
+ttests_mainabroad[,-1]
+
+kable(ttests_mainabroad, caption = "<b>T-tests comparing PhDs who went abroad after their PhD and those who did not</b>") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
 
 ```
 
 
+
 # Other job
+
+Are people with/out an other job more likely to make a transition?
+
 
 ```{r, eval=FALSE}
 
-# are people with/out an other job more likely to make a transition?
 df_mmfc %>%
   group_by(RINPERSOON) %>%
   summarize(evertrans = max(trans_lt)) -> evertrans
@@ -522,6 +575,26 @@ otherjob_summ <- rbind.data.frame(otherjob_summ_gender, otherjob_summ)
 
 
 write.csv(otherjob_summ, file="F:/GPE_salaris/R&R/descriptive_tab_otherjob.csv")
+
+```
+
+
+```{r}
+
+transitions_otherjob <- read.csv(file="transitions_otherjob.csv", header = TRUE, check.names = FALSE)
+
+# how often do people with (1) and without an other job (0) make a transition?
+transitions_otherjob
+
+
+# Of people with an extra job, what percentage of their earnings and work hours come from their main job? Split out by gender (1=men;2=women) and whether their main job is at the uni (0/1)
+Table1_otherjob <- read.csv(file="Table1_otherjob.csv", header = TRUE, check.names = FALSE)
+
+Table1_otherjob[,-1]
+
+kable(Table1_otherjob, caption = "<b>Percentage of earnings and work hours hauled from main job, for researchers with more than 1 job</b>") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
 
 ```
 

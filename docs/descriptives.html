@@ -11,7 +11,7 @@
 
 
 
-<title>Descriptives</title>
+<title>Leaving for more or settling for less: Descriptives</title>
 
 <script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,9 +29,16 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -58,8 +65,14 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
 
 
+<link rel="stylesheet" href="tweaks.css" type="text/css" />
 
 
 
@@ -218,7 +231,73 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -228,6 +307,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -289,29 +378,48 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Descriptives</h1>
-<h4 class="date">2025-18-09</h4>
+
+<h1 class="title toc-ignore">Leaving for more or settling for less:
+Descriptives</h1>
+<h4 class="date">Last compiled on 2025-10-31</h4>
 
 </div>
 
 
-<div id="reading-in-packages" class="section level1">
-<h1>Reading in packages</h1>
+<div id="reading-in-packages" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Reading in
+packages</h1>
 <pre class="r"><code>rm(list=ls())</code></pre>
 <pre class="r"><code>library(tidyverse)
-library(ggplot2)</code></pre>
+library(ggplot2)
+library(kableExtra)</code></pre>
+<pre><code>## Warning: package &#39;kableExtra&#39; was built under R version 4.4.3</code></pre>
+<pre><code>## 
+## Attaching package: &#39;kableExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     group_rows</code></pre>
 </div>
-<div id="reading-in-data" class="section level1">
-<h1>Reading in data</h1>
+<div id="reading-in-data" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Reading in data</h1>
 <pre class="r"><code>load(file=&quot;H:/processed_data/df_mmfc.rda&quot;)
-
 load(file=&quot;H:/processed_data/df_other.rda&quot;)
 load(file=&quot;H:/processed_data/df_noother.rda&quot;)</code></pre>
 </div>
-<div id="some-ad-hoc-releveling" class="section level1">
-<h1>Some ad-hoc releveling</h1>
+<div id="some-ad-hoc-releveling" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Some ad-hoc
+releveling</h1>
 <pre class="r"><code>levels(as.factor(df_mmfc$phd_disci))
 
 df_mmfc$phd_disci &lt;- factor(df_mmfc$phd_disci, levels=c(&quot;Health sciences&quot;, &quot;Social sciences&quot;, &quot;Natural sciences and mathematics&quot;, &quot;Engineering&quot;, &quot;Humanities&quot;, &quot;Agriculture and animal sciences&quot;))
@@ -321,10 +429,11 @@ df_mmfc &lt;- df_mmfc %&gt;%
 
 df_mmfc$gender &lt;- factor(df_mmfc$gender, levels=c(&quot;men&quot;, &quot;women&quot;))</code></pre>
 </div>
-<div id="descriptives" class="section level1">
-<h1>Descriptives</h1>
-<div id="number-of-transitions" class="section level2">
-<h2>Number of transitions</h2>
+<div id="descriptives" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Descriptives</h1>
+<div id="number-of-transitions" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Number of
+transitions</h2>
 <pre class="r"><code>df_mmfc %&gt;%
   group_by(gender) %&gt;%
   count(trans_st) %&gt;%
@@ -335,10 +444,12 @@ df_mmfc$gender &lt;- factor(df_mmfc$gender, levels=c(&quot;men&quot;, &quot;wome
 write.csv(N_transitions, file=&quot;F:/GPE_salaris/N_transitions.csv&quot;)</code></pre>
 </div>
 </div>
-<div id="descriptives-1" class="section level1">
-<h1>Descriptives</h1>
-<div id="descriptive-table-by-gender" class="section level2">
-<h2>Descriptive table by gender</h2>
+<div id="descriptives-1" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Descriptives</h1>
+<div id="descriptive-table-by-gender" class="section level2"
+number="5.1">
+<h2><span class="header-section-number">5.1</span> Descriptive table by
+gender</h2>
 <pre class="r"><code># flattening time-varying variables (basepay)
 
 columns &lt;- c(&quot;F: 1%&quot;, &quot;F: 99%&quot;, &quot;F: Mean&quot;, &quot;F: SD&quot;, &quot;M: 1%&quot;, &quot;M: 99%&quot;, &quot;M: Mean&quot;, &quot;M: SD&quot;)
@@ -456,11 +567,786 @@ t1[is.na(t1)] &lt;- &quot;&quot;
 Descriptives_Table &lt;- t1
 
 write.csv(t1, file=&quot;F:/GPE_salaris/R&amp;R/descriptive_tab.csv&quot;)</code></pre>
+<pre class="r"><code>Table1 &lt;- read.csv(file=&quot;Table1.csv&quot;, header=TRUE, check.names=FALSE)
+
+
+Table1[is.na(Table1)] &lt;- &quot;&quot;
+
+
+kable(Table1, caption = &quot;&lt;b&gt;Table 1: descriptive statistics for all variables used in our analyses, split out for men and women&lt;/b&gt;&quot;) %&gt;%
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;, &quot;responsive&quot;))</code></pre>
+<table class="table table-striped table-hover table-condensed table-responsive" style="margin-left: auto; margin-right: auto;">
+<caption>
+<b>Table 1: descriptive statistics for all variables used in our
+analyses, split out for men and women</b>
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+F: 1%
+</th>
+<th style="text-align:left;">
+F: 99%
+</th>
+<th style="text-align:left;">
+F: Mean
+</th>
+<th style="text-align:left;">
+F: SD
+</th>
+<th style="text-align:left;">
+M: 1%
+</th>
+<th style="text-align:left;">
+M: 99%
+</th>
+<th style="text-align:left;">
+M: Mean
+</th>
+<th style="text-align:left;">
+M: SD
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Real monthly pay
+</td>
+<td style="text-align:left;">
+1085.08
+</td>
+<td style="text-align:left;">
+15324.76
+</td>
+<td style="text-align:left;">
+4867.1
+</td>
+<td style="text-align:left;">
+2776.15
+</td>
+<td style="text-align:left;">
+1441.4
+</td>
+<td style="text-align:left;">
+17133.96
+</td>
+<td style="text-align:left;">
+5529.32
+</td>
+<td style="text-align:left;">
+3187.54
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Log real monthly pay
+</td>
+<td style="text-align:left;">
+6.99
+</td>
+<td style="text-align:left;">
+9.64
+</td>
+<td style="text-align:left;">
+8.36
+</td>
+<td style="text-align:left;">
+0.52
+</td>
+<td style="text-align:left;">
+7.27
+</td>
+<td style="text-align:left;">
+9.75
+</td>
+<td style="text-align:left;">
+8.48
+</td>
+<td style="text-align:left;">
+0.51
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Transition year
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.05
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.05
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Transition experienced
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.32
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.35
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Time
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+5.91
+</td>
+<td style="text-align:left;">
+4.26
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+6.25
+</td>
+<td style="text-align:left;">
+4.39
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PhD Discipline
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Health sciences
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.43
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.27
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Social sciences
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.31
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.23
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Natural sciences and mathematics
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.16
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.29
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Engineering
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.05
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.14
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Humanities
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.06
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.06
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Child under 5
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.33
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.32
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Log monthly contract hours
+</td>
+<td style="text-align:left;">
+3.56
+</td>
+<td style="text-align:left;">
+5.29
+</td>
+<td style="text-align:left;">
+4.93
+</td>
+<td style="text-align:left;">
+0.29
+</td>
+<td style="text-align:left;">
+4.13
+</td>
+<td style="text-align:left;">
+5.29
+</td>
+<td style="text-align:left;">
+5.02
+</td>
+<td style="text-align:left;">
+0.22
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Temporary contract
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.39
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.34
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PhD cohort
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+4.51
+</td>
+<td style="text-align:left;">
+3.11
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:left;">
+3.9
+</td>
+<td style="text-align:left;">
+2.93
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PhD satisfaction
+</td>
+<td style="text-align:left;">
+2.12
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+3.14
+</td>
+<td style="text-align:left;">
+0.38
+</td>
+<td style="text-align:left;">
+2.25
+</td>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+3.22
+</td>
+<td style="text-align:left;">
+0.37
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sector
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+For-profit
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.38
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.42
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Government
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.48
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.48
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Non-profit
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.14
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.1
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other job
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.06
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.06
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Break in Dutch employment
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+16.99
+</td>
+<td style="text-align:left;">
+0.9
+</td>
+<td style="text-align:left;">
+4.83
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+16.46
+</td>
+<td style="text-align:left;">
+0.84
+</td>
+<td style="text-align:left;">
+4.78
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Period abroad
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+0.43
+</td>
+<td style="text-align:left;">
+6.52
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+24.31
+</td>
+<td style="text-align:left;">
+0.78
+</td>
+<td style="text-align:left;">
+7.97
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Partnered
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+0.58
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Time at transition
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+14
+</td>
+<td style="text-align:left;">
+3.97
+</td>
+<td style="text-align:left;">
+3.13
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+13.54
+</td>
+<td style="text-align:left;">
+3.59
+</td>
+<td style="text-align:left;">
+3.04
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+N individuals
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+2298
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+2278
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+N observations
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+23903
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+24883
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-<div id="rr-people-who-go-abroad-after-their-phd"
-class="section level1">
-<h1>R&amp;R: people who go abroad after their PhD</h1>
+<div
+id="robustness-descriptive-statistics-of-people-who-go-abroad-after-their-phd"
+class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Robustness: descriptive
+statistics of people who go abroad after their PhD</h1>
 <pre class="r"><code>load(file=&quot;H:/processed_data/abroadafterphd_long.rda&quot;)
 
 levels(as.factor(abroadafterphd_long$phd_disci))
@@ -604,7 +1490,412 @@ t1_abroad &lt;- t1_abroad[,c(3,4,7,8)] # no min/max due to sample size restricti
 Descriptives_Table &lt;- t1_abroad
 
 write.csv(t1_abroad, file=&quot;F:/GPE_salaris/R&amp;R/descriptive_tab_abroadphd.csv&quot;)</code></pre>
-<p>T-test table</p>
+<pre class="r"><code>Table1_abroadphd &lt;- read.csv(file=&quot;Table1_abroadphd.csv&quot;, header=TRUE, check.names=FALSE)
+
+Table1_abroadphd[is.na(Table1_abroadphd)] &lt;- &quot;&quot;
+
+kable(Table1_abroadphd, caption = &quot;&lt;b&gt;Table: descriptive statistics for PhDs who went abroad after their PhD&lt;/b&gt;&quot;) %&gt;%
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;, &quot;responsive&quot;))</code></pre>
+<table class="table table-striped table-hover table-condensed table-responsive" style="margin-left: auto; margin-right: auto;">
+<caption>
+<b>Table: descriptive statistics for PhDs who went abroad after their
+PhD</b>
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+F: Mean
+</th>
+<th style="text-align:left;">
+F: SD
+</th>
+<th style="text-align:left;">
+M: Mean
+</th>
+<th style="text-align:left;">
+M: SD
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Real monthly pay
+</td>
+<td style="text-align:left;">
+4858.36
+</td>
+<td style="text-align:left;">
+2015.94
+</td>
+<td style="text-align:left;">
+5562.04
+</td>
+<td style="text-align:left;">
+2651.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Log real monthly pay
+</td>
+<td style="text-align:left;">
+8.41
+</td>
+<td style="text-align:left;">
+0.41
+</td>
+<td style="text-align:left;">
+8.53
+</td>
+<td style="text-align:left;">
+0.43
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Transition experienced
+</td>
+<td style="text-align:left;">
+0.58
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.55
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Time
+</td>
+<td style="text-align:left;">
+8.36
+</td>
+<td style="text-align:left;">
+3.85
+</td>
+<td style="text-align:left;">
+8.52
+</td>
+<td style="text-align:left;">
+3.84
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PhD Discipline
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Health sciences
+</td>
+<td style="text-align:left;">
+0.24
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.18
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Social sciences
+</td>
+<td style="text-align:left;">
+0.18
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.07
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Natural sciences and mathematics
+</td>
+<td style="text-align:left;">
+0.52
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.58
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Engineering
+</td>
+<td style="text-align:left;">
+0.05
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.13
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Humanities
+</td>
+<td style="text-align:left;">
+0.01
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.04
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Child under 5
+</td>
+<td style="text-align:left;">
+0.38
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.36
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Log monthly contract hours
+</td>
+<td style="text-align:left;">
+4.97
+</td>
+<td style="text-align:left;">
+0.24
+</td>
+<td style="text-align:left;">
+5.05
+</td>
+<td style="text-align:left;">
+0.19
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Temporary contract
+</td>
+<td style="text-align:left;">
+0.37
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.37
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PhD cohort
+</td>
+<td style="text-align:left;">
+3.36
+</td>
+<td style="text-align:left;">
+2.82
+</td>
+<td style="text-align:left;">
+2.87
+</td>
+<td style="text-align:left;">
+2.55
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PhD satisfaction
+</td>
+<td style="text-align:left;">
+3.21
+</td>
+<td style="text-align:left;">
+0.35
+</td>
+<td style="text-align:left;">
+3.23
+</td>
+<td style="text-align:left;">
+0.42
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sector
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+For-profit
+</td>
+<td style="text-align:left;">
+0.48
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.52
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Government
+</td>
+<td style="text-align:left;">
+0.42
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.41
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Non-profit
+</td>
+<td style="text-align:left;">
+0.09
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.07
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Other job
+</td>
+<td style="text-align:left;">
+0.02
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+0.02
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Break in Dutch employment
+</td>
+<td style="text-align:left;">
+0.87
+</td>
+<td style="text-align:left;">
+4.41
+</td>
+<td style="text-align:left;">
+0.61
+</td>
+<td style="text-align:left;">
+3.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Period abroad
+</td>
+<td style="text-align:left;">
+6.95
+</td>
+<td style="text-align:left;">
+20.91
+</td>
+<td style="text-align:left;">
+9.16
+</td>
+<td style="text-align:left;">
+27.04
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+N individuals
+</td>
+<td style="text-align:left;">
+130
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+222
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+N observations
+</td>
+<td style="text-align:left;">
+1258
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+2199
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
+<p>T-test table: are people who go abroad after their PhD different from
+those who do not?</p>
 <pre class="r"><code># chi-square gender distri:
 gender_reg &lt;- table(df_mmfc$gender[!duplicated(df_mmfc$RINPERSOON)])
 gender_abr &lt;- table(abroadafterphd_long$gender[!duplicated(abroadafterphd_long$RINPERSOON)])
@@ -721,11 +2012,1461 @@ test_df_all$ttest &lt;- paste0(&quot;t(&quot;, round(test_df_all$df, 2), &quot;)
 
 
 write.csv(test_df_all, file=&quot;F:/GPE_salaris/R&amp;R/ttests_main_abroad.csv&quot;)</code></pre>
+<pre class="r"><code>ttests_mainabroad &lt;- read.csv(file=&quot;ttests_main_abroad.csv&quot;, header=TRUE, check.names = FALSE)
+
+ttests_mainabroad[,-1]</code></pre>
+<pre><code>##    test_id      t_value       df       p_value
+## 1     t1_m  -0.54482884 2791.092  5.859148e-01
+## 2     t2_m  -4.91808711 2782.432  9.247609e-07
+## 3     t3_m -26.28683748 2731.112 5.864767e-136
+## 4     t4_m  10.58758396 2745.622  1.057409e-25
+## 5     t5_m  26.88090259 3393.241 1.843293e-144
+## 6     t6_m -26.59154389 2536.902 1.219750e-137
+## 7     t7_m   1.23312866 2626.082  2.176381e-01
+## 8     t8_m   6.41187345 2901.868  1.672075e-10
+## 9     t9_m  -3.72901434 2578.664  1.963702e-04
+## 10   t10_m  -7.48455912 2787.712  9.570685e-14
+## 11   t11_m  -2.91269103 2585.656  3.614001e-03
+## 12   t12_m  17.78638679 2734.406  4.679438e-67
+## 13   t13_m  -1.17182236 2502.966  2.413799e-01
+## 14   t14_m  -9.06312947 2590.921  2.435695e-19
+## 15   t15_m   6.30574697 2613.798  3.356219e-10
+## 16   t16_m   5.56488385 2780.548  2.873351e-08
+## 17   t17_m  10.47898127 3288.980  2.688617e-25
+## 18   t18_m   3.26277165 3242.145  1.114724e-03
+## 19   t19_m -14.48310051 2231.901  1.677765e-45
+## 20   t20_m  -6.02140886 2629.183  1.970343e-09
+## 21    t1_v   0.14665298 1519.638  8.834254e-01
+## 22    t2_v  -4.31270458 1473.152  1.719924e-05
+## 23    t3_v -21.85057698 1424.003  1.641672e-91
+## 24    t4_v  15.27586101 1440.897  6.090731e-49
+## 25    t5_v  11.46403537 1455.524  3.431097e-29
+## 26    t6_v -25.51582615 1327.420 3.507584e-117
+## 27    t7_v   0.03913606 1393.127  9.687875e-01
+## 28    t8_v  13.71807152 1973.628  5.632661e-41
+## 29    t9_v  -3.46311953 1384.384  5.502304e-04
+## 30   t10_v  -6.49330210 1447.355  1.151181e-10
+## 31   t11_v   1.40339762 1395.222  1.607208e-01
+## 32   t12_v  13.98859348 1422.669  9.322857e-42
+## 33   t13_v  -7.10179205 1418.733  1.941450e-12
+## 34   t14_v  -7.38925817 1384.287  2.543458e-13
+## 35   t15_v   4.33908548 1395.738  1.533749e-05
+## 36   t16_v   5.25756723 1449.498  1.678162e-07
+## 37   t17_v  11.39910565 1751.582  4.353029e-29
+## 38   t18_v   0.25543702 1419.811  7.984226e-01
+## 39   t19_v -11.03042334 1269.902  4.420890e-27
+## 40   t20_v  -0.64049890 1392.486  5.219537e-01
+##                                          variable N_obs group psmall
+## 1                                Real monthly pay 27082   men      0
+## 2                            Log real monthly pay 27082   men      1
+## 3                                            Time 27082   men      1
+## 4                 PhD discipline: Health sciences 27082   men      1
+## 5                 PhD discipline: Social sciences 27082   men      1
+## 6  PhD discipline: Natural sciences &amp; mathematics 27082   men      1
+## 7                     PhD discipline: Engineering 27082   men      0
+## 8                      PhD discipline: Humanities 27082   men      1
+## 9                                   Child under 5 27082   men      1
+## 10                     Log Monthly contract hours 27082   men      1
+## 11                             Temporary contract 27082   men      0
+## 12                                     PhD cohort 27082   men      1
+## 13                               PhD satisfaction 27082   men      0
+## 14                             Sector: For-profit 27082   men      1
+## 15                             Sector: Government 27082   men      1
+## 16                              Sector:Non-profit 27082   men      1
+## 17                                      Other job 27082   men      1
+## 18                      Break in Dutch employment 27082   men      0
+## 19                                  Period abroad 27082   men      1
+## 20                                      Partnered 27082   men      1
+## 21                               Real monthly pay 25161 women      0
+## 22                           Log real monthly pay 25161 women      1
+## 23                                           Time 25161 women      1
+## 24                PhD discipline: Health sciences 25161 women      1
+## 25                PhD discipline: Social sciences 25161 women      1
+## 26 PhD discipline: Natural sciences &amp; mathematics 25161 women      1
+## 27                    PhD discipline: Engineering 25161 women      0
+## 28                     PhD discipline: Humanities 25161 women      1
+## 29                                  Child under 5 25161 women      1
+## 30                     Log Monthly contract hours 25161 women      1
+## 31                             Temporary contract 25161 women      0
+## 32                                     PhD cohort 25161 women      1
+## 33                               PhD satisfaction 25161 women      1
+## 34                             Sector: For-profit 25161 women      1
+## 35                             Sector: Government 25161 women      1
+## 36                              Sector:Non-profit 25161 women      1
+## 37                                      Other job 25161 women      1
+## 38                      Break in Dutch employment 25161 women      0
+## 39                                  Period abroad 25161 women      1
+## 40                                      Partnered 25161 women      0
+##                            ttest
+## 1   t(2791.09) = -0.54, p = 0.59
+## 2   t(2782.43) = -4.92, p &lt; .001
+## 3  t(2731.11) = -26.29, p &lt; .001
+## 4   t(2745.62) = 10.59, p &lt; .001
+## 5   t(3393.24) = 26.88, p &lt; .001
+## 6   t(2536.9) = -26.59, p &lt; .001
+## 7    t(2626.08) = 1.23, p = 0.22
+## 8    t(2901.87) = 6.41, p &lt; .001
+## 9   t(2578.66) = -3.73, p &lt; .001
+## 10  t(2787.71) = -7.48, p &lt; .001
+## 11     t(2585.66) = -2.91, p = 0
+## 12  t(2734.41) = 17.79, p &lt; .001
+## 13  t(2502.97) = -1.17, p = 0.24
+## 14  t(2590.92) = -9.06, p &lt; .001
+## 15    t(2613.8) = 6.31, p &lt; .001
+## 16   t(2780.55) = 5.56, p &lt; .001
+## 17  t(3288.98) = 10.48, p &lt; .001
+## 18      t(3242.15) = 3.26, p = 0
+## 19  t(2231.9) = -14.48, p &lt; .001
+## 20  t(2629.18) = -6.02, p &lt; .001
+## 21   t(1519.64) = 0.15, p = 0.88
+## 22  t(1473.15) = -4.31, p &lt; .001
+## 23    t(1424) = -21.85, p &lt; .001
+## 24   t(1440.9) = 15.28, p &lt; .001
+## 25  t(1455.52) = 11.46, p &lt; .001
+## 26 t(1327.42) = -25.52, p &lt; .001
+## 27   t(1393.13) = 0.04, p = 0.97
+## 28  t(1973.63) = 13.72, p &lt; .001
+## 29  t(1384.38) = -3.46, p &lt; .001
+## 30  t(1447.36) = -6.49, p &lt; .001
+## 31    t(1395.22) = 1.4, p = 0.16
+## 32  t(1422.67) = 13.99, p &lt; .001
+## 33   t(1418.73) = -7.1, p &lt; .001
+## 34  t(1384.29) = -7.39, p &lt; .001
+## 35   t(1395.74) = 4.34, p &lt; .001
+## 36    t(1449.5) = 5.26, p &lt; .001
+## 37   t(1751.58) = 11.4, p &lt; .001
+## 38    t(1419.81) = 0.26, p = 0.8
+## 39  t(1269.9) = -11.03, p &lt; .001
+## 40  t(1392.49) = -0.64, p = 0.52</code></pre>
+<pre class="r"><code>kable(ttests_mainabroad, caption = &quot;&lt;b&gt;T-tests comparing PhDs who went abroad after their PhD and those who did not&lt;/b&gt;&quot;) %&gt;%
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;, &quot;responsive&quot;))</code></pre>
+<table class="table table-striped table-hover table-condensed table-responsive" style="margin-left: auto; margin-right: auto;">
+<caption>
+<b>T-tests comparing PhDs who went abroad after their PhD and those who
+did not</b>
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+</th>
+<th style="text-align:left;">
+test_id
+</th>
+<th style="text-align:right;">
+t_value
+</th>
+<th style="text-align:right;">
+df
+</th>
+<th style="text-align:right;">
+p_value
+</th>
+<th style="text-align:left;">
+variable
+</th>
+<th style="text-align:right;">
+N_obs
+</th>
+<th style="text-align:left;">
+group
+</th>
+<th style="text-align:right;">
+psmall
+</th>
+<th style="text-align:left;">
+ttest
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t1_m
+</td>
+<td style="text-align:right;">
+-0.5448288
+</td>
+<td style="text-align:right;">
+2791.092
+</td>
+<td style="text-align:right;">
+0.5859148
+</td>
+<td style="text-align:left;">
+Real monthly pay
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(2791.09) = -0.54, p = 0.59
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+t2_m
+</td>
+<td style="text-align:right;">
+-4.9180871
+</td>
+<td style="text-align:right;">
+2782.432
+</td>
+<td style="text-align:right;">
+0.0000009
+</td>
+<td style="text-align:left;">
+Log real monthly pay
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2782.43) = -4.92, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+t3_m
+</td>
+<td style="text-align:right;">
+-26.2868375
+</td>
+<td style="text-align:right;">
+2731.112
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Time
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2731.11) = -26.29, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+t4_m
+</td>
+<td style="text-align:right;">
+10.5875840
+</td>
+<td style="text-align:right;">
+2745.622
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD discipline: Health sciences
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2745.62) = 10.59, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+t5_m
+</td>
+<td style="text-align:right;">
+26.8809026
+</td>
+<td style="text-align:right;">
+3393.241
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD discipline: Social sciences
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(3393.24) = 26.88, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+t6_m
+</td>
+<td style="text-align:right;">
+-26.5915439
+</td>
+<td style="text-align:right;">
+2536.902
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD discipline: Natural sciences &amp; mathematics
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2536.9) = -26.59, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+t7_m
+</td>
+<td style="text-align:right;">
+1.2331287
+</td>
+<td style="text-align:right;">
+2626.082
+</td>
+<td style="text-align:right;">
+0.2176381
+</td>
+<td style="text-align:left;">
+PhD discipline: Engineering
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(2626.08) = 1.23, p = 0.22
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+t8_m
+</td>
+<td style="text-align:right;">
+6.4118734
+</td>
+<td style="text-align:right;">
+2901.868
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD discipline: Humanities
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2901.87) = 6.41, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+t9_m
+</td>
+<td style="text-align:right;">
+-3.7290143
+</td>
+<td style="text-align:right;">
+2578.664
+</td>
+<td style="text-align:right;">
+0.0001964
+</td>
+<td style="text-align:left;">
+Child under 5
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2578.66) = -3.73, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:left;">
+t10_m
+</td>
+<td style="text-align:right;">
+-7.4845591
+</td>
+<td style="text-align:right;">
+2787.712
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Log Monthly contract hours
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2787.71) = -7.48, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:left;">
+t11_m
+</td>
+<td style="text-align:right;">
+-2.9126910
+</td>
+<td style="text-align:right;">
+2585.656
+</td>
+<td style="text-align:right;">
+0.0036140
+</td>
+<td style="text-align:left;">
+Temporary contract
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(2585.66) = -2.91, p = 0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:left;">
+t12_m
+</td>
+<td style="text-align:right;">
+17.7863868
+</td>
+<td style="text-align:right;">
+2734.406
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD cohort
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2734.41) = 17.79, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:left;">
+t13_m
+</td>
+<td style="text-align:right;">
+-1.1718224
+</td>
+<td style="text-align:right;">
+2502.966
+</td>
+<td style="text-align:right;">
+0.2413799
+</td>
+<td style="text-align:left;">
+PhD satisfaction
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(2502.97) = -1.17, p = 0.24
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:left;">
+t14_m
+</td>
+<td style="text-align:right;">
+-9.0631295
+</td>
+<td style="text-align:right;">
+2590.921
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Sector: For-profit
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2590.92) = -9.06, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:left;">
+t15_m
+</td>
+<td style="text-align:right;">
+6.3057470
+</td>
+<td style="text-align:right;">
+2613.798
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Sector: Government
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2613.8) = 6.31, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:left;">
+t16_m
+</td>
+<td style="text-align:right;">
+5.5648839
+</td>
+<td style="text-align:right;">
+2780.548
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Sector:Non-profit
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2780.55) = 5.56, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:left;">
+t17_m
+</td>
+<td style="text-align:right;">
+10.4789813
+</td>
+<td style="text-align:right;">
+3288.980
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Other job
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(3288.98) = 10.48, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:left;">
+t18_m
+</td>
+<td style="text-align:right;">
+3.2627717
+</td>
+<td style="text-align:right;">
+3242.145
+</td>
+<td style="text-align:right;">
+0.0011147
+</td>
+<td style="text-align:left;">
+Break in Dutch employment
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(3242.15) = 3.26, p = 0
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:left;">
+t19_m
+</td>
+<td style="text-align:right;">
+-14.4831005
+</td>
+<td style="text-align:right;">
+2231.901
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Period abroad
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2231.9) = -14.48, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:left;">
+t20_m
+</td>
+<td style="text-align:right;">
+-6.0214089
+</td>
+<td style="text-align:right;">
+2629.183
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Partnered
+</td>
+<td style="text-align:right;">
+27082
+</td>
+<td style="text-align:left;">
+men
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(2629.18) = -6.02, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:left;">
+t1_v
+</td>
+<td style="text-align:right;">
+0.1466530
+</td>
+<td style="text-align:right;">
+1519.638
+</td>
+<td style="text-align:right;">
+0.8834254
+</td>
+<td style="text-align:left;">
+Real monthly pay
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(1519.64) = 0.15, p = 0.88
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:left;">
+t2_v
+</td>
+<td style="text-align:right;">
+-4.3127046
+</td>
+<td style="text-align:right;">
+1473.152
+</td>
+<td style="text-align:right;">
+0.0000172
+</td>
+<td style="text-align:left;">
+Log real monthly pay
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1473.15) = -4.31, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:left;">
+t3_v
+</td>
+<td style="text-align:right;">
+-21.8505770
+</td>
+<td style="text-align:right;">
+1424.003
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Time
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1424) = -21.85, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:left;">
+t4_v
+</td>
+<td style="text-align:right;">
+15.2758610
+</td>
+<td style="text-align:right;">
+1440.897
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD discipline: Health sciences
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1440.9) = 15.28, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:left;">
+t5_v
+</td>
+<td style="text-align:right;">
+11.4640354
+</td>
+<td style="text-align:right;">
+1455.524
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD discipline: Social sciences
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1455.52) = 11.46, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:left;">
+t6_v
+</td>
+<td style="text-align:right;">
+-25.5158262
+</td>
+<td style="text-align:right;">
+1327.420
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD discipline: Natural sciences &amp; mathematics
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1327.42) = -25.52, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:left;">
+t7_v
+</td>
+<td style="text-align:right;">
+0.0391361
+</td>
+<td style="text-align:right;">
+1393.127
+</td>
+<td style="text-align:right;">
+0.9687875
+</td>
+<td style="text-align:left;">
+PhD discipline: Engineering
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(1393.13) = 0.04, p = 0.97
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:left;">
+t8_v
+</td>
+<td style="text-align:right;">
+13.7180715
+</td>
+<td style="text-align:right;">
+1973.628
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD discipline: Humanities
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1973.63) = 13.72, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:left;">
+t9_v
+</td>
+<td style="text-align:right;">
+-3.4631195
+</td>
+<td style="text-align:right;">
+1384.384
+</td>
+<td style="text-align:right;">
+0.0005502
+</td>
+<td style="text-align:left;">
+Child under 5
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1384.38) = -3.46, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:left;">
+t10_v
+</td>
+<td style="text-align:right;">
+-6.4933021
+</td>
+<td style="text-align:right;">
+1447.355
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Log Monthly contract hours
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1447.36) = -6.49, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:left;">
+t11_v
+</td>
+<td style="text-align:right;">
+1.4033976
+</td>
+<td style="text-align:right;">
+1395.222
+</td>
+<td style="text-align:right;">
+0.1607208
+</td>
+<td style="text-align:left;">
+Temporary contract
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(1395.22) = 1.4, p = 0.16
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:left;">
+t12_v
+</td>
+<td style="text-align:right;">
+13.9885935
+</td>
+<td style="text-align:right;">
+1422.669
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD cohort
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1422.67) = 13.99, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:left;">
+t13_v
+</td>
+<td style="text-align:right;">
+-7.1017921
+</td>
+<td style="text-align:right;">
+1418.733
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+PhD satisfaction
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1418.73) = -7.1, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:left;">
+t14_v
+</td>
+<td style="text-align:right;">
+-7.3892582
+</td>
+<td style="text-align:right;">
+1384.287
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Sector: For-profit
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1384.29) = -7.39, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:left;">
+t15_v
+</td>
+<td style="text-align:right;">
+4.3390855
+</td>
+<td style="text-align:right;">
+1395.738
+</td>
+<td style="text-align:right;">
+0.0000153
+</td>
+<td style="text-align:left;">
+Sector: Government
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1395.74) = 4.34, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:left;">
+t16_v
+</td>
+<td style="text-align:right;">
+5.2575672
+</td>
+<td style="text-align:right;">
+1449.498
+</td>
+<td style="text-align:right;">
+0.0000002
+</td>
+<td style="text-align:left;">
+Sector:Non-profit
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1449.5) = 5.26, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:left;">
+t17_v
+</td>
+<td style="text-align:right;">
+11.3991057
+</td>
+<td style="text-align:right;">
+1751.582
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Other job
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1751.58) = 11.4, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:left;">
+t18_v
+</td>
+<td style="text-align:right;">
+0.2554370
+</td>
+<td style="text-align:right;">
+1419.811
+</td>
+<td style="text-align:right;">
+0.7984226
+</td>
+<td style="text-align:left;">
+Break in Dutch employment
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(1419.81) = 0.26, p = 0.8
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:left;">
+t19_v
+</td>
+<td style="text-align:right;">
+-11.0304233
+</td>
+<td style="text-align:right;">
+1269.902
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
+<td style="text-align:left;">
+Period abroad
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+t(1269.9) = -11.03, p &lt; .001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:left;">
+t20_v
+</td>
+<td style="text-align:right;">
+-0.6404989
+</td>
+<td style="text-align:right;">
+1392.486
+</td>
+<td style="text-align:right;">
+0.5219537
+</td>
+<td style="text-align:left;">
+Partnered
+</td>
+<td style="text-align:right;">
+25161
+</td>
+<td style="text-align:left;">
+women
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+t(1392.49) = -0.64, p = 0.52
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="other-job" class="section level1">
-<h1>Other job</h1>
-<pre class="r"><code># are people with/out an other job more likely to make a transition?
-df_mmfc %&gt;%
+<div id="other-job" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Other job</h1>
+<p>Are people with/out an other job more likely to make a
+transition?</p>
+<pre class="r"><code>df_mmfc %&gt;%
   group_by(RINPERSOON) %&gt;%
   summarize(evertrans = max(trans_lt)) -&gt; evertrans
 
@@ -767,8 +3508,250 @@ otherjob_summ &lt;- rbind.data.frame(otherjob_summ_gender, otherjob_summ)
 
 
 write.csv(otherjob_summ, file=&quot;F:/GPE_salaris/R&amp;R/descriptive_tab_otherjob.csv&quot;)</code></pre>
+<pre class="r"><code>transitions_otherjob &lt;- read.csv(file=&quot;transitions_otherjob.csv&quot;, header = TRUE, check.names = FALSE)
+
+# how often do people with (1) and without an other job (0) make a transition?
+transitions_otherjob</code></pre>
+<pre><code>##   Will.Transition Other.job Freq
+## 1               0         0 1783
+## 2               1         0 2046
+## 3               0         1  446
+## 4               1         1  301</code></pre>
+<pre class="r"><code># Of people with an extra job, what percentage of their earnings and work hours come from their main job? Split out by gender (1=men;2=women) and whether their main job is at the uni (0/1)
+Table1_otherjob &lt;- read.csv(file=&quot;Table1_otherjob.csv&quot;, header = TRUE, check.names = FALSE)
+
+Table1_otherjob[,-1]</code></pre>
+<pre><code>##   uni gender mean_perc_pay_job1 sd_perc_pay_job1 mean_perc_hrs_job1
+## 1   0      1          0.7475617        0.1505000          0.7064214
+## 2   0      2          0.7269163        0.1398552          0.6990669
+## 3   1      1          0.7341327        0.1438970          0.7156083
+## 4   1      2          0.6970699        0.1412620          0.6792625
+## 5   0    all          0.7369286        0.1454112          0.7026336
+## 6   1    all          0.7152258        0.1437217          0.6970672
+##   sd_perc_hrs_job1 n_obs n_individual
+## 1        0.1612090   500          198
+## 2        0.1450039   531          234
+## 3        0.1550529   943          354
+## 4        0.1479073   982          393
+## 5        0.1530466  1031          432
+## 6        0.1524972  1925          747</code></pre>
+<pre class="r"><code>kable(Table1_otherjob, caption = &quot;&lt;b&gt;Percentage of earnings and work hours hauled from main job, for researchers with more than 1 job&lt;/b&gt;&quot;) %&gt;%
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;, &quot;condensed&quot;, &quot;responsive&quot;))</code></pre>
+<table class="table table-striped table-hover table-condensed table-responsive" style="margin-left: auto; margin-right: auto;">
+<caption>
+<b>Percentage of earnings and work hours hauled from main job, for
+researchers with more than 1 job</b>
+</caption>
+<thead>
+<tr>
+<th style="text-align:right;">
+</th>
+<th style="text-align:right;">
+uni
+</th>
+<th style="text-align:left;">
+gender
+</th>
+<th style="text-align:right;">
+mean_perc_pay_job1
+</th>
+<th style="text-align:right;">
+sd_perc_pay_job1
+</th>
+<th style="text-align:right;">
+mean_perc_hrs_job1
+</th>
+<th style="text-align:right;">
+sd_perc_hrs_job1
+</th>
+<th style="text-align:right;">
+n_obs
+</th>
+<th style="text-align:right;">
+n_individual
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+0.7475617
+</td>
+<td style="text-align:right;">
+0.1505000
+</td>
+<td style="text-align:right;">
+0.7064214
+</td>
+<td style="text-align:right;">
+0.1612090
+</td>
+<td style="text-align:right;">
+500
+</td>
+<td style="text-align:right;">
+198
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+0.7269163
+</td>
+<td style="text-align:right;">
+0.1398552
+</td>
+<td style="text-align:right;">
+0.6990669
+</td>
+<td style="text-align:right;">
+0.1450039
+</td>
+<td style="text-align:right;">
+531
+</td>
+<td style="text-align:right;">
+234
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:right;">
+0.7341327
+</td>
+<td style="text-align:right;">
+0.1438970
+</td>
+<td style="text-align:right;">
+0.7156083
+</td>
+<td style="text-align:right;">
+0.1550529
+</td>
+<td style="text-align:right;">
+943
+</td>
+<td style="text-align:right;">
+354
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:right;">
+0.6970699
+</td>
+<td style="text-align:right;">
+0.1412620
+</td>
+<td style="text-align:right;">
+0.6792625
+</td>
+<td style="text-align:right;">
+0.1479073
+</td>
+<td style="text-align:right;">
+982
+</td>
+<td style="text-align:right;">
+393
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+all
+</td>
+<td style="text-align:right;">
+0.7369286
+</td>
+<td style="text-align:right;">
+0.1454112
+</td>
+<td style="text-align:right;">
+0.7026336
+</td>
+<td style="text-align:right;">
+0.1530466
+</td>
+<td style="text-align:right;">
+1031
+</td>
+<td style="text-align:right;">
+432
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+all
+</td>
+<td style="text-align:right;">
+0.7152258
+</td>
+<td style="text-align:right;">
+0.1437217
+</td>
+<td style="text-align:right;">
+0.6970672
+</td>
+<td style="text-align:right;">
+0.1524972
+</td>
+<td style="text-align:right;">
+1925
+</td>
+<td style="text-align:right;">
+747
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkxlYXZpbmcgZm9yIG1vcmUgb3Igc2V0dGxpbmcgZm9yIGxlc3M6IERlc2NyaXB0aXZlcyINCmRhdGU6ICJMYXN0IGNvbXBpbGVkIG9uIGByIFN5cy5EYXRlKClgIg0Kb3V0cHV0OiANCiAgaHRtbF9kb2N1bWVudDoNCiAgICBjc3M6IHR3ZWFrcy5jc3MNCiAgICB0b2M6ICB0cnVlDQogICAgdG9jX2Zsb2F0OiB0cnVlDQogICAgbnVtYmVyX3NlY3Rpb25zOiB0cnVlDQogICAgY29kZV9mb2xkaW5nOiBzaG93DQogICAgY29kZV9kb3dubG9hZDogeWVzDQotLS0NCg0KDQojIFJlYWRpbmcgaW4gcGFja2FnZXMNCg0KYGBge3J9DQoNCnJtKGxpc3Q9bHMoKSkNCg0KYGBgDQoNCg0KYGBge3J9DQoNCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShnZ3Bsb3QyKQ0KbGlicmFyeShrYWJsZUV4dHJhKQ0KDQpgYGANCg0KIyBSZWFkaW5nIGluIGRhdGENCg0KYGBge3IsIGV2YWw9RkFMU0V9DQoNCmxvYWQoZmlsZT0iSDovcHJvY2Vzc2VkX2RhdGEvZGZfbW1mYy5yZGEiKQ0KbG9hZChmaWxlPSJIOi9wcm9jZXNzZWRfZGF0YS9kZl9vdGhlci5yZGEiKQ0KbG9hZChmaWxlPSJIOi9wcm9jZXNzZWRfZGF0YS9kZl9ub290aGVyLnJkYSIpDQoNCmBgYA0KDQoNCg0KIyBTb21lIGFkLWhvYyByZWxldmVsaW5nIA0KDQpgYGB7ciwgZXZhbD1GQUxTRX0NCg0KbGV2ZWxzKGFzLmZhY3RvcihkZl9tbWZjJHBoZF9kaXNjaSkpDQoNCmRmX21tZmMkcGhkX2Rpc2NpIDwtIGZhY3RvcihkZl9tbWZjJHBoZF9kaXNjaSwgbGV2ZWxzPWMoIkhlYWx0aCBzY2llbmNlcyIsICJTb2NpYWwgc2NpZW5jZXMiLCAiTmF0dXJhbCBzY2llbmNlcyBhbmQgbWF0aGVtYXRpY3MiLCAiRW5naW5lZXJpbmciLCAiSHVtYW5pdGllcyIsICJBZ3JpY3VsdHVyZSBhbmQgYW5pbWFsIHNjaWVuY2VzIikpDQoNCmRmX21tZmMgPC0gZGZfbW1mYyAlPiUgDQogIG11dGF0ZShnZW5kZXIgPSBpZmVsc2UoZ2VuZGVyPT0xLCAibWVuIiwgIndvbWVuIikpDQoNCmRmX21tZmMkZ2VuZGVyIDwtIGZhY3RvcihkZl9tbWZjJGdlbmRlciwgbGV2ZWxzPWMoIm1lbiIsICJ3b21lbiIpKQ0KDQpgYGANCg0KDQojIERlc2NyaXB0aXZlcw0KDQojIyBOdW1iZXIgb2YgdHJhbnNpdGlvbnMNCg0KYGBge3IsIGV2YWw9RkFMU0V9DQoNCmRmX21tZmMgJT4lDQogIGdyb3VwX2J5KGdlbmRlcikgJT4lDQogIGNvdW50KHRyYW5zX3N0KSAlPiUNCiAgZmlsdGVyKHRyYW5zX3N0PT0xKSAlPiUNCiAgbXV0YXRlKE5fdHJhbnNpdGlvbnM9bikgJT4lIA0KICBzZWxlY3QoZ2VuZGVyLCBOX3RyYW5zaXRpb25zKSAtPiBOX3RyYW5zaXRpb25zDQoNCndyaXRlLmNzdihOX3RyYW5zaXRpb25zLCBmaWxlPSJGOi9HUEVfc2FsYXJpcy9OX3RyYW5zaXRpb25zLmNzdiIpDQoNCmBgYA0KDQoNCg0KIyBEZXNjcmlwdGl2ZXMNCg0KDQojIyBEZXNjcmlwdGl2ZSB0YWJsZSBieSBnZW5kZXINCg0KYGBge3IsIGV2YWw9RkFMU0V9DQoNCiMgZmxhdHRlbmluZyB0aW1lLXZhcnlpbmcgdmFyaWFibGVzIChiYXNlcGF5KQ0KDQpjb2x1bW5zIDwtIGMoIkY6IDElIiwgIkY6IDk5JSIsICJGOiBNZWFuIiwgIkY6IFNEIiwgIk06IDElIiwgIk06IDk5JSIsICJNOiBNZWFuIiwgIk06IFNEIikNCnJvd3MgPC0gYygiUmVhbCBtb250aGx5IHBheSIsICJMb2cgcmVhbCBtb250aGx5IHBheSIsICJUcmFuc2l0aW9uIHllYXIiLCAiVHJhbnNpdGlvbiBleHBlcmllbmNlZCIsIlRpbWUiICwgIlBoRCBEaXNjaXBsaW5lIiwgIkhlYWx0aCBzY2llbmNlcyIsICJTb2NpYWwgc2NpZW5jZXMiLCAiTmF0dXJhbCBzY2llbmNlcyBhbmQgbWF0aGVtYXRpY3MiLCAiRW5naW5lZXJpbmciLCAiSHVtYW5pdGllcyIsICJDaGlsZCB1bmRlciA1IiwgIkxvZyBtb250aGx5IGNvbnRyYWN0IGhvdXJzIiwgIlRlbXBvcmFyeSBjb250cmFjdCIsICJQaEQgY29ob3J0IiwgIlBoRCBzYXRpc2ZhY3Rpb24iLCAiU2VjdG9yIiwgIkZvci1wcm9maXQiLCAiR292ZXJubWVudCIsICJOb24tcHJvZml0IiwgIk90aGVyIGpvYiIsICJCcmVhayBpbiBEdXRjaCBlbXBsb3ltZW50IiwgIlBlcmlvZCBhYnJvYWQiLCAiUGFydG5lcmVkIiwgIlRpbWUgYXQgdHJhbnNpdGlvbiIsICJOIGluZGl2aWR1YWxzIiwgIk4gb2JzZXJ2YXRpb25zIikNCiAgDQp0MSA8LSBkYXRhLmZyYW1lKG1hdHJpeChucm93PWxlbmd0aChyb3dzKSwgbmNvbD1sZW5ndGgoY29sdW1ucykpKQ0KDQpjb2xuYW1lcyh0MSkgPC0gY29sdW1ucw0Kcm93bmFtZXModDEpIDwtIHJvd3MNCg0KZGZfbW1mYyAlPiUNCiAgZ3JvdXBfYnkoZ2VuZGVyKSAlPiUNCiAgc3VtbWFyaXplKGFjcm9zcyhjKHJlYWxwYXlfY29ycjIsIGxvZ19yZWFscGF5LCB0LCBsb2dfaHJzLCBwaGRfY29oLCBwaGRfc2F0LCBicmVha19qb2IsIGFicm9hZF90aW1lKSwNCiAgICAgICAgICAgIGxpc3QocDEgPSB+cXVhbnRpbGUoLngsIDAuMDEpLCBwOTkgPSB+cXVhbnRpbGUoLngsIDAuOTkpLCBtZWFuID0gbWVhbiwgc2Q9c2QpLA0KICAgICAgICAgICAgLm5hbWVzID0gInsuY29sfS17LmZufSIpKSAlPiUNCiAgcGl2b3RfbG9uZ2VyKA0KICAgIGNvbHMgPSAtZ2VuZGVyLA0KICAgIG5hbWVzX3RvID0gYygidmFyaWFibGUiLCAic3RhdGlzdGljIiksIA0KICAgIG5hbWVzX3NlcCA9ICItIg0KICApICU+JQ0KICBwaXZvdF93aWRlcigNCiAgICBuYW1lc19mcm9tID0gc3RhdGlzdGljLA0KICAgIHZhbHVlc19mcm9tID0gdmFsdWUNCiAgKSAtPiB0MV9jb250aW4NCg0KDQpkZl9tbWZjICU+JSBmaWx0ZXIoZ2VuZGVyPT0id29tZW4iKSAtPiBkZl93b20NCmRmX21tZmMgJT4lIGZpbHRlcihnZW5kZXI9PSJtZW4iKSAtPiBkZl9tZW4NCg0KIyBjaGVjayBpZiAxJSBhbmQgOTklIG9mIGR1bW1pZXMgaXMgaW5kZWVkIDAvMQ0KIyBjKHF1YW50aWxlKGRmX21lbiR0cmFuc19sdCwgMC4wMSksIHF1YW50aWxlKGRmX21lbiR0cmFuc19sdCwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfbWVuJHRyYW5zX3N0LCAwLjAxKSwgcXVhbnRpbGUoZGZfbWVuJHRyYW5zX3N0LCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl9tZW4kY2hpbGRfdTUsIDAuMDEpLCBxdWFudGlsZShkZl9tZW4kY2hpbGRfdTUsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX21lbiR0ZW1wb3JhcnlfZW1wLCAwLjAxKSwgcXVhbnRpbGUoZGZfbWVuJHRlbXBvcmFyeV9lbXAsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX21lbiRzZWN0b3JfZm9ycHIsIDAuMDEpLCBxdWFudGlsZShkZl9tZW4kc2VjdG9yX2ZvcnByLCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl9tZW4kc2VjdG9yX2dvdiwgMC4wMSksIHF1YW50aWxlKGRmX21lbiRzZWN0b3JfZ292LCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl9tZW4kc2VjdG9yX25vbnByLCAwLjAxKSwgcXVhbnRpbGUoZGZfbWVuJHNlY3Rvcl9ub25wciwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfbWVuJG90aGVyam9iLCAwLjAxKSwgcXVhbnRpbGUoZGZfbWVuJG90aGVyam9iLCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl9tZW4kcGFydG5lcmVkLCAwLjAxKSwgcXVhbnRpbGUoZGZfbWVuJHBhcnRuZXJlZCwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfd29tJHRyYW5zX2x0LCAwLjAxKSwgcXVhbnRpbGUoZGZfd29tJHRyYW5zX2x0LCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl93b20kdHJhbnNfc3QsIDAuMDEpLCBxdWFudGlsZShkZl93b20kdHJhbnNfc3QsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX3dvbSRjaGlsZF91NSwgMC4wMSksIHF1YW50aWxlKGRmX3dvbSRjaGlsZF91NSwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfd29tJHRlbXBvcmFyeV9lbXAsIDAuMDEpLCBxdWFudGlsZShkZl93b20kdGVtcG9yYXJ5X2VtcCwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfd29tJHNlY3Rvcl9mb3JwciwgMC4wMSksIHF1YW50aWxlKGRmX3dvbSRzZWN0b3JfZm9ycHIsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX3dvbSRzZWN0b3JfZ292LCAwLjAxKSwgcXVhbnRpbGUoZGZfd29tJHNlY3Rvcl9nb3YsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX3dvbSRzZWN0b3Jfbm9ucHIsIDAuMDEpLCBxdWFudGlsZShkZl93b20kc2VjdG9yX25vbnByLCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl93b20kb3RoZXJqb2IsIDAuMDEpLCBxdWFudGlsZShkZl93b20kb3RoZXJqb2IsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX3dvbSRwYXJ0bmVyZWQsIDAuMDEpLCBxdWFudGlsZShkZl93b20kcGFydG5lcmVkLCAwLjk5KSkNCiMgaXQgaXMhDQoNCg0KdDFbYygzLDQsNzoxMiwxNCwxODoyMSwyNCksMV0gPC0gcmVwKDAuMDAwMSwgdGltZXM9bGVuZ3RoKHQxW2MoMyw0LDc6MTIsMTQsMTg6MjEsMjQpLDFdKSkNCnQxW2MoMyw0LDc6MTIsMTQsMTg6MjEsMjQpLDJdIDwtIHJlcCgxLjAwMDEsIHRpbWVzPWxlbmd0aCh0MVtjKDMsNCw3OjEyLDE0LDE4OjIxLDI0KSwyXSkpDQp0MVtjKDMsNCw3OjEyLDE0LDE4OjIxLDI0KSw1XSA8LSByZXAoMC4wMDAxLCB0aW1lcz1sZW5ndGgodDFbYygzLDQsNzoxMiwxNCwxODoyMSwyNCksNV0pKQ0KdDFbYygzLDQsNzoxMiwxNCwxODoyMSwyNCksNl0gPC0gcmVwKDEuMDAwMSwgdGltZXM9bGVuZ3RoKHQxW2MoMyw0LDc6MTIsMTQsMTg6MjEsMjQpLDZdKSkNCg0KIyB0aW1lIGF0IHRyYW5zaXRpb24NCmRmX3dvbSAlPiUgZmlsdGVyKHRyYW5zX3N0PT0xKSAtPiB3b210cmFucw0KZGZfbWVuICU+JSBmaWx0ZXIodHJhbnNfc3Q9PTEpIC0+IG1lbnRyYW5zDQoNCiMgd29tZW4gDQp0MVtjKDE6MiksYygxOjQpXSA8LSB0MV9jb250aW5bYyg5OjEwKSxjKDM6NildICMgcGF5DQp0MVszLDNdIDwtIG1lYW4oZGZfd29tJHRyYW5zX3N0KQ0KdDFbNCwzXSA8LSBtZWFuKGRmX3dvbSR0cmFuc19sdCkNCnQxWzUsYygxOjQpXSA8LSB0MV9jb250aW5bMTEsIGMoMzo2KV0gIyB0aW1lDQp0MVtjKDc6MTEpLDNdPC0gcm91bmQocHJvcC50YWJsZSh0YWJsZShkZl93b20kcGhkX2Rpc2NpKSksIGRpZ2l0cz0yKVtjKDE6NSldICMgZGlzY2kNCnQxWzEyLDNdIDwtIG1lYW4oZGZfd29tJGNoaWxkX3U1KQ0KdDFbMTMsYygxOjQpXSA8LSB0MV9jb250aW5bMTIsIGMoMzo2KV0gIyBjb250cmFjdCBob3Vycw0KdDFbMTQsM10gPC0gbWVhbihkZl93b20kdGVtcG9yYXJ5X2VtcCkNCnQxW2MoMTU6MTYpLGMoMTo0KV0gPC0gdDFfY29udGluW2MoMTM6MTQpLGMoMzo2KV0gIyBwaGQgY29ob3J0LCBzYXRpcw0KdDFbMTgsIDNdIDwtIG1lYW4oZGZfd29tJHNlY3Rvcl9mb3JwcikNCnQxWzE5LCAzXSA8LSBtZWFuKGRmX3dvbSRzZWN0b3JfZ292KQ0KdDFbMjAsIDNdIDwtIG1lYW4oZGZfd29tJHNlY3Rvcl9ub25wcikNCnQxWzIxLCAzXSA8LSBtZWFuKGRmX3dvbSRvdGhlcmpvYikNCnQxW2MoMjI6MjMpLGMoMTo0KV0gPC0gdDFfY29udGluW2MoMTU6MTYpLCBjKDM6NildICMgYnJlYWsgam9iLCBhYnJvYWQNCnQxWzI0LCAzXSA8LSBtZWFuKGRmX3dvbSRwYXJ0bmVyZWQpDQp0MVsyNSwgMV0gPC0gcXVhbnRpbGUod29tdHJhbnMkdCwgMC4wMSkNCnQxWzI1LCAyXSA8LSBxdWFudGlsZSh3b210cmFucyR0LCAwLjk5KQ0KdDFbMjUsIDNdIDwtIG1lYW4od29tdHJhbnMkdCkNCnQxWzI1LCA0XSA8LSBzZCh3b210cmFucyR0KQ0KdDFbMjYsIDNdIDwtIG5yb3coZGZfd29tWyFkdXBsaWNhdGVkKGRmX3dvbSRSSU5QRVJTT09OKSxdKQ0KdDFbMjcsIDNdIDwtIG5yb3coZGZfd29tKQ0KDQojIG1lbiANCnQxW2MoMToyKSxjKDU6OCldIDwtIHQxX2NvbnRpbltjKDE6MiksYygzOjYpXSAjIHBheQ0KdDFbMyw3XSA8LSBtZWFuKGRmX21lbiR0cmFuc19zdCkNCnQxWzQsN10gPC0gbWVhbihkZl9tZW4kdHJhbnNfbHQpDQp0MVs1LGMoNTo4KV0gPC0gdDFfY29udGluWzMsIGMoMzo2KV0gIyB0aW1lDQp0MVtjKDc6MTEpLDddPC0gcm91bmQocHJvcC50YWJsZSh0YWJsZShkZl9tZW4kcGhkX2Rpc2NpKSksIGRpZ2l0cz0yKVtjKDE6NSldICMgZGlzY2kNCnQxWzEyLDddIDwtIG1lYW4oZGZfbWVuJGNoaWxkX3U1KQ0KdDFbMTMsYyg1OjgpXSA8LSB0MV9jb250aW5bNCwgYygzOjYpXSAjIGNvbnRyYWN0IGhvdXJzDQp0MVsxNCw3XSA8LSBtZWFuKGRmX21lbiR0ZW1wb3JhcnlfZW1wKQ0KdDFbYygxNToxNiksYyg1OjgpXSA8LSB0MV9jb250aW5bYyg1OjYpLGMoMzo2KV0gIyBwaGQgY29ob3J0LCBzYXRpcw0KdDFbMTgsIDddIDwtIG1lYW4oZGZfbWVuJHNlY3Rvcl9mb3JwcikNCnQxWzE5LCA3XSA8LSBtZWFuKGRmX21lbiRzZWN0b3JfZ292KQ0KdDFbMjAsIDddIDwtIG1lYW4oZGZfbWVuJHNlY3Rvcl9ub25wcikNCnQxWzIxLCA3XSA8LSBtZWFuKGRmX21lbiRvdGhlcmpvYikNCnQxW2MoMjI6MjMpLGMoNTo4KV0gPC0gdDFfY29udGluW2MoNzo4KSwgYygzOjYpXSAjIGJyZWFrIGpvYiwgYWJyb2FkDQp0MVsyNCwgN10gPC0gbWVhbihkZl9tZW4kcGFydG5lcmVkKQ0KdDFbMjUsIDVdIDwtIHF1YW50aWxlKG1lbnRyYW5zJHQsIDAuMDEpDQp0MVsyNSwgNl0gPC0gcXVhbnRpbGUobWVudHJhbnMkdCwgMC45OSkNCnQxWzI1LCA3XSA8LSBtZWFuKG1lbnRyYW5zJHQpDQp0MVsyNSwgOF0gPC0gc2QobWVudHJhbnMkdCkNCnQxWzI2LCA3XSA8LSBucm93KGRmX21lblshZHVwbGljYXRlZChkZl9tZW4kUklOUEVSU09PTiksXSkNCnQxWzI3LCA3XSA8LSBucm93KGRmX21lbikNCg0KdDFbYygxOjI1KSxdIDwtIHJvdW5kKHQxW2MoMToyNSksXSwgZGlnaXRzPTIpDQp0MVtjKDI2OjI3KSxdIDwtIGFicyh0MVtjKDI2OjI3KSxdKQ0KDQp0MVsyNixdIDwtIHJvdW5kKGFicyh0MVsyNixdKSwgZGlnaXRzPTApDQp0MVsyNyxdIDwtIHJvdW5kKGFicyh0MVsyNyxdKSwgZGlnaXRzPTApDQoNCnQxW2lzLm5hKHQxKV0gPC0gIiINCg0KRGVzY3JpcHRpdmVzX1RhYmxlIDwtIHQxDQoNCndyaXRlLmNzdih0MSwgZmlsZT0iRjovR1BFX3NhbGFyaXMvUiZSL2Rlc2NyaXB0aXZlX3RhYi5jc3YiKQ0KDQpgYGANCg0KDQpgYGB7cn0NCg0KVGFibGUxIDwtIHJlYWQuY3N2KGZpbGU9IlRhYmxlMS5jc3YiLCBoZWFkZXI9VFJVRSwgY2hlY2submFtZXM9RkFMU0UpDQoNCg0KVGFibGUxW2lzLm5hKFRhYmxlMSldIDwtICIiDQoNCg0Ka2FibGUoVGFibGUxLCBjYXB0aW9uID0gIjxiPlRhYmxlIDE6IGRlc2NyaXB0aXZlIHN0YXRpc3RpY3MgZm9yIGFsbCB2YXJpYWJsZXMgdXNlZCBpbiBvdXIgYW5hbHlzZXMsIHNwbGl0IG91dCBmb3IgbWVuIGFuZCB3b21lbjwvYj4iKSAlPiUNCiAga2FibGVfc3R5bGluZyhib290c3RyYXBfb3B0aW9ucyA9IGMoInN0cmlwZWQiLCAiaG92ZXIiLCAiY29uZGVuc2VkIiwgInJlc3BvbnNpdmUiKSkNCg0KDQpgYGANCg0KDQoNCg0KIyBSb2J1c3RuZXNzOiBkZXNjcmlwdGl2ZSBzdGF0aXN0aWNzIG9mIHBlb3BsZSB3aG8gZ28gYWJyb2FkIGFmdGVyIHRoZWlyIFBoRA0KDQpgYGB7ciwgZXZhbD1GQUxTRX0NCg0KbG9hZChmaWxlPSJIOi9wcm9jZXNzZWRfZGF0YS9hYnJvYWRhZnRlcnBoZF9sb25nLnJkYSIpDQoNCmxldmVscyhhcy5mYWN0b3IoYWJyb2FkYWZ0ZXJwaGRfbG9uZyRwaGRfZGlzY2kpKQ0KDQphYnJvYWRhZnRlcnBoZF9sb25nJHBoZF9kaXNjaSA8LSBmYWN0b3IoYWJyb2FkYWZ0ZXJwaGRfbG9uZyRwaGRfZGlzY2ksIGxldmVscz1jKCJIZWFsdGggc2NpZW5jZXMiLCAiU29jaWFsIHNjaWVuY2VzIiwgIk5hdHVyYWwgc2NpZW5jZXMgYW5kIG1hdGhlbWF0aWNzIiwgIkVuZ2luZWVyaW5nIiwgIkh1bWFuaXRpZXMiKSkNCg0KYWJyb2FkYWZ0ZXJwaGRfbG9uZyA8LSBhYnJvYWRhZnRlcnBoZF9sb25nICU+JSANCiAgbXV0YXRlKGdlbmRlciA9IGlmZWxzZShnZW5kZXI9PTEsICJtZW4iLCAid29tZW4iKSkNCg0KYWJyb2FkYWZ0ZXJwaGRfbG9uZyRnZW5kZXIgPC0gZmFjdG9yKGFicm9hZGFmdGVycGhkX2xvbmckZ2VuZGVyLCBsZXZlbHM9YygibWVuIiwgIndvbWVuIikpDQoNCiMgcmVtb3ZpbmcgbWlzc2luZ3MNCm5yb3coYWJyb2FkYWZ0ZXJwaGRfbG9uZ1shZHVwbGljYXRlZChhYnJvYWRhZnRlcnBoZF9sb25nJFJJTlBFUlNPT04pLF0pICMgMzUzDQoNCmFicm9hZGFmdGVycGhkX2xvbmcgJT4lDQogIGZpbHRlcighaXMubmEocGhkX3NhdCkpICU+JQ0KICBmaWx0ZXIoIWlzLm5hKHRlbXBvcmFyeV9lbXApKSAlPiUNCiAgZmlsdGVyKCFpcy5uYShzZWN0X2FkaikpIC0+IGFicm9hZGFmdGVycGhkX2xvbmcNCg0KbnJvdyhhYnJvYWRhZnRlcnBoZF9sb25nWyFkdXBsaWNhdGVkKGFicm9hZGFmdGVycGhkX2xvbmckUklOUEVSU09PTiksXSkgIyAzNTINCg0KIyBmbGF0dGVuaW5nIHRpbWUtdmFyeWluZyB2YXJpYWJsZXMgKGJhc2VwYXkpDQoNCmNvbHVtbnMgPC0gYygiRjogMSUiLCAiRjogOTklIiwgIkY6IE1lYW4iLCAiRjogU0QiLCAiTTogMSUiLCAiTTogOTklIiwgIk06IE1lYW4iLCAiTTogU0QiKQ0Kcm93cyA8LSBjKCJSZWFsIG1vbnRobHkgcGF5IiwgIkxvZyByZWFsIG1vbnRobHkgcGF5IiwgIlRyYW5zaXRpb24geWVhciIsICJUcmFuc2l0aW9uIGV4cGVyaWVuY2VkIiwiVGltZSIgLCAiUGhEIERpc2NpcGxpbmUiLCAiSGVhbHRoIHNjaWVuY2VzIiwgIlNvY2lhbCBzY2llbmNlcyIsICJOYXR1cmFsIHNjaWVuY2VzIGFuZCBtYXRoZW1hdGljcyIsICJFbmdpbmVlcmluZyIsICJIdW1hbml0aWVzIiwgIkNoaWxkIHVuZGVyIDUiLCAiTG9nIG1vbnRobHkgY29udHJhY3QgaG91cnMiLCAiVGVtcG9yYXJ5IGNvbnRyYWN0IiwgIlBoRCBjb2hvcnQiLCAiUGhEIHNhdGlzZmFjdGlvbiIsICJTZWN0b3IiLCAiRm9yLXByb2ZpdCIsICJHb3Zlcm5tZW50IiwgIk5vbi1wcm9maXQiLCAiT3RoZXIgam9iIiwgIkJyZWFrIGluIER1dGNoIGVtcGxveW1lbnQiLCAiUGVyaW9kIGFicm9hZCIsICJQYXJ0bmVyZWQiLCAiVGltZSBhdCB0cmFuc2l0aW9uIiwgIk4gaW5kaXZpZHVhbHMiLCAiTiBvYnNlcnZhdGlvbnMiKQ0KICANCnQxX2Ficm9hZCA8LSBkYXRhLmZyYW1lKG1hdHJpeChucm93PWxlbmd0aChyb3dzKSwgbmNvbD1sZW5ndGgoY29sdW1ucykpKQ0KDQpjb2xuYW1lcyh0MV9hYnJvYWQpIDwtIGNvbHVtbnMNCnJvd25hbWVzKHQxX2Ficm9hZCkgPC0gcm93cw0KDQphYnJvYWRhZnRlcnBoZF9sb25nICU+JQ0KICBncm91cF9ieShnZW5kZXIpICU+JQ0KICBzdW1tYXJpemUoYWNyb3NzKGMocmVhbHBheV9jb3JyMiwgbG9nX3JlYWxwYXksIHQsIGJhc2Vob3Vyc19tb250aCwgcGhkX2NvaCwgcGhkX3NhdCwgYnJlYWtfam9iLCBhYnJvYWRfdGltZSksDQogICAgICAgICAgICBsaXN0KHAxID0gfnF1YW50aWxlKC54LCAwLjAxKSwgcDk5ID0gfnF1YW50aWxlKC54LCAwLjk5KSwgbWVhbiA9IG1lYW4sIHNkPXNkKSwNCiAgICAgICAgICAgIC5uYW1lcyA9ICJ7LmNvbH0tey5mbn0iKSkgJT4lDQogIHBpdm90X2xvbmdlcigNCiAgICBjb2xzID0gLWdlbmRlciwNCiAgICBuYW1lc190byA9IGMoInZhcmlhYmxlIiwgInN0YXRpc3RpYyIpLCANCiAgICBuYW1lc19zZXAgPSAiLSINCiAgKSAlPiUNCiAgcGl2b3Rfd2lkZXIoDQogICAgbmFtZXNfZnJvbSA9IHN0YXRpc3RpYywNCiAgICB2YWx1ZXNfZnJvbSA9IHZhbHVlDQogICkgLT4gdDFfYWJyb2FkX2NvbnRpbg0KDQoNCmFicm9hZGFmdGVycGhkX2xvbmcgJT4lIGZpbHRlcihnZW5kZXI9PSJ3b21lbiIpIC0+IGRmX3dvbQ0KYWJyb2FkYWZ0ZXJwaGRfbG9uZyAlPiUgZmlsdGVyKGdlbmRlcj09Im1lbiIpIC0+IGRmX21lbg0KDQojIGNoZWNrIGlmIDElIGFuZCA5OSUgb2YgZHVtbWllcyBpcyBpbmRlZWQgMC8xDQojIGMocXVhbnRpbGUoZGZfbWVuJHRyYW5zX2x0LCAwLjAxKSwgcXVhbnRpbGUoZGZfbWVuJHRyYW5zX2x0LCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl9tZW4kdHJhbnNfc3QsIDAuMDEpLCBxdWFudGlsZShkZl9tZW4kdHJhbnNfc3QsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX21lbiRjaGlsZF91NSwgMC4wMSksIHF1YW50aWxlKGRmX21lbiRjaGlsZF91NSwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfbWVuJHRlbXBvcmFyeV9lbXAsIDAuMDEpLCBxdWFudGlsZShkZl9tZW4kdGVtcG9yYXJ5X2VtcCwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfbWVuJHNlY3Rvcl9mb3JwciwgMC4wMSksIHF1YW50aWxlKGRmX21lbiRzZWN0b3JfZm9ycHIsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX21lbiRzZWN0b3JfZ292LCAwLjAxKSwgcXVhbnRpbGUoZGZfbWVuJHNlY3Rvcl9nb3YsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX21lbiRzZWN0b3Jfbm9ucHIsIDAuMDEpLCBxdWFudGlsZShkZl9tZW4kc2VjdG9yX25vbnByLCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl9tZW4kb3RoZXJqb2IsIDAuMDEpLCBxdWFudGlsZShkZl9tZW4kb3RoZXJqb2IsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX21lbiRwYXJ0bmVyZWQsIDAuMDEpLCBxdWFudGlsZShkZl9tZW4kcGFydG5lcmVkLCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl93b20kdHJhbnNfbHQsIDAuMDEpLCBxdWFudGlsZShkZl93b20kdHJhbnNfbHQsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX3dvbSR0cmFuc19zdCwgMC4wMSksIHF1YW50aWxlKGRmX3dvbSR0cmFuc19zdCwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfd29tJGNoaWxkX3U1LCAwLjAxKSwgcXVhbnRpbGUoZGZfd29tJGNoaWxkX3U1LCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl93b20kdGVtcG9yYXJ5X2VtcCwgMC4wMSksIHF1YW50aWxlKGRmX3dvbSR0ZW1wb3JhcnlfZW1wLCAwLjk5KSkNCiMgYyhxdWFudGlsZShkZl93b20kc2VjdG9yX2ZvcnByLCAwLjAxKSwgcXVhbnRpbGUoZGZfd29tJHNlY3Rvcl9mb3JwciwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfd29tJHNlY3Rvcl9nb3YsIDAuMDEpLCBxdWFudGlsZShkZl93b20kc2VjdG9yX2dvdiwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfd29tJHNlY3Rvcl9ub25wciwgMC4wMSksIHF1YW50aWxlKGRmX3dvbSRzZWN0b3Jfbm9ucHIsIDAuOTkpKQ0KIyBjKHF1YW50aWxlKGRmX3dvbSRvdGhlcmpvYiwgMC4wMSksIHF1YW50aWxlKGRmX3dvbSRvdGhlcmpvYiwgMC45OSkpDQojIGMocXVhbnRpbGUoZGZfd29tJHBhcnRuZXJlZCwgMC4wMSksIHF1YW50aWxlKGRmX3dvbSRwYXJ0bmVyZWQsIDAuOTkpKQ0KIyBpdCBpcyENCg0KDQp0MV9hYnJvYWRbYygzLDQsNzoxMiwxNCwxODoyMSwyNCksMV0gPC0gcmVwKDAuMDAwMSwgdGltZXM9bGVuZ3RoKHQxX2Ficm9hZFtjKDMsNCw3OjEyLDE0LDE4OjIxLDI0KSwxXSkpDQp0MV9hYnJvYWRbYygzLDQsNzoxMiwxNCwxODoyMSwyNCksMl0gPC0gcmVwKDEuMDAwMSwgdGltZXM9bGVuZ3RoKHQxX2Ficm9hZFtjKDMsNCw3OjEyLDE0LDE4OjIxLDI0KSwyXSkpDQp0MV9hYnJvYWRbYygzLDQsNzoxMiwxNCwxODoyMSwyNCksNV0gPC0gcmVwKDAuMDAwMSwgdGltZXM9bGVuZ3RoKHQxX2Ficm9hZFtjKDMsNCw3OjEyLDE0LDE4OjIxLDI0KSw1XSkpDQp0MV9hYnJvYWRbYygzLDQsNzoxMiwxNCwxODoyMSwyNCksNl0gPC0gcmVwKDEuMDAwMSwgdGltZXM9bGVuZ3RoKHQxX2Ficm9hZFtjKDMsNCw3OjEyLDE0LDE4OjIxLDI0KSw2XSkpDQoNCiMgdGltZSBhdCB0cmFuc2l0aW9uDQpkZl93b20gJT4lIGZpbHRlcih0cmFuc19zdD09MSkgLT4gd29tdHJhbnMNCmRmX21lbiAlPiUgZmlsdGVyKHRyYW5zX3N0PT0xKSAtPiBtZW50cmFucw0KDQojIHdvbWVuIA0KdDFfYWJyb2FkW2MoMToyKSxjKDE6NCldIDwtIHQxX2Ficm9hZF9jb250aW5bYyg5OjEwKSxjKDM6NildICMgcGF5DQp0MV9hYnJvYWRbMywzXSA8LSBtZWFuKGRmX3dvbSR0cmFuc19zdCkNCnQxX2Ficm9hZFs0LDNdIDwtIG1lYW4oZGZfd29tJHRyYW5zX2x0KQ0KdDFfYWJyb2FkWzUsYygxOjQpXSA8LSB0MV9hYnJvYWRfY29udGluWzExLCBjKDM6NildICMgdGltZQ0KdDFfYWJyb2FkW2MoNzoxMSksM108LSByb3VuZChwcm9wLnRhYmxlKHRhYmxlKGRmX3dvbSRwaGRfZGlzY2kpKSwgZGlnaXRzPTIpW2MoMTo1KV0gIyBkaXNjaQ0KdDFfYWJyb2FkWzEyLDNdIDwtIG1lYW4oZGZfd29tJGNoaWxkX3U1KQ0KdDFfYWJyb2FkWzEzLGMoMTo0KV0gPC0gdDFfYWJyb2FkX2NvbnRpblsxMiwgYygzOjYpXSAjIGNvbnRyYWN0IGhvdXJzDQp0MV9hYnJvYWRbMTQsM10gPC0gbWVhbihkZl93b20kdGVtcG9yYXJ5X2VtcCkNCnQxX2Ficm9hZFtjKDE1OjE2KSxjKDE6NCldIDwtIHQxX2Ficm9hZF9jb250aW5bYygxMzoxNCksYygzOjYpXSAjIHBoZCBjb2hvcnQsIHNhdGlzDQp0MV9hYnJvYWRbMTgsIDNdIDwtIG1lYW4oZGZfd29tJHNlY3Rvcl9mb3JwcikNCnQxX2Ficm9hZFsxOSwgM10gPC0gbWVhbihkZl93b20kc2VjdG9yX2dvdikNCnQxX2Ficm9hZFsyMCwgM10gPC0gbWVhbihkZl93b20kc2VjdG9yX25vbnByKQ0KdDFfYWJyb2FkWzIxLCAzXSA8LSBtZWFuKGRmX3dvbSRvdGhlcmpvYikNCnQxX2Ficm9hZFtjKDIyOjIzKSxjKDE6NCldIDwtIHQxX2Ficm9hZF9jb250aW5bYygxNToxNiksIGMoMzo2KV0gIyBicmVhayBqb2IsIGFicm9hZA0KdDFfYWJyb2FkWzI0LCAzXSA8LSBtZWFuKGRmX3dvbSRwYXJ0bmVyZWQpDQp0MV9hYnJvYWRbMjUsIDFdIDwtIHF1YW50aWxlKHdvbXRyYW5zJHQsIDAuMDEpDQp0MV9hYnJvYWRbMjUsIDJdIDwtIHF1YW50aWxlKHdvbXRyYW5zJHQsIDAuOTkpDQp0MV9hYnJvYWRbMjUsIDNdIDwtIG1lYW4od29tdHJhbnMkdCkNCnQxX2Ficm9hZFsyNSwgNF0gPC0gc2Qod29tdHJhbnMkdCkNCnQxX2Ficm9hZFsyNiwgM10gPC0gbnJvdyhkZl93b21bIWR1cGxpY2F0ZWQoZGZfd29tJFJJTlBFUlNPT04pLF0pDQp0MV9hYnJvYWRbMjcsIDNdIDwtIG5yb3coZGZfd29tKQ0KDQojIG1lbiANCnQxX2Ficm9hZFtjKDE6MiksYyg1OjgpXSA8LSB0MV9hYnJvYWRfY29udGluW2MoMToyKSxjKDM6NildICMgcGF5DQp0MV9hYnJvYWRbMyw3XSA8LSBtZWFuKGRmX21lbiR0cmFuc19zdCkNCnQxX2Ficm9hZFs0LDddIDwtIG1lYW4oZGZfbWVuJHRyYW5zX2x0KQ0KdDFfYWJyb2FkWzUsYyg1OjgpXSA8LSB0MV9hYnJvYWRfY29udGluWzMsIGMoMzo2KV0gIyB0aW1lDQp0MV9hYnJvYWRbYyg3OjExKSw3XTwtIHJvdW5kKHByb3AudGFibGUodGFibGUoZGZfbWVuJHBoZF9kaXNjaSkpLCBkaWdpdHM9MilbYygxOjUpXSAjIGRpc2NpDQp0MV9hYnJvYWRbMTIsN10gPC0gbWVhbihkZl9tZW4kY2hpbGRfdTUpDQp0MV9hYnJvYWRbMTMsYyg1OjgpXSA8LSB0MV9hYnJvYWRfY29udGluWzQsIGMoMzo2KV0gIyBjb250cmFjdCBob3Vycw0KdDFfYWJyb2FkWzE0LDddIDwtIG1lYW4oZGZfbWVuJHRlbXBvcmFyeV9lbXApDQp0MV9hYnJvYWRbYygxNToxNiksYyg1OjgpXSA8LSB0MV9hYnJvYWRfY29udGluW2MoNTo2KSxjKDM6NildICMgcGhkIGNvaG9ydCwgc2F0aXMNCnQxX2Ficm9hZFsxOCwgN10gPC0gbWVhbihkZl9tZW4kc2VjdG9yX2ZvcnByKQ0KdDFfYWJyb2FkWzE5LCA3XSA8LSBtZWFuKGRmX21lbiRzZWN0b3JfZ292KQ0KdDFfYWJyb2FkWzIwLCA3XSA8LSBtZWFuKGRmX21lbiRzZWN0b3Jfbm9ucHIpDQp0MV9hYnJvYWRbMjEsIDddIDwtIG1lYW4oZGZfbWVuJG90aGVyam9iKQ0KdDFfYWJyb2FkW2MoMjI6MjMpLGMoNTo4KV0gPC0gdDFfYWJyb2FkX2NvbnRpbltjKDc6OCksIGMoMzo2KV0gIyBicmVhayBqb2IsIGFicm9hZA0KdDFfYWJyb2FkWzI0LCA3XSA8LSBtZWFuKGRmX21lbiRwYXJ0bmVyZWQpDQp0MV9hYnJvYWRbMjUsIDVdIDwtIHF1YW50aWxlKG1lbnRyYW5zJHQsIDAuMDEpDQp0MV9hYnJvYWRbMjUsIDZdIDwtIHF1YW50aWxlKG1lbnRyYW5zJHQsIDAuOTkpDQp0MV9hYnJvYWRbMjUsIDddIDwtIG1lYW4obWVudHJhbnMkdCkNCnQxX2Ficm9hZFsyNSwgOF0gPC0gc2QobWVudHJhbnMkdCkNCnQxX2Ficm9hZFsyNiwgN10gPC0gbnJvdyhkZl9tZW5bIWR1cGxpY2F0ZWQoZGZfbWVuJFJJTlBFUlNPT04pLF0pDQp0MV9hYnJvYWRbMjcsIDddIDwtIG5yb3coZGZfbWVuKQ0KDQp0MV9hYnJvYWRbYygxOjI1KSxdIDwtIHJvdW5kKHQxX2Ficm9hZFtjKDE6MjUpLF0sIGRpZ2l0cz0yKQ0KdDFfYWJyb2FkW2MoMjY6MjcpLF0gPC0gYWJzKHQxX2Ficm9hZFtjKDI2OjI3KSxdKQ0KDQp0MV9hYnJvYWRbMjYsXSA8LSByb3VuZChhYnModDFfYWJyb2FkWzI2LF0pLCBkaWdpdHM9MCkNCnQxX2Ficm9hZFsyNyxdIDwtIHJvdW5kKGFicyh0MV9hYnJvYWRbMjcsXSksIGRpZ2l0cz0wKQ0KDQp0MV9hYnJvYWRbaXMubmEodDFfYWJyb2FkKV0gPC0gIiINCg0KdDFfYWJyb2FkIDwtIHQxX2Ficm9hZFtjKDE6Miw0OjIzLDI2OjI3KSxdICMgcmVtb3ZpbmcgdHJhbnNpdGlvbiBjb2x1bW5zIGFzIHRoZXNlIGRvbid0IG1ha2Ugc2Vuc2UNCg0KdDFfYWJyb2FkIDwtIHQxX2Ficm9hZFssYygzLDQsNyw4KV0gIyBubyBtaW4vbWF4IGR1ZSB0byBzYW1wbGUgc2l6ZSByZXN0cmljdGlvbnMNCg0KDQpEZXNjcmlwdGl2ZXNfVGFibGUgPC0gdDFfYWJyb2FkDQoNCndyaXRlLmNzdih0MV9hYnJvYWQsIGZpbGU9IkY6L0dQRV9zYWxhcmlzL1ImUi9kZXNjcmlwdGl2ZV90YWJfYWJyb2FkcGhkLmNzdiIpDQoNCmBgYA0KDQoNCmBgYHtyfQ0KDQpUYWJsZTFfYWJyb2FkcGhkIDwtIHJlYWQuY3N2KGZpbGU9IlRhYmxlMV9hYnJvYWRwaGQuY3N2IiwgaGVhZGVyPVRSVUUsIGNoZWNrLm5hbWVzPUZBTFNFKQ0KDQpUYWJsZTFfYWJyb2FkcGhkW2lzLm5hKFRhYmxlMV9hYnJvYWRwaGQpXSA8LSAiIg0KDQprYWJsZShUYWJsZTFfYWJyb2FkcGhkLCBjYXB0aW9uID0gIjxiPlRhYmxlOiBkZXNjcmlwdGl2ZSBzdGF0aXN0aWNzIGZvciBQaERzIHdobyB3ZW50IGFicm9hZCBhZnRlciB0aGVpciBQaEQ8L2I+IikgJT4lDQogIGthYmxlX3N0eWxpbmcoYm9vdHN0cmFwX29wdGlvbnMgPSBjKCJzdHJpcGVkIiwgImhvdmVyIiwgImNvbmRlbnNlZCIsICJyZXNwb25zaXZlIikpDQoNCg0KDQpgYGANCg0KDQoNCg0KVC10ZXN0IHRhYmxlOiBhcmUgcGVvcGxlIHdobyBnbyBhYnJvYWQgYWZ0ZXIgdGhlaXIgUGhEIGRpZmZlcmVudCBmcm9tIHRob3NlIHdobyBkbyBub3Q/DQoNCmBgYHtyLCBldmFsPUZBTFNFfQ0KDQoNCiMgY2hpLXNxdWFyZSBnZW5kZXIgZGlzdHJpOg0KZ2VuZGVyX3JlZyA8LSB0YWJsZShkZl9tbWZjJGdlbmRlclshZHVwbGljYXRlZChkZl9tbWZjJFJJTlBFUlNPT04pXSkNCmdlbmRlcl9hYnIgPC0gdGFibGUoYWJyb2FkYWZ0ZXJwaGRfbG9uZyRnZW5kZXJbIWR1cGxpY2F0ZWQoYWJyb2FkYWZ0ZXJwaGRfbG9uZyRSSU5QRVJTT09OKV0pDQpnZW5kZXJfZGlzdHJpIDwtIHJiaW5kLmRhdGEuZnJhbWUoZ2VuZGVyX3JlZywgZ2VuZGVyX2FicikNCg0Kcm93bmFtZXMoZ2VuZGVyX2Rpc3RyaSkgPC0gYygiTWFpbiBkYXRhIiwgIkFicm9hZCBhZnRlciBQaEQiKQ0KY29sbmFtZXMoZ2VuZGVyX2Rpc3RyaSkgPC0gYygiTWVuIiwgIldvbWVuIikNCg0KY2hpc3FfZ2VuZGVyIDwtIGNoaXNxLnRlc3QoZ2VuZGVyX2Rpc3RyaSkNCg0KZ2VuZGVyX2Rpc3RyaSRjaGlzcSA8LSBjaGlzcV9nZW5kZXIkc3RhdGlzdGljDQpnZW5kZXJfZGlzdHJpJGNoaXNxX2RmIDwtIGNoaXNxX2dlbmRlciRwYXJhbWV0ZXINCmdlbmRlcl9kaXN0cmkkY2hpc3FfcCA8LSBjaGlzcV9nZW5kZXIkcC52YWx1ZQ0KDQp3cml0ZS5jc3YoZ2VuZGVyX2Rpc3RyaSwgZmlsZT0iRjovR1BFX3NhbGFyaXMvUiZSL2dlbmRlcl9kaXN0cmlfYWJyb2FkLmNzdiIpDQoNCmRmX21tZmMgJT4lDQogIG11dGF0ZShkaXNjaV9oZWFsdGggPSBpZmVsc2UocGhkX2Rpc2NpPT0iSGVhbHRoIHNjaWVuY2VzIiwgMSwgMCksDQogICAgICAgICBkaXNjaV9zb2NpYWwgPSBpZmVsc2UocGhkX2Rpc2NpPT0iU29jaWFsIHNjaWVuY2VzIiwgMSwgMCksDQogICAgICAgICBkaXNjaV9uYXR1cmFsID0gaWZlbHNlKHBoZF9kaXNjaT09Ik5hdHVyYWwgc2NpZW5jZXMgYW5kIG1hdGhlbWF0aWNzIiwgMSwgMCksDQogICAgICAgICBkaXNjaV9lbmdpbmVlcmluZyA9IGlmZWxzZShwaGRfZGlzY2k9PSJFbmdpbmVlcmluZyIsIDEsIDApLA0KICAgICAgICAgZGlzY2lfaHVtYW5pdGllcyA9IGlmZWxzZShwaGRfZGlzY2k9PSJIdW1hbml0aWVzIiwgMSwgMCkpIC0+IGRmX21tZmMNCg0KDQphYnJvYWRhZnRlcnBoZF9sb25nICU+JQ0KICBtdXRhdGUoZGlzY2lfaGVhbHRoID0gaWZlbHNlKHBoZF9kaXNjaT09IkhlYWx0aCBzY2llbmNlcyIsIDEsIDApLA0KICAgICAgICAgZGlzY2lfc29jaWFsID0gaWZlbHNlKHBoZF9kaXNjaT09IlNvY2lhbCBzY2llbmNlcyIsIDEsIDApLA0KICAgICAgICAgZGlzY2lfbmF0dXJhbCA9IGlmZWxzZShwaGRfZGlzY2k9PSJOYXR1cmFsIHNjaWVuY2VzIGFuZCBtYXRoZW1hdGljcyIsIDEsIDApLA0KICAgICAgICAgZGlzY2lfZW5naW5lZXJpbmcgPSBpZmVsc2UocGhkX2Rpc2NpPT0iRW5naW5lZXJpbmciLCAxLCAwKSwNCiAgICAgICAgIGRpc2NpX2h1bWFuaXRpZXMgPSBpZmVsc2UocGhkX2Rpc2NpPT0iSHVtYW5pdGllcyIsIDEsIDApKSAtPiBhYnJvYWRhZnRlcnBoZF9sb25nDQoNCg0KDQpkZl9tbWZjICU+JSBmaWx0ZXIoZ2VuZGVyPT0id29tZW4iKSAtPiBkZl93b20NCmRmX21tZmMgJT4lIGZpbHRlcihnZW5kZXI9PSJtZW4iKSAtPiBkZl9tZW4NCmFicm9hZGFmdGVycGhkX2xvbmcgJT4lIGZpbHRlcihnZW5kZXI9PSJ3b21lbiIpIC0+IGRmX3dvbV9hDQphYnJvYWRhZnRlcnBoZF9sb25nICU+JSBmaWx0ZXIoZ2VuZGVyPT0ibWVuIikgLT4gZGZfbWVuX2ENCg0KdDFfdiA8LSB0LnRlc3QoZGZfd29tJHJlYWxwYXlfY29ycjIsIGRmX3dvbV9hJHJlYWxwYXlfY29ycjIpDQp0Ml92IDwtIHQudGVzdChkZl93b20kbG9nX3JlYWxwYXksIGRmX3dvbV9hJGxvZ19yZWFscGF5KQ0KdDNfdiA8LSB0LnRlc3QoZGZfd29tJHQsIGRmX3dvbV9hJHQpDQp0NF92IDwtIHQudGVzdChkZl93b20kZGlzY2lfaGVhbHRoLCBkZl93b21fYSRkaXNjaV9oZWFsdGgpDQp0NV92IDwtIHQudGVzdChkZl93b20kZGlzY2lfc29jaWFsLCBkZl93b21fYSRkaXNjaV9zb2NpYWwpDQp0Nl92IDwtIHQudGVzdChkZl93b20kZGlzY2lfbmF0dXJhbCwgZGZfd29tX2EkZGlzY2lfbmF0dXJhbCkNCnQ3X3YgPC0gdC50ZXN0KGRmX3dvbSRkaXNjaV9lbmdpbmVlcmluZywgZGZfd29tX2EkZGlzY2lfZW5naW5lZXJpbmcpDQp0OF92IDwtIHQudGVzdChkZl93b20kZGlzY2lfaHVtYW5pdGllcywgZGZfd29tX2EkZGlzY2lfaHVtYW5pdGllcykNCnQ5X3YgPC0gdC50ZXN0KGRmX3dvbSRjaGlsZF91NSwgZGZfd29tX2EkY2hpbGRfdTUpDQp0MTBfdiA8LSB0LnRlc3QoZGZfd29tJGxvZ19ocnMsIGRmX3dvbV9hJGxvZ19ocnMpDQp0MTFfdiA8LSB0LnRlc3QoZGZfd29tJHRlbXBvcmFyeV9lbXAsIGRmX3dvbV9hJHRlbXBvcmFyeV9lbXApDQp0MTJfdiA8LSB0LnRlc3QoZGZfd29tJHBoZF9jb2gsIGRmX3dvbV9hJHBoZF9jb2gpDQp0MTNfdiA8LSB0LnRlc3QoZGZfd29tJHBoZF9zYXQsIGRmX3dvbV9hJHBoZF9zYXQpDQp0MTRfdiA8LSB0LnRlc3QoZGZfd29tJHNlY3Rvcl9mb3JwciwgZGZfd29tX2Ekc2VjdG9yX2ZvcnByKQ0KdDE1X3YgPC0gdC50ZXN0KGRmX3dvbSRzZWN0b3JfZ292LCBkZl93b21fYSRzZWN0b3JfZ292KQ0KdDE2X3YgPC0gdC50ZXN0KGRmX3dvbSRzZWN0b3Jfbm9ucHIsIGRmX3dvbV9hJHNlY3Rvcl9ub25wcikNCnQxN192IDwtIHQudGVzdChkZl93b20kb3RoZXJqb2IsIGRmX3dvbV9hJG90aGVyam9iKQ0KdDE4X3YgPC0gdC50ZXN0KGRmX3dvbSRicmVha19qb2IsIGRmX3dvbV9hJGJyZWFrX2pvYikNCnQxOV92IDwtIHQudGVzdChkZl93b20kYWJyb2FkX3RpbWUsIGRmX3dvbV9hJGFicm9hZF90aW1lKQ0KdDIwX3YgPC0gdC50ZXN0KGRmX3dvbSRwYXJ0bmVyZWQsIGRmX3dvbV9hJHBhcnRuZXJlZCkNCg0KDQp0MV9tIDwtIHQudGVzdChkZl9tZW4kcmVhbHBheV9jb3JyMiwgZGZfbWVuX2EkcmVhbHBheV9jb3JyMikNCnQyX20gPC0gdC50ZXN0KGRmX21lbiRsb2dfcmVhbHBheSwgZGZfbWVuX2EkbG9nX3JlYWxwYXkpDQp0M19tIDwtIHQudGVzdChkZl9tZW4kdCwgZGZfbWVuX2EkdCkNCnQ0X20gPC0gdC50ZXN0KGRmX21lbiRkaXNjaV9oZWFsdGgsIGRmX21lbl9hJGRpc2NpX2hlYWx0aCkNCnQ1X20gPC0gdC50ZXN0KGRmX21lbiRkaXNjaV9zb2NpYWwsIGRmX21lbl9hJGRpc2NpX3NvY2lhbCkNCnQ2X20gPC0gdC50ZXN0KGRmX21lbiRkaXNjaV9uYXR1cmFsLCBkZl9tZW5fYSRkaXNjaV9uYXR1cmFsKQ0KdDdfbSA8LSB0LnRlc3QoZGZfbWVuJGRpc2NpX2VuZ2luZWVyaW5nLCBkZl9tZW5fYSRkaXNjaV9lbmdpbmVlcmluZykNCnQ4X20gPC0gdC50ZXN0KGRmX21lbiRkaXNjaV9odW1hbml0aWVzLCBkZl9tZW5fYSRkaXNjaV9odW1hbml0aWVzKQ0KdDlfbSA8LSB0LnRlc3QoZGZfbWVuJGNoaWxkX3U1LCBkZl9tZW5fYSRjaGlsZF91NSkNCnQxMF9tIDwtIHQudGVzdChkZl9tZW4kbG9nX2hycywgZGZfbWVuX2EkbG9nX2hycykNCnQxMV9tIDwtIHQudGVzdChkZl9tZW4kdGVtcG9yYXJ5X2VtcCwgZGZfbWVuX2EkdGVtcG9yYXJ5X2VtcCkNCnQxMl9tIDwtIHQudGVzdChkZl9tZW4kcGhkX2NvaCwgZGZfbWVuX2EkcGhkX2NvaCkNCnQxM19tIDwtIHQudGVzdChkZl9tZW4kcGhkX3NhdCwgZGZfbWVuX2EkcGhkX3NhdCkNCnQxNF9tIDwtIHQudGVzdChkZl9tZW4kc2VjdG9yX2ZvcnByLCBkZl9tZW5fYSRzZWN0b3JfZm9ycHIpDQp0MTVfbSA8LSB0LnRlc3QoZGZfbWVuJHNlY3Rvcl9nb3YsIGRmX21lbl9hJHNlY3Rvcl9nb3YpDQp0MTZfbSA8LSB0LnRlc3QoZGZfbWVuJHNlY3Rvcl9ub25wciwgZGZfbWVuX2Ekc2VjdG9yX25vbnByKQ0KdDE3X20gPC0gdC50ZXN0KGRmX21lbiRvdGhlcmpvYiwgZGZfbWVuX2Ekb3RoZXJqb2IpDQp0MThfbSA8LSB0LnRlc3QoZGZfbWVuJGJyZWFrX2pvYiwgZGZfbWVuX2EkYnJlYWtfam9iKQ0KdDE5X20gPC0gdC50ZXN0KGRmX21lbiRhYnJvYWRfdGltZSwgZGZfbWVuX2EkYWJyb2FkX3RpbWUpDQp0MjBfbSA8LSB0LnRlc3QoZGZfbWVuJHBhcnRuZXJlZCwgZGZfbWVuX2EkcGFydG5lcmVkKQ0KDQpleHRyYWN0X3QgPC0gZnVuY3Rpb24odHRlc3QpIHsNCiAgdGliYmxlKA0KICAgIHRfdmFsdWUgPSB1bm5hbWUodHRlc3Qkc3RhdGlzdGljKSwNCiAgICBkZiA9IHVubmFtZSh0dGVzdCRwYXJhbWV0ZXIpLA0KICAgIHBfdmFsdWUgPSB1bm5hbWUodHRlc3QkcC52YWx1ZSkNCiAgKQ0KfQ0KDQp0ZXN0X3dvbSA8LSBtZ2V0KHBhc3RlMCgidCIsIDE6MjAsICJfdiIpKQ0KdGVzdF9tZW4gPC0gbWdldChwYXN0ZTAoInQiLCAxOjIwLCAiX20iKSkNCg0KDQp2YXJuYW1lcyA8LSBjKCJSZWFsIG1vbnRobHkgcGF5IiwgIkxvZyByZWFsIG1vbnRobHkgcGF5IiwgIlRpbWUiLCAiUGhEIGRpc2NpcGxpbmU6IEhlYWx0aCBzY2llbmNlcyIsICJQaEQgZGlzY2lwbGluZTogU29jaWFsIHNjaWVuY2VzIiwgIlBoRCBkaXNjaXBsaW5lOiBOYXR1cmFsIHNjaWVuY2VzICYgbWF0aGVtYXRpY3MiLCAiUGhEIGRpc2NpcGxpbmU6IEVuZ2luZWVyaW5nIiwgIlBoRCBkaXNjaXBsaW5lOiBIdW1hbml0aWVzIiwgIkNoaWxkIHVuZGVyIDUiLCAiTG9nIE1vbnRobHkgY29udHJhY3QgaG91cnMiLCAiVGVtcG9yYXJ5IGNvbnRyYWN0IiwgIlBoRCBjb2hvcnQiLCAiUGhEIHNhdGlzZmFjdGlvbiIsICJTZWN0b3I6IEZvci1wcm9maXQiLCAiU2VjdG9yOiBHb3Zlcm5tZW50IiwgIlNlY3RvcjpOb24tcHJvZml0IiwgIk90aGVyIGpvYiIsICJCcmVhayBpbiBEdXRjaCBlbXBsb3ltZW50IiwgIlBlcmlvZCBhYnJvYWQiLCAiUGFydG5lcmVkIikNCg0KDQp0ZXN0X2RmX3dvbSA8LSBiaW5kX3Jvd3MobGFwcGx5KHRlc3Rfd29tLCBleHRyYWN0X3QpLCAuaWQ9InRlc3RfaWQiKSAlPiUNCiAgbXV0YXRlKHZhcmlhYmxlPXZhcm5hbWVzLA0KICAgICAgICAgTl9vYnMgPSAobnJvdyhkZl93b20pICsgbnJvdyhkZl93b21fYSkpLA0KICAgICAgICAgZ3JvdXA9IndvbWVuIikNCg0KdGVzdF9kZl9tZW4gPC0gYmluZF9yb3dzKGxhcHBseSh0ZXN0X21lbiwgZXh0cmFjdF90KSwgLmlkPSJ0ZXN0X2lkIikgJT4lDQogIG11dGF0ZSh2YXJpYWJsZT12YXJuYW1lcywgDQogICAgICAgICBOX29icyA9IChucm93KGRmX21lbikgKyBucm93KGRmX21lbl9hKSksDQogICAgICAgICBncm91cD0ibWVuIikNCg0KDQp0ZXN0X2RmX2FsbCA8LSBiaW5kX3Jvd3ModGVzdF9kZl9tZW4sIHRlc3RfZGZfd29tKQ0KDQp0ZXN0X2RmX2FsbCRwc21hbGwgPC0gaWZlbHNlKHRlc3RfZGZfYWxsJHBfdmFsdWU8LjAwMSwgMSwgMCkNCg0KDQp0ZXN0X2RmX2FsbCR0dGVzdCA8LSBwYXN0ZTAoInQoIiwgcm91bmQodGVzdF9kZl9hbGwkZGYsIDIpLCAiKSA9ICIsIHJvdW5kKHRlc3RfZGZfYWxsJHRfdmFsdWUsIDIpLCAiLCBwICIsIGlmZWxzZSh0ZXN0X2RmX2FsbCRwc21hbGw9PTEsICI8IC4wMDEiLCBwYXN0ZTAoIj0gIiwgcm91bmQodGVzdF9kZl9hbGwkcF92YWx1ZSwgMikpKSkNCg0KDQp3cml0ZS5jc3YodGVzdF9kZl9hbGwsIGZpbGU9IkY6L0dQRV9zYWxhcmlzL1ImUi90dGVzdHNfbWFpbl9hYnJvYWQuY3N2IikNCg0KYGBgDQoNCg0KYGBge3J9DQoNCnR0ZXN0c19tYWluYWJyb2FkIDwtIHJlYWQuY3N2KGZpbGU9InR0ZXN0c19tYWluX2Ficm9hZC5jc3YiLCBoZWFkZXI9VFJVRSwgY2hlY2submFtZXMgPSBGQUxTRSkNCg0KdHRlc3RzX21haW5hYnJvYWRbLC0xXQ0KDQprYWJsZSh0dGVzdHNfbWFpbmFicm9hZCwgY2FwdGlvbiA9ICI8Yj5ULXRlc3RzIGNvbXBhcmluZyBQaERzIHdobyB3ZW50IGFicm9hZCBhZnRlciB0aGVpciBQaEQgYW5kIHRob3NlIHdobyBkaWQgbm90PC9iPiIpICU+JQ0KICBrYWJsZV9zdHlsaW5nKGJvb3RzdHJhcF9vcHRpb25zID0gYygic3RyaXBlZCIsICJob3ZlciIsICJjb25kZW5zZWQiLCAicmVzcG9uc2l2ZSIpKQ0KDQpgYGANCg0KDQoNCiMgT3RoZXIgam9iDQoNCkFyZSBwZW9wbGUgd2l0aC9vdXQgYW4gb3RoZXIgam9iIG1vcmUgbGlrZWx5IHRvIG1ha2UgYSB0cmFuc2l0aW9uPw0KDQoNCmBgYHtyLCBldmFsPUZBTFNFfQ0KDQpkZl9tbWZjICU+JQ0KICBncm91cF9ieShSSU5QRVJTT09OKSAlPiUNCiAgc3VtbWFyaXplKGV2ZXJ0cmFucyA9IG1heCh0cmFuc19sdCkpIC0+IGV2ZXJ0cmFucw0KDQpkZl9tbWZjICU+JQ0KICBncm91cF9ieShSSU5QRVJTT09OKSAlPiUNCiAgZmlsdGVyKHVuaT09MSkgJT4lDQogIHN1bW1hcml6ZShvdGhlcmpvYl9tID0gbWF4KG90aGVyam9iKSwNCiAgICAgICAgICAgIHRpbWVfdW5pID0gbWF4KHQpKSAtPiBjaGVja3MNCg0KZXZlcnRyYW5zICU+JQ0KICBsZWZ0X2pvaW4oY2hlY2tzLCBieT1jKCJSSU5QRVJTT09OIikpIC0+IGV2ZXJ0cmFuc19vdGhlcmpvYg0KDQp0cmFuc19ieV9vaiA8LSBhcy5kYXRhLmZyYW1lKHRhYmxlKCJXaWxsIFRyYW5zaXRpb24iID0gZXZlcnRyYW5zX290aGVyam9iJGV2ZXJ0cmFucywgIk90aGVyIGpvYiIgPSBldmVydHJhbnNfb3RoZXJqb2Ikb3RoZXJqb2JfbSkpDQoNCndyaXRlLmNzdih0cmFuc19ieV9vaiwgZmlsZT0iRjovR1BFX3NhbGFyaXMvUiZSL3RyYW5zaXRpb25zX290aGVyam9iLmNzdiIpDQoNCg0KDQpkZl9vdGhlciAlPiUNCiAgZ3JvdXBfYnkodW5pLCBnZW5kZXIpICU+JQ0KICBzdW1tYXJpc2UobWVhbl9wZXJjX3BheV9qb2IxID0gbWVhbihwZXJjX3BheV9qb2IxKSwNCiAgICAgICAgICAgIHNkX3BlcmNfcGF5X2pvYjEgPSBzZChwZXJjX3BheV9qb2IxKSwNCiAgICAgICAgICAgIG1lYW5fcGVyY19ocnNfam9iMSA9IG1lYW4ocGVyY19ocnNfam9iMSksDQogICAgICAgICAgICBzZF9wZXJjX2hyc19qb2IxID0gc2QocGVyY19ocnNfam9iMSksDQogICAgICAgICAgICBuID0gbigpLA0KICAgICAgICAgICAgbl9vYnMgPSBuX2Rpc3RpbmN0KFJJTlBFUlNPT04pKSAtPiBvdGhlcmpvYl9zdW1tX2dlbmRlcg0KDQpkZl9vdGhlciAlPiUNCiAgZ3JvdXBfYnkodW5pKSAlPiUNCiAgc3VtbWFyaXNlKG1lYW5fcGVyY19wYXlfam9iMSA9IG1lYW4ocGVyY19wYXlfam9iMSksDQogICAgICAgICAgICBzZF9wZXJjX3BheV9qb2IxID0gc2QocGVyY19wYXlfam9iMSksDQogICAgICAgICAgICBtZWFuX3BlcmNfaHJzX2pvYjEgPSBtZWFuKHBlcmNfaHJzX2pvYjEpLA0KICAgICAgICAgICAgc2RfcGVyY19ocnNfam9iMSA9IHNkKHBlcmNfaHJzX2pvYjEpLA0KICAgICAgICAgICAgbiA9IG4oKSwNCiAgICAgICAgICAgIG5fb2JzID0gbl9kaXN0aW5jdChSSU5QRVJTT09OKSkgJT4lDQogIG11dGF0ZShnZW5kZXIgPSAiYWxsIikgLT4gb3RoZXJqb2Jfc3VtbQ0KDQpvdGhlcmpvYl9zdW1tIDwtIHJiaW5kLmRhdGEuZnJhbWUob3RoZXJqb2Jfc3VtbV9nZW5kZXIsIG90aGVyam9iX3N1bW0pDQoNCg0Kd3JpdGUuY3N2KG90aGVyam9iX3N1bW0sIGZpbGU9IkY6L0dQRV9zYWxhcmlzL1ImUi9kZXNjcmlwdGl2ZV90YWJfb3RoZXJqb2IuY3N2IikNCg0KYGBgDQoNCg0KYGBge3J9DQoNCnRyYW5zaXRpb25zX290aGVyam9iIDwtIHJlYWQuY3N2KGZpbGU9InRyYW5zaXRpb25zX290aGVyam9iLmNzdiIsIGhlYWRlciA9IFRSVUUsIGNoZWNrLm5hbWVzID0gRkFMU0UpDQoNCiMgaG93IG9mdGVuIGRvIHBlb3BsZSB3aXRoICgxKSBhbmQgd2l0aG91dCBhbiBvdGhlciBqb2IgKDApIG1ha2UgYSB0cmFuc2l0aW9uPw0KdHJhbnNpdGlvbnNfb3RoZXJqb2INCg0KDQojIE9mIHBlb3BsZSB3aXRoIGFuIGV4dHJhIGpvYiwgd2hhdCBwZXJjZW50YWdlIG9mIHRoZWlyIGVhcm5pbmdzIGFuZCB3b3JrIGhvdXJzIGNvbWUgZnJvbSB0aGVpciBtYWluIGpvYj8gU3BsaXQgb3V0IGJ5IGdlbmRlciAoMT1tZW47Mj13b21lbikgYW5kIHdoZXRoZXIgdGhlaXIgbWFpbiBqb2IgaXMgYXQgdGhlIHVuaSAoMC8xKQ0KVGFibGUxX290aGVyam9iIDwtIHJlYWQuY3N2KGZpbGU9IlRhYmxlMV9vdGhlcmpvYi5jc3YiLCBoZWFkZXIgPSBUUlVFLCBjaGVjay5uYW1lcyA9IEZBTFNFKQ0KDQpUYWJsZTFfb3RoZXJqb2JbLC0xXQ0KDQprYWJsZShUYWJsZTFfb3RoZXJqb2IsIGNhcHRpb24gPSAiPGI+UGVyY2VudGFnZSBvZiBlYXJuaW5ncyBhbmQgd29yayBob3VycyBoYXVsZWQgZnJvbSBtYWluIGpvYiwgZm9yIHJlc2VhcmNoZXJzIHdpdGggbW9yZSB0aGFuIDEgam9iPC9iPiIpICU+JQ0KICBrYWJsZV9zdHlsaW5nKGJvb3RzdHJhcF9vcHRpb25zID0gYygic3RyaXBlZCIsICJob3ZlciIsICJjb25kZW5zZWQiLCAicmVzcG9uc2l2ZSIpKQ0KDQoNCmBgYA0KDQoNCg==</div>
 <style>
   .center {
     text-align: center;
@@ -782,6 +3765,8 @@ write.csv(otherjob_summ, file=&quot;F:/GPE_salaris/R&amp;R/descriptive_tab_other
     
 
 
+</div>
+</div>
 
 </div>
 
@@ -813,7 +3798,42 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("descriptives.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

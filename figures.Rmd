@@ -1,7 +1,14 @@
 ---
-title: "Figures"
-output: html_document
-date: "2025-18-09"
+title: "Leaving for more or settling for less: Figures"
+date: "Last compiled on `r Sys.Date()`"
+output: 
+  html_document:
+    css: tweaks.css
+    toc:  true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    code_download: yes
 ---
 
 
@@ -64,7 +71,7 @@ load(file="F:/GPE_salaris/results/bygender/log_hrs/M2w.rda")
 
 # colors 
 
-```{r, eval=FALSE}
+```{r}
 
 mnc <- "#e49159" 
 mtc <- "#bd5600" 
@@ -104,10 +111,22 @@ write.csv(fig1, file="F:/GPE_salaris/R&R_v2/datafig1.csv")
 
 ```
 
-```{r, eval=FALSE}
+
+```{r}
+
+fig1 <- read.csv(file="datafig1.csv")
+
+```
+
+
+
+We cannot derive the box plots here, because they require the original data, but we can replicate the line plots of the average inflation-corrected pay for men and women.
+
+
+```{r}
 
 ggplot() +
-  geom_boxplot(data=df_mmfc, aes(x=as.factor(t), y=realpay_corr2), alpha=0.2, size=0.4, width=0.4, outlier.shape=NA, fill="grey95") +
+  # geom_boxplot(data=df_mmfc, aes(x=as.factor(t), y=realpay_corr2), alpha=0.2, size=0.4, width=0.4, outlier.shape=NA, fill="grey95") +
   geom_line(data=fig1, aes(x=as.factor(t), y=meanpay, color=gender, group=gender), size=1.5) +
   labs(y="Mean inflation-corrected pay", x="Time in years since PhD") +
   scale_color_manual(values=c(mc, wc), name="Gender") +
@@ -147,10 +166,20 @@ write.csv(fig2, file="F:/GPE_salaris/R&R_v2/datafig2.csv")
 
 ```
 
-```{r, eval=FALSE}
+
+
+```{r}
+
+fig2 <- read.csv(file="datafig2.csv")
+
+```
+
+
+
+```{r}
 
 ggplot() +
-  geom_boxplot(data=df_mmfc, aes(x=as.factor(t), y=realpay_corr2), alpha=0.2, size=0.4, width=0.4, outlier.shape=NA, fill="grey95") +
+  #geom_boxplot(data=df_mmfc, aes(x=as.factor(t), y=realpay_corr2), alpha=0.2, size=0.4, width=0.4, outlier.shape=NA, fill="grey95") +
   geom_line(data=fig2, aes(x=as.factor(t), y=meanpay, color=grouping, group=grouping), size=1, alpha=0.95) +
   labs(y="Mean inflation-corrected pay", x="Time in years since PhD") +
   scale_color_manual(values=c(mnc, mtc, wnc, wtc), name="") +
@@ -171,7 +200,8 @@ ggplot() +
 ```
 
 
-# R&R: transition*t^2 / transition*t^3
+
+# Appendix: Higher order transition effects
 
 
 ## Graphical comparison original versus transition*t2/t3 model
@@ -337,7 +367,14 @@ fig3 %>%
 
 write.csv(fig3_summ, file="F:/GPE_salaris/R&R_v2/datafig3.csv")
 
-fig3_summ <- read.csv(file="C:/Users/U590221/OneDrive - Radboud Universiteit/PhD-4/Salary and career development post-PhD (P3)/export/20250919/datafig3.csv")
+
+```
+
+
+
+```{r}
+
+fig3_summ <- read.csv(file="datafig3.csv", header=TRUE, check.names = FALSE)
 
 fig3_summ %>% select(gender, model, t, salary, lower, upper, n) -> fig3_summ
 
@@ -349,13 +386,14 @@ fig3_summ %>% filter(gender=="women" & model=="original") -> fig3_summ_wo
 fig3_summ %>% filter(gender=="men" & model=="extended") -> fig3_summ_mn
 fig3_summ %>% filter(gender=="women" & model=="extended") -> fig3_summ_wn
 
+
 ```
 
 
 
 Men
 
-```{r, eval=FALSE}
+```{r}
 
 fig3a <- ggplot(fig3_summ_m, aes(x=t, y=salary, color=model, fill=model, linetype=model)) +
   geom_line(size=1) +
@@ -378,7 +416,7 @@ fig3a <- ggplot(fig3_summ_m, aes(x=t, y=salary, color=model, fill=model, linetyp
 
 Women
 
-```{r, eval=FALSE}
+```{r}
 
 fig3b <- ggplot(fig3_summ_w, aes(x=t, y=salary, color=model, fill=model, linetype=model)) +
   geom_line(size=1) +
@@ -399,22 +437,22 @@ fig3b <- ggplot(fig3_summ_w, aes(x=t, y=salary, color=model, fill=model, linetyp
 ```
 
 
-```{r, eval=FALSE}
+```{r}
 
 fig3a
 
-ggsave(file="C:/Users/U590221/OneDrive - Radboud Universiteit/PhD-4/Salary and career development post-PhD (P3)/export/20250919/fig3a.jpeg", dpi=1200)
+```
+
+```{r}
 
 fig3b
-
-ggsave(file="C:/Users/U590221/OneDrive - Radboud Universiteit/PhD-4/Salary and career development post-PhD (P3)/export/20250919/fig3b.jpeg", dpi=1200)
 
 ```
 
 
 ## all four together
 
-```{r, eval=FALSE}
+```{r}
 
 ggplot(fig3_summ_wo, aes(x=t, y=salary)) +
   geom_line(size=1, color=wo) +

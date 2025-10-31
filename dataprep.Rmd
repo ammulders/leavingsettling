@@ -1,8 +1,16 @@
 ---
-title: "Data preparation"
-date: "2025-18-09"
-output: html_document
+title: "Leaving for more or settling for less: Data preparation"
+date: "Last compiled on `r Sys.Date()`"
+output: 
+  html_document:
+    css: tweaks.css
+    toc:  true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    code_download: yes
 ---
+
 
 # Reading in packages
 
@@ -13,13 +21,25 @@ rm(list=ls())
 ```
 
 
+# Packages used
+
+- `foreign`: For loading in SPSS (.sav) files
+
+- `tidyverse`: For general data manipulation
+
+- `stringr`: For string manipulations
+
+- `questionr`: For recoding missing values 
+
+
+
 ```{r}
 
 library(foreign)
 library(tidyverse)
-library(ggplot2)
 library(stringr)
-library(arrow)
+library(questionr)
+
 
 ```
 
@@ -29,9 +49,9 @@ library(arrow)
 ```{r, warning=FALSE, eval=FALSE}
 
 # loading in 2014 survey
-# GPE2014 <- foreign::read.spss(file="G:/Arbeid/GPE/GPE2005-2014.sav", to.data.frame = TRUE)
+GPE2014 <- foreign::read.spss(file="G:/Arbeid/GPE/GPE2005-2014.sav", to.data.frame = TRUE)
 # loading in 2019 survey
-# GPE2019 <- foreign::read.spss(file="G:/Arbeid/GPE/GPE2019v1.sav", to.data.frame = TRUE)
+GPE2019 <- foreign::read.spss(file="G:/Arbeid/GPE/GPE2019v1.sav", to.data.frame = TRUE)
 
 ```
 
@@ -39,6 +59,8 @@ library(arrow)
 # Cleaning up GPE dataframes
 
 ! CORRECT PHD YEAR variables: GPERegPromotieJaar (2014) & GPEAflPromJr (2019)
+
+There were quite some empty rows in GPE2014, which we first need to delete. The absence of a PhD year was found to be a good indication for unfilled data. 
 
 ```{r, eval=FALSE}
 
@@ -52,11 +74,12 @@ GPE2019 <- GPE2019 %>% filter(!is.na(GPEAflPromJr) & GPEAflRichtingcat!="onbeken
 
 # Satisfaction with PhD
 
+We start by recoding observations labeled as missing into NA values, then select relevant items and recode them so that higher values imply higher satisfaction levels. We only calculate the mean score if respondents answered more than half of the questions on PhD satisfaction.  
+
 ```{r, eval=FALSE}
 
 GPE2014satis <- GPE2014 %>% select(starts_with("GPEVrgGroupSatProm"), RINPERSOON)
 
-library(questionr)
 
 GPE2014satis %>%
   mutate(satA = recode.na(GPEVrgGroupSatPromA, "Niet van toepassing", "Weigert", "Onbekend of weet niet"),
@@ -103,6 +126,9 @@ colSums(is.na(GPE2019satis_2))
 GPE2019satis_2 <- GPE2019satis_2 %>% select(RINPERSOON, satA, satB, satC, satD, satI, satJ, satK, satL)
 GPE2014satis_2 <- GPE2014satis_2 %>% select(RINPERSOON, satA, satB, satC, satD, satI, satJ, satK, satL)
 
+
+# we take the satisfaction in 2014 if present, and otherwise use 2019
+# we use the oldest data here so that satisfaction is measured as close to the PhD graduation as possible
 GPE_satis <- GPE2014satis_2 %>%
   full_join(GPE2019satis_2, by="RINPERSOON") %>%
   mutate(satA = ifelse(!is.na(satA.x), satA.x, satA.y),
@@ -238,6 +264,8 @@ GPE2019_sel <- GPE2019 %>%
 
 # Coding the discipline variable
 
+Have a look at the levels first
+
 ```{r, eval=FALSE}
 
 #2014
@@ -251,6 +279,8 @@ summary(as.factor(GPE2019_sel$phd_disci))
   
 ```
 
+
+The discipline labels do not correspond 1:1 between the 2014 and 2019 GPE survey. Specifically, some categories were added in 2019, that were not there in 2014 - so we have to use the more restricted categories as the basis for the harmonized discipline variable. We translated and harmonized the labels as follows below.
 
 ```{r, eval=FALSE}
 
@@ -317,6 +347,10 @@ GPE2019_sel <- GPE2019_sel %>%
 
 # Joining the GPE2014 & GPE2019
 
+Here, we remove individuals who indicated a different gender across both waves, because there are too few observations to include these observations as a separate category. If respondents participated in both cross-sections of the survey, we took the answers from the most recent survey (i.e. 2019), with the exception of PhD satisfaction, which we want to measure as shortly after the PhD as possible.
+
+Please note that we did not end up using all these variables in our analyses. 
+
 ```{r, eval=FALSE}
 
 GPE2014_sel %>%
@@ -362,9 +396,9 @@ GPE_satis %>%
 ```
 
 
-# Children
+# Children of PhDs
 
-Selecting relevant rows
+We start by fixing the RINPERSOOn (id) variable, which was loaded as a numeric variable, and therefore any 0's at the beginning of the ID were deleted. 
 
 ```{r, eval=FALSE}
 
@@ -398,6 +432,10 @@ GPE %>%
 
 ## GPE Selections
 
+We make one major sample selection: removing individuals who obtained a PhD before 2006, because our salary data start in 2006, and we want to construct full salary/job trajectories after the PhD.
+
+We also make one ad-hoc adjustment to the PhD discipline, by merging agriculture and animal sciences under natural sciences and mathematics. 
+
 ```{r, eval=FALSE}
 
 load(file="H:/GPE/processed/gpe_11_1.rda")
@@ -413,7 +451,7 @@ GPE_sel <- GPE_sel %>% mutate(phd_disci = ifelse(phd_disci=="Agriculture and ani
 
 GPE_sel$phd_disci <- factor(GPE_sel$phd_disci, levels=c("Health sciences", "Social sciences", "Natural sciences and mathematics", "Engineering", "Humanities"))
 
-
+# calculating age at PhD receipt, and PhD cohort (calculated by subtracting the first PhD year, so that it starts at 0)
 GPE_sel %>%
   mutate(agephd = as.numeric(difftime(phd_date, birthdate, unit="weeks")/52.25),
          phd_coh = phd_year - 2006) -> GPE_sel
@@ -464,7 +502,9 @@ ABR %>%
 ```
 
 
-Creating an empty PPF to append data to
+# Creating an empty PPF to append data to
+
+Because most data is time-variant, we create a person-period file with one row per scholar-year combination, so that we can trace variables over their entire career. 
 Year 2006 - 2023
 
 ```{r, eval=FALSE}
@@ -481,8 +521,7 @@ empty_ppf <- data.frame(RINPERSOON, year)
 ```
 
 
-Adding PhD year and removing years before PhD year if people got a PhD after 2006
-
+Adding the PhD year and removing years before PhD year if people got a PhD after 2006
 
 ```{r, eval=FALSE}
 
@@ -518,6 +557,7 @@ spolis %>%
 # For the person-period file, we only add main jobs
 spolis <- spolis %>% filter(mainjob==1) %>% select(year, RINPERSOON, beid, startdate_y, enddate_y, startdate_overall, basepay_month, basehours_month, workdays_month, temporary_emp)
 
+# Adding salary data to the person-period file
 df_ppf %>%
   left_join(spolis, by=c("RINPERSOON", "year")) -> df_ppf
 
@@ -589,17 +629,18 @@ df_ppf %>%
 
 # Creating some variables at the level of jobs
 
-Start date, end date, which # job since PhD 
+Start date, end date, which # job since PhD. The `beid` variable here is of particular interest, which identifies unique organizations. A combination of a person (`RINPERSOON`) and organization (`beid`) is considered a job. 
 
 ```{r, eval=FALSE}
 
+# gathering the start and end date of jobs, so that we know when to paste a job into the person-period file 
 df_ppf %>%
   mutate(startdate = as.Date(ifelse(!is.na(startdate_overall), startdate_overall, startdate_y))) %>%
   group_by(RINPERSOON, beid) %>%
   summarise(startjob = min(startdate),
             endjob = max(enddate_y)) -> startend
 
-
+# we identify the number of jobs as the number of unique `beid` values per scholar
 df_ppf %>%
   arrange(RINPERSOON, year) %>%
   group_by(RINPERSOON) %>%
@@ -623,10 +664,10 @@ df_ppf %>%
 # Calculating time to first job
 df_ppf %>%
   filter(job_no==1) %>%
-  mutate(timetojob1 = as.numeric(difftime(startjob, phd_date, unit="weeks") / 52.25),
-         job1_8yp = ifelse(timetojob1 < -7, 1, 0),
-         job1_unemploy_l = ifelse(timetojob1 > 1, 1, 0),
-         timetojob1 = ifelse(as.numeric(timetojob1) < 0, 0, timetojob1)) %>%
+  mutate(timetojob1 = as.numeric(difftime(startjob, phd_date, unit="weeks") / 52.25), # calculating time to the first job
+         job1_8yp = ifelse(timetojob1 < -7, 1, 0), # and a 0/1 or dummy variable whether a person took 8+ years to obtain their first job
+         job1_unemploy_l = ifelse(timetojob1 > 1, 1, 0), # and a 0/1 dummy variable whether a person was unemployed the first year after obtaining a PhD
+         timetojob1 = ifelse(as.numeric(timetojob1) < 0, 0, timetojob1)) %>% # rounding the time to the first job to 0 if less than a year
   distinct(RINPERSOON, .keep_all=TRUE) %>% ungroup() %>%
   select(RINPERSOON, timetojob1, job1_8yp, job1_unemploy_l) -> timetojob
 
@@ -642,6 +683,8 @@ df_ppf %>%
 
 
 # Adding ABR (university 0/1)
+
+The ABR (Algemeen bedrijven register) stores data at the level of organizations, for instance about the legal status or the date of establishment. We use organizations' sector codes to determine whether a certain organization is a university or not. 
 
 ```{r, eval=FALSE}
 
@@ -683,6 +726,8 @@ df_ppf %>%
 
 
 # Adding children variables
+
+We use the children dataset, which documents events like a childbirth (identifying the birth date as the so-called "start of the event/situation" and the RINPERSOON of parents), or a child coming of legal age. 
 
 We construct a number of variables:
 - age of youngest child
@@ -753,12 +798,7 @@ children_tot <- children_tot %>%
 ```
 
 
-
-
-We have to go a little bit of a complex route here, as we want to have information also on children born outside our window of 2006 (or PhD year) onwards. Therefore, we need to create a longer dataframe with all of our variables first, and only later remove observations outside of our window. 
-
-
-Creating a larger empty PPF
+When adding the parenthood variables to our data, we have to take a bit of a complex route. Because we want to have information on children born outside our window of 2006 (or PhD year) and onwards, we cannot add the 'children' data to our existing person-period file directly. We need to create a longer person-period dataframe first, and only later remove observations outside of our window. 
 
 ```{r, eval=FALSE}
 
@@ -836,6 +876,8 @@ df_ppf %>%
 
 # Adding marital status variables
 
+Similar to the 'children' data, the marital status data are documented as events (registration of partnership/marriage and partnership dissolution are documented separately, with a start and end date of the marital state). 
+
 
 ```{r, eval=FALSE}
 
@@ -885,7 +927,7 @@ marital %>%
 ```
 
 
-Creating a larger empty PPF
+Creating a larger empty PPF, to add marital statuses from before 2006. 
 
 ```{r, eval=FALSE}
 
@@ -914,6 +956,7 @@ ppf_partner %>%
   left_join(partner_end, by=c("RINPERSOON", "year")) %>%
   arrange(RINPERSOON, year)-> ppf_partner
 
+# calculating time passed since the start of the current marital state
 ppf_partner %>%
   mutate(time = as.Date(paste0(year, "-09-01"), format="%Y-%m-%d"),
          partnersh_age = as.numeric(difftime(time, startdate, units="weeks")),
@@ -922,7 +965,7 @@ ppf_partner %>%
          end_partner = ifelse(partnersh_diss<53, 1, 0)) -> ppf_partner
 
 
-# creating a 'partnered' dummy in case we need it
+# creating a 'partnered' dummy (0 if no partner, 1 if partnered)
 ppf_partner %>%
   mutate(partnered = ifelse(!is.na(enddate), 0, NA),
          partnered = ifelse(!is.na(startdate), 1, partnered)) %>%
@@ -935,7 +978,6 @@ ppf_partner %>%
   select(RINPERSOON, year, partnered, start_partner, end_partner, type_partner, reason_end)-> ppf_partner
 
 # adding variables to the data
-
 df_ppf %>%
   left_join(ppf_partner, by=c("RINPERSOON", "year")) %>%
   mutate(partnered = ifelse(is.na(partnered), 0, partnered),
@@ -951,8 +993,11 @@ df_ppf %>%
 
 # Adding period abroad
 
+Period spent abroad, like parental and marital status, are documented as events with a start and end date. The data turned out to be a bit messy here, with multiple observations for abroad stays taking place very shortly after one another (i.e. suggests that these are in fact 1 consecutive period abroad). Thus we needed to remove a couple of duplicated observations.
+
 ```{r, eval=FALSE}
 
+# selecting relevant variables
 address %>%
   mutate(start_abr = GBADATUMAANVANGADRESBUITENLAND,
          end_abr = GBADATUMEINDEADRESBUITENLAND,
@@ -960,9 +1005,10 @@ address %>%
   filter(!is.na(start_abr)) %>%
   select(RINPERSOON, start_abr, end_abr, country) -> address
 
-
+# extracting start year (ys), day (ds) and month (ms), and end year, day and month (ye, de, me)
+# if a period abroad starts or ends after september, we copy this abroad observation to the next year, because salaries are observed in september. 
 address %>%
-  mutate(ys = str_extract(start_abr, "^[:digit:]{4}"),
+  mutate(ys = str_extract(start_abr, "^[:digit:]{4}"), 
          ys = as.numeric(ys),
          ds = str_extract(start_abr, "[:digit:]{2}$"),
          ms = str_remove(start_abr, "^[:digit:]{4}"),
@@ -1043,7 +1089,7 @@ addressm %>% select(RINPERSOON, ye, startdate, enddate, country) -> addr_end
 ```
 
 
-Creating a larger empty PPF
+Creating a larger empty PPF, to add abroad periods taking place before 2006
 
 ```{r, eval=FALSE}
 
@@ -1123,8 +1169,7 @@ df_ppf <- df_ppf %>%
 
 ## First job at university
 
-We also create a variable specifying if the first job after the PhD started already before the PhD ended
-We have to think about what we want to do with those phds (esp if the job started 6+ years before)
+Here we make our 2nd big sample selection: selecting only PhDs whose first job is at the university, within one year of obtaining a PhD. We do so because we want to determine the change in salary following a transition out of academia, so we only want to analyze those who actually start their career at the university. 
 
 ```{r, eval=FALSE}
 
@@ -1137,21 +1182,6 @@ df_ppf %>%
 # adding the variable to the PPF
 df_ppf %>% left_join(job1uni, by="RINPERSOON") -> df_ppf
 
-# How many people are lost because: 1) first job outside uni 2) first job not within 1 year of PhD
-df_ppf %>%
-  mutate(job1_year = as.factor(ifelse(timetojob1<1, "1", "0"))) -> df_ppf
-
-df_ppf %>%
-  group_by(RINPERSOON) %>%
-  summarize(job1_year = first(job1_year),
-            job1_uni = first(job1_uni)) %>%
-  ungroup() -> summary_missingsjob1
-
-missings_job1 <- as.data.frame(table(summary_missingsjob1$job1_year, summary_missingsjob1$job1_uni))
-
-colnames(missings_job1) <- c("job1_within_year", "job1_uni", "Freq")
-
-write.csv(missings_job1, file="F:/GPE_salaris/missings_job1.csv")
 
 # Selecting those who started their career at a university; within 1 year of their PhD
 df_ppf %>% 
@@ -1159,7 +1189,7 @@ df_ppf %>%
   filter(timetojob1<1) -> df_ppf_sel
 
 
-# Removing (potential) transitions back into university
+# Removing (potential) transitions back into university (i.e. a person worked outside the uni the previous year, and at the uni the current year)
 df_ppf_sel %>%
   group_by(RINPERSOON) %>%
   mutate(transition_inaca = ifelse(uni==1 & lag(uni, n=1)==0, 1, 0),
@@ -1170,8 +1200,9 @@ df_ppf_sel %>%
   group_by(RINPERSOON) %>%
   filter(!is.na(yearmax)) %>%
   summarize(yearmax = min(yearmax)) -> yearmax 
-# if people make the transition back into academia, we want to only observe until then
 
+
+# if people make the transition back into academia, we want to only observe until then
 df_ppf_sel %>%
   select(-yearmax) %>%
   left_join(yearmax, by="RINPERSOON") %>%
@@ -1182,25 +1213,34 @@ df_ppf_sel %>%
 ```
 
 
-## R&R check: abroad after PhD
+## Additional check: abroad after PhD
 
+Did people who did not start working within 1 year of their PhD go abroad during this period?
 ```{r, eval=FALSE}
 
+# select people who take more than 1 year to get a first job after the PhD, and etxract the first year when a salary is observed for them
 df_ppf %>%
   filter(timetojob1>=1) %>%
   group_by(RINPERSOON) %>%
   arrange(year) %>%
   slice_head(n=1) -> timetojob1
 
+# Check: were these people documented as being abroad between their PhD and their first job in the Netherlands?
 summary(timetojob1$abroad)
-
 summary(as.factor(timetojob1$abroad))
 
-
+# Select people who went abroad for closer inspection
 timetojob1 %>%
   filter(abroad==1) -> abroadafterphd
 
-save(abroadafterphd, file="H:/processed_data/abroadafterphd.rda")
+# save(abroadafterphd, file="H:/processed_data/abroadafterphd.rda")
+
+```
+
+
+Looking at the full trajectories of people who went abroad after their PhD. More details about this group are provided under [descriptives](descriptives.html)
+
+```{r, eval=FALSE}
 
 df_ppf[df_ppf$RINPERSOON%in%abroadafterphd$RINPERSOON,] -> abroadafterphd_long
 
@@ -1221,10 +1261,14 @@ abroadafterphd_long %>%
 save(abroadafterphd_long, file="H:/processed_data/abroadafterphd_long.rda")
   
 
+
 ```
 
 
 # ROBUSTNESS: transition directly after PhD
+
+For a robustness check, we select people who find a job in the first year after their PhD, but not within academia, and include them as the group who makes the transition. 
+
 ```{r, eval=FALSE}
 
 df_ppf %>% 
@@ -1373,7 +1417,6 @@ nrow(transitionsample[!duplicated(transitionsample$RINPERSOON) & transitionsampl
 ```{r, eval=FALSE}
 
 # run summary of the dataframe before, to assess where missings are
-
 nrow(df_ppf_sel[!duplicated(df_ppf_sel$RINPERSOON),]) # 4579
 
 df_ppf_sel %>%
@@ -1405,6 +1448,8 @@ df_ppf_sel2 %>%
 
 
 # Creating between-level variables
+
+We calculate between-level variables as the individual means of time-varying variables across all periods.  
 
 ```{r, eval=FALSE}
 
@@ -1449,6 +1494,8 @@ df_ppf_sel2 %>%
 
 # Dataset for Multilevel Model for Change
 
+Selecting relevant variables
+
 ```{r, eval=FALSE}
 
 # creating a time variable (total time since PhD year)
@@ -1465,6 +1512,8 @@ summary(df_mmfc)
 ```
 
 # Dataset for early transitions robustness
+
+Selecting relevant variables
 
 ```{r, eval=FALSE}
 
@@ -1504,7 +1553,7 @@ df_mmfc_r2 %>%
 ```
 
 
-# R&R: no other job
+# Robustness: selecting only PhDs with no other job outside their main job
 
 ```{r, eval=FALSE}
 
