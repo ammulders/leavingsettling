@@ -1,8 +1,16 @@
 ---
-title: "Analyses - Multilevel Model For Change"
-output: html_document
-date: "2024-11-26"
+title: "Leaving for more or settling for less: Analyses (log hourly wages)"
+date: "Last compiled on `r Sys.Date()`"
+output: 
+  html_document:
+    css: tweaks.css
+    toc:  true
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    code_download: yes
 ---
+
 
 
 ```{r, eval=FALSE}
@@ -11,7 +19,10 @@ rm(list=ls())
 
 ```
 
+
+
 # Packages
+
 
 ```{r, eval=FALSE}
 
@@ -21,7 +32,9 @@ library(lme4)
 ```
 
 
+
 # Input 
+
 
 ```{r, eval=FALSE}
 
@@ -36,7 +49,11 @@ load(file="H:/processed_data/df_noother.rda")
 ```
 
 
-# Non-linear effects of t
+
+# Non-linear effects of time (in year since Phd)
+
+Creating variables for t^2, t^3 up to t^6
+
 
 ```{r, eval=FALSE}
 
@@ -52,6 +69,7 @@ df_mmfc$t6 <- df_mmfc$t^6
 
 
 # Check linearity t and log real pay
+
 
 ```{r, eval=FALSE}
 
@@ -87,6 +105,7 @@ lm6 <- lm(log_realpay ~ t + t2 + t3 + t4 + t5 + t6, data=df_mmfc)
 
 # Some releveling 
 
+
 ```{r, eval=FALSE}
 
 levels(as.factor(df_mmfc$phd_disci))
@@ -105,11 +124,9 @@ df_mmfc$temporary_emp <- haven::zap_labels(df_mmfc$temporary_emp)
 ```
 
 
+
 # Overall - pay
 
-t Time since PhD
-t_after Time since transition
-transition_outaca Transition 0/1 (only 1 in the year of transition)
 
 ```{r, eval=FALSE}
 
@@ -128,7 +145,15 @@ M2 <- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*as.
 
 ```
 
-Creating the datasets
+
+
+
+# By gender: pay
+
+
+Creating separate datasets for men and women, for the separated analyses
+
+
 ```{r, eval=FALSE}
 
 df_men <- df_mmfc %>% filter(gender=="men")
@@ -138,9 +163,8 @@ df_wom <- df_mmfc %>% filter(gender=="women")
 
 
 
-# By gender: pay
-
 ## MEN
+
 
 ```{r, eval=FALSE}
 
@@ -160,7 +184,9 @@ M2m <- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(tran
 ```
 
 
+
 ## WOMEN
+
 
 ```{r, eval=FALSE}
 
@@ -180,9 +206,13 @@ M2w <- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(tran
 ```
 
 
+
+
 # Adding mechanisms step-by-step
 
+
 ## Discipline
+
 
 ```{r, eval=FALSE}
 
@@ -198,7 +228,10 @@ M2w_disci <- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.facto
 
 ```
 
+
+
 ## Child < 5
+
 
 ```{r, eval=FALSE}
 
@@ -213,7 +246,9 @@ M2w_child <- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.facto
 ```
 
 
+
 ## Hours
+
 
 ```{r, eval=FALSE}
 
@@ -228,12 +263,18 @@ M2w_hrs <- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(
 ```
 
 
+
+
 ## Temporary employment
+
 
 (These are the original models)
 
 
+
+
 # Robustness checks
+
 
 ## Max 5 years post-PhD
 
@@ -252,6 +293,8 @@ df_wom_r5 <- df_mmfc_r5 %>% filter(gender=="women")
 
 
 Men 
+
+
 ```{r, eval=FALSE}
 
 # MAX 5 YEARS POST-PHD
@@ -267,7 +310,10 @@ R5_M2m <- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(t
 
 ```
 
+
+
 Women 
+
 
 ```{r, eval=FALSE}
 
@@ -284,7 +330,10 @@ R5_M2w <- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(t
 ```
 
 
+
 Overall results
+
+
 ```{r, eval=FALSE}
 
 # MAX 5 YEARS POST-PHD
@@ -300,7 +349,9 @@ R5_M2 <- lmer(log_realpay ~ 1 + t*as.factor(gender) + t2*as.factor(gender) + t3*
 ```
 
 
+
 ## Transition * t^2 / t^3
+
 
 ```{r, eval=FALSE}
 
@@ -342,7 +393,9 @@ R7_M2w <- lmer(log_realpay ~ 1 + t + t2 + t3 + as.factor(trans_st) + as.factor(t
 ```
 
 
+
 ## No other job
+
 
 ```{r, eval=FALSE}
 

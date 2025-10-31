@@ -26,6 +26,7 @@ rm(list=ls())
 library(tidyverse)
 library(ggplot2)
 library(ggpubr)
+library()
 
 ```
 
@@ -504,7 +505,7 @@ ggplot(fig3_summ_mn, aes(x=t, y=salary)) +
         panel.grid.major.x = element_blank()) -> men_new
   
 
-ggarrange(
+ggpubr::ggarrange(
   wom_ori,
   wom_new,
   men_ori,
